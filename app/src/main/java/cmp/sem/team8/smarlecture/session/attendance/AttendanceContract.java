@@ -1,10 +1,11 @@
 package cmp.sem.team8.smarlecture.session.attendance;
 
+
 import java.util.List;
 import java.util.Map;
 
-import cmp.sem.team8.fireapp.IBasePresenter;
-import cmp.sem.team8.fireapp.IBaseView;
+import cmp.sem.team8.smarlecture.IBasePresenter;
+import cmp.sem.team8.smarlecture.IBaseView;
 
 /**
  * Created by AmmarRabie on 11/03/2018.

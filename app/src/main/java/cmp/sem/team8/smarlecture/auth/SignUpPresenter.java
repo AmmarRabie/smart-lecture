@@ -42,7 +42,7 @@ class SignUpPresenter implements SignUpContract.Actions {
                 } else {
                     // else the user is signed in although we can't insert him at the database, throw exception
 //                    throw new RuntimeException("The user is authenticated and not inserted");
-                    Log.wtf("SignUpPresenter: ","The user is authenticated and not inserted");
+                    Log.wtf("SignUpPresenter: ", "The user is authenticated and not inserted");
                 }
             }
         };
@@ -58,7 +58,6 @@ class SignUpPresenter implements SignUpContract.Actions {
                     // [start try to delete the user from authenticated users]
                     FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(deleteTaskListener);
                     // [end try to delete the user from authenticated users]
-
                 }
             }
         };

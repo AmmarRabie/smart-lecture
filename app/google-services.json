@@ -46,6 +46,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "235585702724-js4g87cav8s6u1cp0siirprf2bl4msdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cmp.sem.team8.smarlecture",
+            "certificate_hash": "b6dca1d85b01ca350ad02787c82e95b7a8bee997"
+          }
+        },
+        {
           "client_id": "235585702724-du4kamlkd01aguc5i6ni56qoj6f966go.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -60,8 +68,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "235585702724-du4kamlkd01aguc5i6ni56qoj6f966go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

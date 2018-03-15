@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.session.attendance;
 
+
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Map;
 
-import cmp.sem.team8.fireapp.R;
+import cmp.sem.team8.smarlecture.R;
 
 /**
  * Created by AmmarRabie on 12/03/2018.

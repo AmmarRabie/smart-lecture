@@ -6,11 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import cmp.sem.team8.fireapp.R;
-import cmp.sem.team8.fireapp.common.util.ActivityUtils;
-import cmp.sem.team8.fireapp.session.attendance.AttendanceFragment;
-import cmp.sem.team8.fireapp.session.attendance.AttendancePresenter;
-
+import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
+import cmp.sem.team8.smarlecture.session.attendance.AttendanceFragment;
+import cmp.sem.team8.smarlecture.session.attendance.AttendancePresenter;
 
 public class SessionActivity extends AppCompatActivity {
 

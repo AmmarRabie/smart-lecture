@@ -1,12 +1,13 @@
 package cmp.sem.team8.smarlecture.quickstatistics;
 
-import cmp.sem.team8.fireapp.IBasePresenter;
-import cmp.sem.team8.fireapp.IBaseView;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
  */
 
+
+import cmp.sem.team8.smarlecture.IBasePresenter;
+import cmp.sem.team8.smarlecture.IBaseView;
 
 /**
  * when the presenter start he should look for the current user -unless it is passes earlier-

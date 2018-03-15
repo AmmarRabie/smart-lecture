@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.session.attendance;
 
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +17,7 @@ import android.widget.Toast;
 import java.util.List;
 import java.util.Map;
 
-import cmp.sem.team8.fireapp.R;
+import cmp.sem.team8.smarlecture.R;
 
 /**
  * Created by AmmarRabie on 11/03/2018.
