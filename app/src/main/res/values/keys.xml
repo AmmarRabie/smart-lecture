@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nameKey" translatable="false">name</string>
+    <string name="idKey" translatable="false">id</string>
+    <string name="emailKey" translatable="false">name</string>
+
+</resources>

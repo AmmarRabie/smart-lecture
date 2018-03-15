@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "235585702724",
+    "firebase_url": "https://smart-lecture-cmp.firebaseio.com",
+    "project_id": "smart-lecture-cmp",
+    "storage_bucket": "smart-lecture-cmp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235585702724:android:4386aed350d7ce40",
+        "android_client_info": {
+          "package_name": "cmp.sem.team8.smartattendance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "235585702724-du4kamlkd01aguc5i6ni56qoj6f966go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDclWTe42jknBpFADHWJxjPVT9fXudzCME"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235585702724:android:a8ca1a077d91a7b8",
+        "android_client_info": {
+          "package_name": "cmp.sem.team8.smarlecture"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "235585702724-du4kamlkd01aguc5i6ni56qoj6f966go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDclWTe42jknBpFADHWJxjPVT9fXudzCME"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
