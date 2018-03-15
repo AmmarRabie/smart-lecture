@@ -36,6 +36,11 @@ public class SessionActivity extends AppCompatActivity {
 
         int fragmentId = R.id.contentFrame;
         switch (viewId) {
+
+            case R.id.sessionActivity_question:
+                Toast.makeText(this, "not supported yet", Toast.LENGTH_SHORT).show();
+                break;
+
             case R.id.sessionActivity_question:
                 Toast.makeText(this, "not supported yet", Toast.LENGTH_SHORT).show();
                 break;
