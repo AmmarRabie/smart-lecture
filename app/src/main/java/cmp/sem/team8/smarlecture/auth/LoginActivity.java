@@ -4,7 +4,6 @@ package cmp.sem.team8.smarlecture.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.EditText;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
@@ -16,8 +15,6 @@ import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 public class LoginActivity extends AppCompatActivity {
 
     public static final int RC_SIGN_UP = 4646;
-    private EditText mEmail;
-    private EditText mPass;
     private LoginPresenter mAddEditTaskPresenter;
 
     @Override

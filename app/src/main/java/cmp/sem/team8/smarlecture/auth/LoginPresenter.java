@@ -3,6 +3,7 @@ package cmp.sem.team8.smarlecture.auth;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -56,5 +57,28 @@ class LoginPresenter implements LoginContract.Actions {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void forgotPassword(String email) {
+
+        if (email == null || email.isEmpty())
+        {
+            mView.showErrorMessage("Email can't be empty");
+            return;
+        }
+
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            mView.showOnResetPasswordEmailSend();
+                        } else {
+                            mView.showErrorMessage(task.getException().getMessage());
+                        }
+                    }
+                });
+
     }
 }

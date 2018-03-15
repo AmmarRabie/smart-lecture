@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,6 +23,9 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
     private LoginContract.Actions mPresenter;
     private EditText mEmail;
     private EditText mPassword;
+
+    private Button mForgetPassword;
+
     private View.OnClickListener mSignUpListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -51,6 +55,14 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
         mPassword = root.findViewById(R.id.password);
         setHasOptionsMenu(true);
 
+        mForgetPassword = root.findViewById(R.id.loginFrag_forget_pass);
+        mForgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.forgotPassword(mEmail.getText().toString());
+            }
+        });
+
         root.findViewById(R.id.login).setOnClickListener(this);
         root.findViewById(R.id.create_account).setOnClickListener(mSignUpListener);
         return root;
@@ -61,6 +73,12 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
     public void showOnSuccess() {
         Toast.makeText(getContext(), "Signed in successfully", Toast.LENGTH_SHORT).show();
         getActivity().finish();
+    }
+
+    @Override
+    public void showOnResetPasswordEmailSend() {
+        Toast.makeText(getContext(), "The reset email is send successfully",
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

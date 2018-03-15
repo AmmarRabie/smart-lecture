@@ -19,6 +19,8 @@ interface LoginContract {
         void showOnSuccess();
 
         void showErrorMessage(String cause);
+
+        void showOnResetPasswordEmailSend();
     }
 
 
@@ -27,5 +29,7 @@ interface LoginContract {
      */
     interface Actions extends IBasePresenter {
         void login(String email, String password);
+
+        void forgotPassword(String email);
     }
 }
