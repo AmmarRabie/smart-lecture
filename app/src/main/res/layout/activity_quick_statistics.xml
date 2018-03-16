@@ -20,10 +20,11 @@
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
-
         android:layout_height="wrap_content"
+
         android:layout_marginBottom="49dp"
         android:layout_marginTop="16dp"
+        android:onClick="test"
         android:text="Begin new session"
         app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"

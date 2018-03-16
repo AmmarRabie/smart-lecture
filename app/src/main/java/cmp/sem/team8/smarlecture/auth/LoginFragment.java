@@ -50,7 +50,7 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.login_frag, container, false);
+        View root = inflater.inflate(R.layout.frag_login, container, false);
         mEmail = root.findViewById(R.id.email);
         mPassword = root.findViewById(R.id.password);
         setHasOptionsMenu(true);

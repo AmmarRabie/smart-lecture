@@ -41,7 +41,7 @@ public class AttendanceFragment extends Fragment implements AttendanceContract.V
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.attendance_frag, container, false);
+        View root = inflater.inflate(R.layout.frag_attendance, container, false);
 
         mSecret = root.findViewById(R.id.attendanceFrag_secret);
         mGetAttendances = root.findViewById(R.id.attendanceFrag_takeAttendance);

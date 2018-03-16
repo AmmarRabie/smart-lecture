@@ -1,0 +1,106 @@
+package cmp.sem.team8.smarlecture.profile;
+
+
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+/**
+ * Created by AmmarRabie on 08/03/2018.
+ */
+
+class ProfilePresenter implements ProfileContract.Actions {
+
+    private static final String TAG = "ProfilePresenter";
+
+    ProfileContract.Views mView;
+    private FirebaseUser mCurrentUser;
+
+    public ProfilePresenter(ProfileContract.Views view) {
+        mView = view;
+        mView.setPresenter(this);
+    }
+
+    @Override
+    public void start() {
+        // try to find the current user
+
+        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mCurrentUser == null) {
+            mView.showErrorMessage("can't find the current user, try to re-login");
+            return;
+        }
+        mView.showUserInfo(mCurrentUser.getDisplayName(), mCurrentUser.getEmail());
+    }
+
+
+    @Override
+    public void changePassword(String pass, String confirmPass) {
+        if (mCurrentUser == null) {
+            mView.showErrorMessage("You are not logged in, try to re-login");
+            return;
+        }
+        if (pass == null || pass.isEmpty() ||
+                confirmPass == null || confirmPass.isEmpty())
+        {
+            mView.showErrorMessage("can't be empty");
+            return;
+        }
+        if (!pass.equals(confirmPass)) {
+            mView.showErrorMessage("two password are different");
+            return;
+        }
+
+        mCurrentUser.updatePassword(pass).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    mView.showOnChangePassSuccess();
+                } else {
+                    mView.showErrorMessage(task.getException().getMessage());
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void changeName(String newName) {
+        if (mCurrentUser == null) {
+            mView.showErrorMessage("You are not logged in, try to re-login");
+            return;
+        }
+        if (newName == null || newName.isEmpty())
+        {
+            mView.showErrorMessage("your name can't be empty");
+            return;
+        }
+
+
+        DatabaseReference thisUserRef = FirebaseDatabase.getInstance().getReference()
+                .child("user").child(mCurrentUser.getUid());
+
+        thisUserRef.child("name").setValue(newName);
+
+        UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
+        builder.setDisplayName(newName);
+
+        mCurrentUser.updateProfile(builder.build()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    mView.showOnChangeNameSuccess();
+                } else {
+                    mView.showErrorMessage(task.getException().getMessage());
+                }
+            }
+        });
+    }
+}

@@ -38,7 +38,7 @@ public class AtendeeAdapter  extends ArrayAdapter<Map> {
         View listItemView = convertView;
         if(listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.atendee_item, parent, false);
+                    R.layout.item_atendee, parent, false);
         }
 
         Map<String,Object> currentAndroidFlavor = getItem(position);
