@@ -18,7 +18,7 @@ public class StartSessionContract {
      * views methods implemented by fragment
      */
     interface Views extends IBaseView<Actions> {
-        void showSessionId();
+        void showSessionId(String id);
     }
 
 

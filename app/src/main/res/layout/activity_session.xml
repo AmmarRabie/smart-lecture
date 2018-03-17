@@ -20,6 +20,14 @@
             android:text="Question" />
 
         <Button
+            android:id="@+id/sessionActivity_startsession"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="onToFragmentClick"
+            android:text="StartSession" />
+
+        <Button
             android:id="@+id/sessionActivity_attendance"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -43,7 +51,7 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/contentFrame"
+            android:id="@+id/contentFrame2"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
