@@ -7,6 +7,7 @@ import java.util.Map;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.model.SessionModel;
 import cmp.sem.team8.smarlecture.session.attendance.AttendanceContract;
 
 /**
@@ -19,6 +20,7 @@ public class StartSessionContract {
      */
     interface Views extends IBaseView<Actions> {
         void showSessionId(String id);
+        void sendSessioIdToActivity(int Id);
     }
 
 
@@ -28,6 +30,8 @@ public class StartSessionContract {
     interface Actions extends IBasePresenter {
 
         void startSession( );
+        void endSession();
+
     }
 
 }

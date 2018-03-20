@@ -4,11 +4,12 @@
     android:orientation="vertical">
 
 
-    <Button
-        android:id="@+id/start_session"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start The Session" />
+    <TextView
+        android:id="@+id/session_label"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:text="Session ID"
+        android:textSize="20sp"/>
 
     <EditText
         android:id="@+id/session_id"

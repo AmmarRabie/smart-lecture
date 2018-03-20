@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import cmp.sem.team8.smarlecture.model.SessionModel;
+
 /**
  * Created by ramym on 3/15/2018.
  */
@@ -48,7 +50,7 @@ public class StartSessionPresenter implements StartSessionContract.Actions {
 
     @Override
     public void startSession() {
-         final Integer newID = generateUniqueId();
+        final Integer newID = generateUniqueId();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase = mDatabase.child("sessions").child(newID.toString());
 
@@ -56,17 +58,22 @@ public class StartSessionPresenter implements StartSessionContract.Actions {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    mDatabase.setValue("id1");   // id of the  that  ownes the session
-                    SessionId=newID;
-                    mView.showSessionId(newID.toString());
-
-                    DatabaseReference groupref=FirebaseDatabase.getInstance().getReference();
-                    groupref=groupref.child("groups").child("id1").child("Sessions").child(newID.toString());
 
                     Map<String,String> map=new HashMap<String,String>();
                     map.put("status","open");
+                    map.put("group","id1");
+                    map.put("attendance","closed");
+                    mDatabase.setValue(map);   // id of the  that  ownes the session
 
-                    groupref.setValue(map);
+
+                    SessionId=newID;
+                    mView.showSessionId(newID.toString());
+                    mView.sendSessioIdToActivity(newID);
+
+                    DatabaseReference groupref=FirebaseDatabase.getInstance().getReference();
+                    groupref=groupref.child("groups").child("id1").child("Sessions").child(newID.toString());
+                    groupref.setValue(true);
+
 
                 }
                 else
@@ -82,6 +89,17 @@ public class StartSessionPresenter implements StartSessionContract.Actions {
         });
 
     }
+
+    @Override
+    public void endSession() {
+
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference();
+        ref=ref.child("sessions").child(Integer.toString(SessionId)).child("status");
+        ref.setValue("closed");
+
+
+    }
+
     public void refresh() {
 
     }

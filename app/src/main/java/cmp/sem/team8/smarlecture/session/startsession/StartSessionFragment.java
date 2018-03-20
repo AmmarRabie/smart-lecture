@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.session.startsession;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.model.SessionModel;
+import cmp.sem.team8.smarlecture.session.SessionActivity;
 import cmp.sem.team8.smarlecture.session.startsession.StartSessionContract;
 
 /**
@@ -24,23 +27,27 @@ public class StartSessionFragment  extends Fragment implements StartSessionContr
 
     private StartSessionContract.Actions mPresenter;
     private TextView id;
-    private Button StartSession;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.start_session_fragment, container, false);
 
-        StartSession = root.findViewById(R.id.start_session);
-        StartSession.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.startSession();
-            }
-        });
-
         id=root.findViewById(R.id.session_id);
 
+        mPresenter.startSession();
+
+        //int Se=Session.getId();
+
+        //Intent intent=((SessionActivity)getActivity()).getIntent();//.putExtra("SessionId",Session.getId());
+
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //startActivity(intent);
     }
 
     @Override
@@ -51,8 +58,16 @@ public class StartSessionFragment  extends Fragment implements StartSessionContr
 
     @Override
     public void showSessionId(String id) {
-       this.id.setText(id);
+        this.id.setText(id);
+
     }
+
+    @Override
+    public void sendSessioIdToActivity(int Id) {
+       getActivity().getIntent().putExtra("SessionId",Id);
+    }
+
+
     public static StartSessionFragment newInstance() {
         return new StartSessionFragment();
     }

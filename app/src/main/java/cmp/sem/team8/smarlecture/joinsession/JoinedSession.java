@@ -1,23 +1,22 @@
-package cmp.sem.team8.smarlecture.session;
-
+package cmp.sem.team8.smarlecture.joinsession;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
-import cmp.sem.team8.smarlecture.model.SessionModel;
-import cmp.sem.team8.smarlecture.session.attendance.AttendanceFragment;
-import cmp.sem.team8.smarlecture.session.attendance.AttendancePresenter;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
 import cmp.sem.team8.smarlecture.session.startsession.StartSessionFragment;
 import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
 
-public class SessionActivity extends AppCompatActivity {
+/**
+ * Created by ramym on 3/17/2018.
+ */
+
+public class JoinedSession extends AppCompatActivity {
 
     private Button mQuestionButton;
     private Button mAttendanceButton;
@@ -27,11 +26,11 @@ public class SessionActivity extends AppCompatActivity {
     int SessionId;
 
     private BeginAttendancePresenter mAttendancePresenter;
-    private StartSessionPresenter mStartSessionPresenter;
+    private StartSessionPresenter    mStartSessionPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_session);
+        setContentView(R.layout.activity_joined__session);
 
 /*        mQuestionButton = findViewById(R.id.sessionActivity_question);
         mAttendanceButton = findViewById(R.id.sessionActivity_attendance);
@@ -49,7 +48,7 @@ public class SessionActivity extends AppCompatActivity {
                 : fragment2;
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
 
-            mStartSessionPresenter = new StartSessionPresenter(fragment2);
+        mStartSessionPresenter = new StartSessionPresenter(fragment2);
 
 
         /////
@@ -61,9 +60,9 @@ public class SessionActivity extends AppCompatActivity {
         int viewId = view.getId();
 
         switch (viewId) {
-           // case R.id.sessionActivity_startsession:
+            // case R.id.sessionActivity_startsession:
             //    StartSessionFragment fragment2 = (StartSessionFragment)
-             //           getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
+            //           getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
             //    fragment2 = fragment2 == null ?
             //            StartSessionFragment.newInstance()
             //            : fragment2;
@@ -76,28 +75,26 @@ public class SessionActivity extends AppCompatActivity {
             //    break;
 
             case R.id.sessionActivity_endsession:
-                 mStartSessionPresenter.endSession();
-                 mStartSessionPresenter=null;
-                 break;
+                mStartSessionPresenter.endSession();
+                mStartSessionPresenter=null;
+                break;
 
             case R.id.sessionActivity_attendance:
                 int fragmentId = R.id.contentFrame3;
-                    BeginAttendanceFragment fragment2 = (BeginAttendanceFragment)
-                getSupportFragmentManager().findFragmentById(R.id.contentFrame3);
-                   fragment2 = fragment2 == null ?
-                           BeginAttendanceFragment.newInstance()
-                            : fragment2;
-                    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
+                BeginAttendanceFragment fragment2 = (BeginAttendanceFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.contentFrame3);
+                fragment2 = fragment2 == null ?
+                        BeginAttendanceFragment.newInstance()
+                        : fragment2;
+                ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
 
-                   if (mAttendancePresenter == null)
-                   {
-                       mAttendancePresenter = new BeginAttendancePresenter(fragment2,getIntent().getIntExtra("SessionId",1));
-                   }
-                   else
-                        mAttendancePresenter.refresh();
-                    break;
+                if (mAttendancePresenter == null)
+                    mAttendancePresenter = new BeginAttendancePresenter(fragment2,2790306);
+                else
+                    mAttendancePresenter.refresh();
+                break;
 
-                ///////////
+            ///////////
 
         }
     }
