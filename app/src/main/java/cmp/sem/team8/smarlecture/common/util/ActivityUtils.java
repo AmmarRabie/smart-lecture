@@ -41,4 +41,20 @@ public class ActivityUtils {
         transaction.commit();
     }
 
+    public static void addFragmentToActivityByTag(@NonNull FragmentManager fragmentManager,
+                                                  @NonNull Fragment fragment, int frameId, String Tag) {
+//        checkNotNull(fragmentManager);
+//        checkNotNull(fragment);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(frameId, fragment, Tag);
+        transaction.commit();
+    }
+
+    public static void removeFragmentToActivityByTag(@NonNull FragmentManager fragmentManager, String Tag) {
+        Fragment fragment = fragmentManager.findFragmentByTag(Tag);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (fragment != null) transaction.remove(fragment);
+        transaction.commit();
+
+    }
 }

@@ -124,7 +124,6 @@ private DatabaseReference ref;
 
                             }
                         });
-
                     }
                 });
 
