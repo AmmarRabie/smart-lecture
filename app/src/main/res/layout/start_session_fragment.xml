@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/session_label"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:text="Session ID"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:id="@+id/session_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Session ID" />
+
+
+</LinearLayout>

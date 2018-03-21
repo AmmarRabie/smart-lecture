@@ -5,4 +5,13 @@ package cmp.sem.team8.smarlecture.model;
  */
 
 public class SessionModel {
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

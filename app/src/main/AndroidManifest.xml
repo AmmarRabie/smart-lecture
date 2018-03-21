@@ -14,9 +14,10 @@
 
         <activity android:name=".auth.LoginActivity" />
         <activity android:name=".auth.SignupActivity" />
+
         <activity android:name=".profile.ProfileActivity" />
         <activity android:name=".session.SessionActivity"/>
-
+        <activity android:name=".joinsession.JoinedSession"/>
         <activity android:name=".quickstatistics.QuickStatisticsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
