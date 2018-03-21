@@ -3,10 +3,16 @@ package cmp.sem.team8.smarlecture.session.beginattendance;
 import android.media.MediaCas;
 import android.text.format.Time;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -19,7 +25,11 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     Integer Atime;
     DatabaseReference ref;
 
+    private  StudentsNamesAdapter adapter;
+
     int SessionId;
+
+    List<String> students;
 
     int maxId=10000000;
     int minId=0;
@@ -32,6 +42,9 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         this.SessionId= SessionId;
         ref= FirebaseDatabase.getInstance().getReference();
 
+        students=new ArrayList<>();
+
+
     }
     @Override
     public void start() {
@@ -42,7 +55,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     public void BeginAttendance() {
 
         setTime(5);
-        mView.showProgressIndicator(1);
+        mView.showProgressIndicator(3);
 
         Random rand = new Random(System.currentTimeMillis());
         //get the range, casting to long to avoid overflow problems
@@ -60,6 +73,58 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         nref.setValue(randomNumber.toString());
 
         mView.showSecrect(randomNumber);
+
+        nref=FirebaseDatabase.getInstance().getReference();
+        nref=nref.child("sessions").child(Integer.toString(SessionId)).child("namesList");
+
+        adapter=new StudentsNamesAdapter(((BeginAttendanceFragment)mView).getActivity(),students);
+
+        mView.listViewSetAdapter(adapter);
+
+        nref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s)
+            {
+
+                DatabaseReference mref=FirebaseDatabase.getInstance().getReference();
+                mref=mref.child("groups").child("id1").child("namesList").child(dataSnapshot.getKey().toString());
+
+                mref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                     students.add(dataSnapshot.getValue().toString());
+                     adapter.updateRecords(students);
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

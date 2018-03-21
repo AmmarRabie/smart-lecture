@@ -32,6 +32,8 @@ public class BeginAttendanceContract {
         void showAttendanceList(List<Map> attendanceList);
 
         boolean getConnectionState(boolean includeInternet, boolean includeSim);
+
+        void listViewSetAdapter(StudentsNamesAdapter adapter);
     }
 
 

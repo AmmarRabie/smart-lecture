@@ -4,18 +4,35 @@
     android:layout_height="match_parent">
 
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Secrect :"
+        android:textSize="32sp"/>
+
     <TextView
         android:id="@+id/begin_attendance_Secrect"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:text="Secrect"
-        android:textSize="30sp"/>
+        android:textSize="30sp" />
+
     <TextView
         android:id="@+id/attendance_timer"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:text="Time"
         android:textSize="30sp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textImeMultiLine|textPersonName"
+        android:textSize="32sp"
+        android:text="Student List :" />
 
     <ListView
     android:id="@+id/begin_attandence_list"

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     private BeginAttendanceContract.Actions mPresenter;
     private TextView AttendanceTimer;
     private TextView SecrectText;
+    private ListView listView;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -31,6 +33,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
 
         AttendanceTimer=root.findViewById(R.id.attendance_timer);
         SecrectText=root.findViewById(R.id.begin_attendance_Secrect);
+        listView=root.findViewById(R.id.begin_attandence_list);
 
 
         mPresenter.BeginAttendance();
@@ -89,6 +92,12 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     @Override
     public boolean getConnectionState(boolean includeInternet, boolean includeSim) {
         return false;
+    }
+
+    @Override
+    public void listViewSetAdapter(StudentsNamesAdapter adapter) {
+
+        listView.setAdapter(adapter);
     }
 
     public static BeginAttendanceFragment newInstance() {
