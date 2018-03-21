@@ -16,7 +16,7 @@ interface LoginContract {
      */
     interface Views extends IBaseView<Actions> {
 
-        void showOnSuccess();
+        void showOnSuccess(String userName);
 
         void showErrorMessage(String cause);
 

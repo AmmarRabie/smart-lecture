@@ -3,9 +3,11 @@ package cmp.sem.team8.smarlecture.profile;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DrawableUtils;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.auth.LoginActivity;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -33,6 +33,9 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
     private TextView mEmail;
     private Button mChangePass;
     private Button mEditName;
+    private Button mSignOut;
+
+    private AlertDialog changePasswordDialog;
 
     private boolean mEditState = false;
 
@@ -55,6 +58,14 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         mEmail = root.findViewById(R.id.profileFrag_email);
         mChangePass = root.findViewById(R.id.profileFrag_changePassword);
         mEditName = root.findViewById(R.id.profileFrag_editName);
+        mSignOut = root.findViewById(R.id.profileFrag_signOut);
+
+        mSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.signOut();
+            }
+        });
 
         mEditName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,14 +74,14 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
                     mPresenter.changeName(mName.getText().toString());
                 } else {
                     mEditState = true;
-                    mEditName.setText("Save");
+                    mEditName.setBackground(getResources().getDrawable(android.R.drawable.ic_menu_save));
                     mName.setEnabled(true);
                 }
             }
         });
 
 
-        final AlertDialog.Builder changePasswordDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder changePasswordDialogBuilder = new AlertDialog.Builder(getActivity());
         changePasswordDialogBuilder.setTitle("password change");
         final LinearLayout rootView = buildDialogLayout();
         changePasswordDialogBuilder.setView(rootView);
@@ -92,10 +103,12 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
             }
         });
 
+        changePasswordDialog = changePasswordDialogBuilder.create();
+
         mChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changePasswordDialogBuilder.show();
+                changePasswordDialog.show();
             }
         });
 
@@ -105,19 +118,35 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void showOnSuccess() {
-        Toast.makeText(getContext(), "Changed successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),
+                "Name changed successfully", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showOnChangeNameSuccess() {
+        Toast.makeText(getContext(), "name changed successfully", Toast.LENGTH_SHORT).show();
         mEditState = false;
-        mEditName.setText("Edit");
+        mEditName.setBackground(getResources().getDrawable(android.R.drawable.ic_menu_edit));
         mName.setEnabled(false);
     }
 
     @Override
     public void showOnChangePassSuccess() {
+        Toast.makeText(getContext(),
+                "Password changed successfully", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void showOnSignOutSuccess() {
+        Toast.makeText(getContext(), "signed out successfully", Toast.LENGTH_SHORT).show();
+
+        // direct user to the log in screen
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+
+        // end this activity
+        if (getActivity() != null)
+            getActivity().finish();
     }
 
     @Override
@@ -136,7 +165,6 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         super.onResume();
         mPresenter.start();
     }
-
 
     private LinearLayout buildDialogLayout() {
         LinearLayout layout = new LinearLayout(getContext());

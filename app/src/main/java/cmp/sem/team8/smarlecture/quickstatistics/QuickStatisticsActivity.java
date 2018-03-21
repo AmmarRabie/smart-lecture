@@ -13,7 +13,6 @@ import cmp.sem.team8.smarlecture.profile.ProfileActivity;
 public class QuickStatisticsActivity extends AppCompatActivity {
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,13 +24,18 @@ public class QuickStatisticsActivity extends AppCompatActivity {
     }
 
 
-
-    public void test(View view)
-    {
-        Intent intent = new Intent(this,ProfileActivity.class);
+    public void testProfile(View view) {
+        Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
 
+
+    public void testForceLogin(View view) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(getResources().getString(R.string.intentKey_forceLogin),
+                true);
+        startActivity(intent);
+    }
 
 
 }

@@ -24,6 +24,8 @@ interface ProfileContract {
 
         void showOnChangeNameSuccess();
         void showOnChangePassSuccess();
+
+        void showOnSignOutSuccess();
     }
 
 
@@ -33,5 +35,7 @@ interface ProfileContract {
     interface Actions extends IBasePresenter {
         void changePassword(String pass, String confirmPass);
         void changeName(String newName);
+
+        void signOut();
     }
 }

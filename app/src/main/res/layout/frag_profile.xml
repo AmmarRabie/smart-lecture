@@ -21,9 +21,10 @@
 
         <Button
             android:id="@+id/profileFrag_editName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="edit" />
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="8dp"
+            android:background="@android:drawable/ic_menu_edit" />
 
     </LinearLayout>
 
@@ -39,4 +40,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="change password" />
+
+    <Button
+        android:id="@+id/profileFrag_signOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign out" />
 </LinearLayout>

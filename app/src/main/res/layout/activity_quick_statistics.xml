@@ -8,24 +8,23 @@
     tools:layout_editor_absoluteY="81dp">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/testForceLogin"
         android:layout_width="wrap_content"
-
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:text="Connect Session"
-        app:layout_constraintStart_toStartOf="@+id/button3"
-        app:layout_constraintTop_toBottomOf="@+id/button3" />
+        android:onClick="testForceLogin"
+        android:text="test force login"
+        app:layout_constraintStart_toStartOf="@+id/testProfile"
+        app:layout_constraintTop_toBottomOf="@+id/testProfile" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/testProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginBottom="49dp"
         android:layout_marginTop="16dp"
-        android:onClick="test"
-        android:text="Begin new session"
+        android:onClick="testProfile"
+        android:text="test profile"
         app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -42,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3">
+        app:layout_constraintTop_toBottomOf="@+id/testProfile">
 
         <FrameLayout
             android:id="@+id/contentFrame"
