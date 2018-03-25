@@ -3,8 +3,6 @@ package cmp.sem.team8.smarlecture.quickstatistics;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,53 +20,52 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.joinsession.JoinedSession;
+import cmp.sem.team8.smarlecture.profile.ProfileActivity;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
 
 public class QuickStatisticsActivity extends AppCompatActivity {
 
-private Button BeginSession;
-private Button JoinSession;
-private Context context;
-private DatabaseReference ref;
-
+    private Button BeginSession;
+    private Button JoinSession;
+    private Context context;
+    private DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_statistics);
 
-        context=this;
+        context = this;
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
 
-        ref=FirebaseDatabase.getInstance().getReference();
 
-        BeginSession=(Button)findViewById(R.id.button3);
+        // TODO: This was conflict, now the same buttons has 2 diff listeners. Update it
+        ref = FirebaseDatabase.getInstance().getReference();
+
+        BeginSession = (Button) findViewById(R.id.button3);
         BeginSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(v.getContext(),SessionActivity.class);
+                Intent intent = new Intent(v.getContext(), SessionActivity.class);
                 startActivity(intent);
             }
         });
 
-        JoinSession=(Button)findViewById(R.id.button2);
+        JoinSession = (Button) findViewById(R.id.button2);
         JoinSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                View view=(LayoutInflater.from(QuickStatisticsActivity.this)).inflate(R.layout.dialog,null);
-                AlertDialog.Builder alert=new AlertDialog.Builder(QuickStatisticsActivity.this);
+                View view = (LayoutInflater.from(QuickStatisticsActivity.this)).inflate(R.layout.dialog, null);
+                AlertDialog.Builder alert = new AlertDialog.Builder(QuickStatisticsActivity.this);
                 alert.setView(view);
-                final EditText input=(EditText)view.findViewById(R.id.dialog_text);
+                final EditText input = (EditText) view.findViewById(R.id.dialog_text);
 
                 alert.setCancelable(true);
 
@@ -77,48 +74,42 @@ private DatabaseReference ref;
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
 
-                        ref= FirebaseDatabase.getInstance().getReference();
+                        ref = FirebaseDatabase.getInstance().getReference();
                         ref = ref.child("sessions").child(input.getText().toString());
 
                         ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists())
-                                {
+                                if (dataSnapshot.exists()) {
 
                                     Intent i = new Intent(context, JoinedSession.class);
 
                                     for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
 
-                                        if (childDataSnapshot.getKey().equals("status"))
-                                        {
-                                         if (childDataSnapshot.getValue().equals("closed"))
-                                         {
-                                             Toast.makeText(context," Session has been closed ",
-                                                     Toast.LENGTH_LONG).show();
-                                             return;
-                                         }
-                                        }
-                                        else if (childDataSnapshot.getKey().toString().equals("group"))
-                                        {
-                                            i.putExtra("groupid",childDataSnapshot.getValue().toString());
+                                        if (childDataSnapshot.getKey().equals("status")) {
+                                            if (childDataSnapshot.getValue().equals("closed")) {
+                                                Toast.makeText(context, " Session has been closed ",
+                                                        Toast.LENGTH_LONG).show();
+                                                return;
+                                            }
+                                        } else if (childDataSnapshot.getKey().toString().equals("group")) {
+                                            i.putExtra("groupid", childDataSnapshot.getValue().toString());
                                         }
                                     }
 
-                                    String SessionID=input.getText().toString();
-                                    i.putExtra("sessionid", SessionID );
+                                    String SessionID = input.getText().toString();
+                                    i.putExtra("sessionid", SessionID);
 
-                                     startActivity(i);
-                                     dialog.cancel();
+                                    startActivity(i);
+                                    dialog.cancel();
 
-                                }
-                                else
-                                {
-                                    Toast.makeText(context," Session not exists ",
+                                } else {
+                                    Toast.makeText(context, " Session not exists ",
                                             Toast.LENGTH_LONG).show();
                                 }
 
                             }
+
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
 
@@ -127,10 +118,30 @@ private DatabaseReference ref;
                     }
                 });
 
-                Dialog dialogg =alert.create();
+                Dialog dialogg = alert.create();
                 dialogg.show();
             }
         });
+
     }
 
+
+    public void testProfile(View view) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+
+    public void testForceLogin(View view) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(getResources().getString(R.string.intentKey_forceLogin),
+                true);
+        startActivity(intent);
+    }
+
+
 }
+
+
+
+

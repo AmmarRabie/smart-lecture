@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.auth;
+package cmp.sem.team8.smarlecture.profile;
 
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
@@ -8,7 +8,7 @@ import cmp.sem.team8.smarlecture.IBaseView;
  * Created by AmmarRabie on 08/03/2018.
  */
 
-interface LoginContract {
+interface ProfileContract {
 
 
     /**
@@ -16,11 +16,16 @@ interface LoginContract {
      */
     interface Views extends IBaseView<Actions> {
 
-        void showOnSuccess(String userName);
+        void showOnSuccess();
 
         void showErrorMessage(String cause);
 
-        void showOnResetPasswordEmailSend();
+        void showUserInfo(String name, String email);
+
+        void showOnChangeNameSuccess();
+        void showOnChangePassSuccess();
+
+        void showOnSignOutSuccess();
     }
 
 
@@ -28,8 +33,9 @@ interface LoginContract {
      * Actions methods implemented by presenter
      */
     interface Actions extends IBasePresenter {
-        void login(String email, String password);
+        void changePassword(String pass, String confirmPass);
+        void changeName(String newName);
 
-        void forgotPassword(String email);
+        void signOut();
     }
 }

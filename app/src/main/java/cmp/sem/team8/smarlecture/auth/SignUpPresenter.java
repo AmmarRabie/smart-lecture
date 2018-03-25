@@ -37,7 +37,7 @@ class SignUpPresenter implements SignUpContract.Actions {
                 if (deleteUserTask.isSuccessful()) {
                     Log.e("SignUpPresenter: ", "the user can't write his data in the " +
                             "database although he is authenticated");
-                    mView.showErrorMessage("can't sign in write now");
+                    mView.showErrorMessage("can't sign up right now");
                     endTask();
                 } else {
                     // else the user is signed in although we can't insert him at the database, throw exception
