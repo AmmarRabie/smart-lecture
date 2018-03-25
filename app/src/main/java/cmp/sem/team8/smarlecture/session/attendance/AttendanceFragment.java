@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.session.attendance;
 
 
+import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -54,6 +55,7 @@ public class AttendanceFragment extends Fragment implements AttendanceContract.V
 
         ListView attendeeList = root.findViewById(R.id.attendanceFrag_list);
 
+
         mAtendeeAdapter = null;
         attendeeList.setAdapter(mAtendeeAdapter);
 
@@ -101,6 +103,7 @@ public class AttendanceFragment extends Fragment implements AttendanceContract.V
         }
 
         mAtendeeAdapter.clear();
+
         mAtendeeAdapter.addAll(attendanceList);
         mAtendeeAdapter.notifyDataSetChanged();
     }
