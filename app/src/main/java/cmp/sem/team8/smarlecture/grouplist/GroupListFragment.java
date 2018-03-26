@@ -34,7 +34,7 @@ public class GroupListFragment extends android.support.v4.app.Fragment implement
     private String mUserID;
     private GroupListAdapter mGroupListAdapter;
 
-    public GroupListFragment newInstance() {
+    public static GroupListFragment newInstance() {
         return new GroupListFragment();
     }
     public GroupListFragment() {

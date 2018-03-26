@@ -1,5 +1,8 @@
 package cmp.sem.team8.smarlecture.grouplist;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import cmp.sem.team8.smarlecture.group.groupContract;
 
 /**
@@ -11,12 +14,15 @@ public class GroupListPresenter implements GroupListContract.Actions {
     private GroupListContract.Views mView;
 
 
-    public GroupListPresenter(GroupListFragment grouplistfragment) {
+    public GroupListPresenter(GroupListContract.Views view) {
+        mView=view;
+        mView.setPresenter(this);
 
     }
 
     @Override
     public void deleteGroup(String groupID, String UID) {
+        FirebaseDatabase.getInstance().getReference("groups").child(groupID).removeValue();
 
     }
 
@@ -27,15 +33,29 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 return;
             }
             if(UID==null||UID.isEmpty()){
-                mView.showErrorMessage("Please Re Login");
+                mView.showErrorMessage("Please Re-Login");
                 return;
             }
+        DatabaseReference thisGroup= FirebaseDatabase.getInstance().getReference("groups");
+            thisGroup.push().setValue(groupName);
+            thisGroup.child("groupOwner").push().setValue(UID);
+
 
 
     }
 
     @Override
     public void editGroup(String groupID, String newGroupName, String UID) {
+        if(newGroupName==null||newGroupName.isEmpty()){
+            mView.showErrorMessage("Group can't have an empty name");
+            return;
+        }
+        if(UID==null||UID.isEmpty()){
+            mView.showErrorMessage("Please Re-Login");
+            return;
+        }
+        deleteGroup(groupID,UID);
+        addGroup(newGroupName,UID);
 
     }
 

@@ -26,9 +26,6 @@ public class groupActivity extends AppCompatActivity {
         if (groupfragment == null) {
             groupfragment = groupfragment.newInstance();
 
-/*            Bundle bundle = new Bundle();
-            bundle.putString("group_key",);
-            groupfragment.setArguments();*/
 
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     groupfragment, R.id.contentFrame);

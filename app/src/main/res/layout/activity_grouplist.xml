@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="cmp.sem.team8.smarlecture.profile.ProfileActivity">
+    android:orientation="vertical">
 
 
     <android.support.design.widget.CoordinatorLayout

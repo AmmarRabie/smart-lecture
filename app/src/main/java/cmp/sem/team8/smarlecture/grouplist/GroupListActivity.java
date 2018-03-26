@@ -10,12 +10,15 @@ import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.group.groupActivity;
-import cmp.sem.team8.smarlecture.group.groupFragment;
+
+import cmp.sem.team8.smarlecture.grouplist.GroupListActivity;
+import cmp.sem.team8.smarlecture.grouplist.GroupListFragment;
 
 public class GroupListActivity extends AppCompatActivity {
 
 
     private GroupListPresenter mGroupListPresenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,7 @@ public class GroupListActivity extends AppCompatActivity {
                 .findFragmentById(R.id.contentFrame);
 
         if(grouplistfragment==null){
-            grouplistfragment=grouplistfragment.newInstance();
+            grouplistfragment=GroupListFragment.newInstance();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     grouplistfragment, R.id.contentFrame);
         }
