@@ -38,8 +38,28 @@ public class GroupListPresenter implements GroupListContract.Actions {
     }
 
     @Override
-    public void deleteGroup(String groupID) {
-        FirebaseDatabase.getInstance().getReference("groups").child(groupID).removeValue();
+    public void deleteGroup(final String groupID) {
+        // remove sessions related to this group first and after this remove the group
+        getGroupRef(groupID).child("Sessions").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot sessionSnapshot : dataSnapshot.getChildren()) {
+                        String sessionKey = sessionSnapshot.getKey();
+                        getSessionRef(sessionKey).removeValue();
+                    }
+                }
+                // remove after ending, this is out of if because we want to delete the group
+                // even we don't have any session related to it
+                getGroupRef(groupID).removeValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                mView.showErrorMessage("can't delete");
+            }
+        });
+
     }
 
     @Override
@@ -71,8 +91,9 @@ public class GroupListPresenter implements GroupListContract.Actions {
             mView.showErrorMessage("Group can't have an empty name");
             return;
         }
-        deleteGroup(groupID);
-        addGroup(newGroupName);
+//        deleteGroup(groupID);
+//        addGroup(newGroupName);
+        getGroupRef(groupID).child("name").setValue(newGroupName);
     }
 
     @Override
@@ -108,5 +129,14 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 mView.showErrorMessage(databaseError.getMessage());
             }
         });
+    }
+
+
+    private DatabaseReference getGroupRef(String groupID) {
+        return FirebaseDatabase.getInstance().getReference("groups").child(groupID);
+    }
+
+    private DatabaseReference getSessionRef(String groupID) {
+        return FirebaseDatabase.getInstance().getReference("groups").child(groupID);
     }
 }
