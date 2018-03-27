@@ -13,7 +13,7 @@ import cmp.sem.team8.smarlecture.IBaseView;
  * Created by Loai Ali on 3/16/2018.
  */
 
-public interface groupContract {
+public interface GroupContract {
 
     interface  Views extends IBaseView<Actions>{
         void showOnSuccess();
@@ -28,10 +28,9 @@ public interface groupContract {
     }
 
     interface Actions extends IBasePresenter {
-      void addStudent(String name,String groupID);
-      void editStudent(String oldName,String  newName,String groupID);
-      void deleteStudent(String name,String groupID);
-      void getStudents(String groupID);
+      void addStudent(String name);
+      void editStudent(String oldName,String  newName);
+      void deleteStudent(String name);
     }
 
 }

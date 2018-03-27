@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,21 +22,20 @@ import cmp.sem.team8.smarlecture.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class groupFragment extends android.support.v4.app.Fragment implements groupContract.Views {
+public class GroupFragment extends android.support.v4.app.Fragment implements GroupContract.Views {
 
-    private groupContract.Actions mPresenter;
+    private GroupContract.Actions mPresenter;
 
     private Button mAddStudent;
 
     private ListView mGroupList;
-    private groupAdapter mGroupAdapter;
-    private String groupId;
+    private GroupAdapter mGroupAdapter;
 
-    public static groupFragment newInstance() {
-        return new groupFragment();
+    public static GroupFragment newInstance() {
+        return new GroupFragment();
     }
 
-    public void setPresenter(groupContract.Actions presenter) {
+    public void setPresenter(GroupContract.Actions presenter) {
         mPresenter = presenter;
     }
 
@@ -49,11 +47,6 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
         View root = inflater.inflate(R.layout.frag_group, container, false);
 
         mAddStudent = root.findViewById(R.id.groupFrag_addStudent);
-
-//        groupId = savedInstanceState.getString("groupID");
-
-        groupId = getActivity().getIntent().getStringExtra("group_key");
-
 
         mGroupList = root.findViewById(R.id.groupFrag_list);
 
@@ -75,7 +68,7 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
                 mAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPresenter.addStudent(mName.getText().toString(), groupId);
+                        mPresenter.addStudent(mName.getText().toString());
                         dialog.dismiss();
                     }
                 });
@@ -90,7 +83,7 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
 
                 if (view.getId() == R.id.group_deletename) {
                     //delete student at position
-                    mPresenter.deleteStudent(mGroupAdapter.getItem(position).toString(), groupId);
+                    mPresenter.deleteStudent(mGroupAdapter.getItem(position).toString());
                 }
                 if (view.getId() == R.id.group_editname) {
                     final String oldName = mGroupAdapter.getItem(position).get
@@ -106,7 +99,7 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
                     mAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            mPresenter.editStudent(oldName, mName.toString(), groupId);
+                            mPresenter.editStudent(oldName, mName.toString());
                             dialog.dismiss();
                         }
                     });
@@ -116,7 +109,6 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
 
 
         });
-        mPresenter.getStudents(groupId);
 
         return root;
     }
@@ -130,7 +122,7 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
 
     @Override
     public void showNamesList(ArrayList<HashMap<String, Object>> namesList) {
-        mGroupAdapter = new groupAdapter(getActivity(), namesList, new groupAdapter.onItemClickListenerInterface() {
+        mGroupAdapter = new GroupAdapter(getActivity(), namesList, new GroupAdapter.onItemClickListenerInterface() {
 
             @Override
             public void onEditItemClick(View v, int position) {
@@ -141,7 +133,7 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
             public void onDeleteItemClick(View v, int position) {
                 String name = mGroupAdapter.getItem(position).get("name").toString();
                 String key = mGroupAdapter.getItem(position).get("key").toString();
-                mPresenter.deleteStudent(key, groupId);
+                mPresenter.deleteStudent(key);
             }
 
         });
@@ -151,8 +143,14 @@ public class groupFragment extends android.support.v4.app.Fragment implements gr
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(),cause,Toast.LENGTH_SHORT);
+        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT);
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
+    }
 }

@@ -7,12 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
-import cmp.sem.team8.smarlecture.group.groupActivity;
-
-import cmp.sem.team8.smarlecture.grouplist.GroupListActivity;
-import cmp.sem.team8.smarlecture.grouplist.GroupListFragment;
+import cmp.sem.team8.smarlecture.group.GroupActivity;
 
 public class GroupListActivity extends AppCompatActivity {
 
@@ -40,7 +36,7 @@ public class GroupListActivity extends AppCompatActivity {
 
     public void test(View view)
     {
-        Intent intent = new Intent(this,groupActivity.class);
+        Intent intent = new Intent(this,GroupActivity.class);
         intent.putExtra("group_key","id1");
         startActivity(intent);
     }

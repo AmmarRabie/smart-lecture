@@ -32,7 +32,8 @@ public interface GroupListContract {
     interface Views extends IBaseView<Actions> {
 
         void showErrorMessage(String cause);
-        void showGroupList(ArrayList<HashMap<String,Object>> groupList);
+
+        void showGroupList(ArrayList<HashMap<String, Object>> groupList);
 
     }
 
@@ -42,23 +43,11 @@ public interface GroupListContract {
      */
     interface Actions extends IBasePresenter {
 
-        void deleteGroup(String groupID,String UID);
-        void addGroup(String groupName,String UID);
-        void editGroup(String groupID,String newGroupName,String UID);
-        void getGroups(String UID);
+        void deleteGroup(String groupID);
 
-        /**
-         * called only when the presenter is constructed with no user
-         * and he could find the current user in the model.
-         * <p>
-         *     The viewer should update the user info to let the user know that he is being
-         *     signed in.
-         *
-         * </p>
-         * @param name the name of the user
-         * @param email the email of the user
-         */
+        void addGroup(String groupName);
 
+        void editGroup(String groupID, String newGroupName);
 
     }
 }

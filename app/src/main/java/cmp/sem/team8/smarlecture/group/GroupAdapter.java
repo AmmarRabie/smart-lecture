@@ -17,7 +17,7 @@ import cmp.sem.team8.smarlecture.R;
  * Created by Loai Ali on 3/17/2018.
  */
 
-public class groupAdapter extends ArrayAdapter<HashMap<String, Object>> {
+public class GroupAdapter extends ArrayAdapter<HashMap<String, Object>> {
 
     private onItemClickListenerInterface mOnChangeClickListener;
     private View.OnClickListener mOnDeleteClickListener;
@@ -30,7 +30,7 @@ public class groupAdapter extends ArrayAdapter<HashMap<String, Object>> {
 
 
 
-    public groupAdapter(Activity context, ArrayList<HashMap<String, Object>> nameList,
+    public GroupAdapter(Activity context, ArrayList<HashMap<String, Object>> nameList,
                         onItemClickListenerInterface onEditClickListener) {
         super(context, 0, nameList);
         mOnChangeClickListener = onEditClickListener;
