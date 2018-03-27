@@ -129,10 +129,39 @@ public class GroupListFragment extends Fragment implements
      */
     @Override
     public void onItemClick(View view, int position) {
-        HashMap<String, Object> groupSessionClicked = mGroupListAdapter.getItem(position);
-        String groupId = groupSessionClicked.get("id").toString();
+        HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
+        String groupId = groupClicked.get("id").toString();
         Intent groupActivity = new Intent(getContext(), GroupActivity.class);
         groupActivity.putExtra("group_id", groupId);
         startActivity(groupActivity);
+    }
+
+    @Override
+    public void onDeleteGroupClick(View view, int position) {
+        HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
+        String groupId = groupClicked.get("id").toString();
+        mPresenter.deleteGroup(groupId);
+    }
+
+    @Override
+    public void onEditGroupClick(View view, int position) {
+        HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
+        final String groupId = groupClicked.get("id").toString();
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+        View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
+        mBuilder.setView(mView);
+        final EditText mGroupName = (EditText) mView.findViewById(R.id.groupDialogName);
+        final Button mAddGroup = (Button) mView.findViewById(R.id.addGroupDialog);
+        final AlertDialog dialog = mBuilder.create();
+        mAddGroup.setText("Change");
+        mAddGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.editGroup(groupId, mGroupName.getText().toString());
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }

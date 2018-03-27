@@ -46,12 +46,26 @@ public class GroupListAdapter extends ArrayAdapter<HashMap<String, Object>> {
         if (mItemClickListener == null)
             return listItemView;
 
-        // set listeners to the whole view and the startSession view
+        // set listeners to the whole view, the startSession view and the deleteGroupView
         listItemView.findViewById(R.id.grouplist_startSession)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         mItemClickListener.onStartSessionClick(view, position);
+                    }
+                });
+        listItemView.findViewById(R.id.grouplist_deleteGroup)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mItemClickListener.onDeleteGroupClick(view, position);
+                    }
+                });
+        listItemView.findViewById(R.id.grouplist_editGroup)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mItemClickListener.onEditGroupClick(view, position);
                     }
                 });
         listItemView.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +86,10 @@ public class GroupListAdapter extends ArrayAdapter<HashMap<String, Object>> {
     interface OnItemClickListener {
 
         void onStartSessionClick(View view, int position);
+
+        void onDeleteGroupClick(View view, int position);
+
+        void onEditGroupClick(View view, int position);
 
         /**
          * called when the whole item is clicked
