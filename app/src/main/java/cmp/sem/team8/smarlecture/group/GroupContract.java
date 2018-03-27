@@ -27,7 +27,7 @@ public interface GroupContract {
     interface Actions extends IBasePresenter {
         void addStudent(String name);
 
-        void editStudent(String oldName, String newName);
+        void editStudent(String studentKey, String newName);
 
         void deleteStudent(String name);
 

@@ -125,8 +125,25 @@ public class GroupFragment extends android.support.v4.app.Fragment implements Gr
         mGroupAdapter = new GroupAdapter(getActivity(), namesList, new GroupAdapter.onItemClickListenerInterface() {
 
             @Override
-            public void onEditItemClick(View v, int position) {
+            public void onEditItemClick(View v, final int position) {
+                final String key = mGroupAdapter.getItem(position).get("key").toString();
 
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+                View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
+                mBuilder.setView(mView);
+                final EditText studentNameView = (EditText) mView.findViewById(R.id.groupDialogName);
+                final Button addGroupView = (Button) mView.findViewById(R.id.addGroupDialog);
+                final AlertDialog dialog = mBuilder.create();
+                addGroupView.setText("Change");
+                addGroupView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String studentName = studentNameView.getText().toString();
+                        mPresenter.editStudent(key, studentName);
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
 
             @Override

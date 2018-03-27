@@ -72,7 +72,7 @@ public class GroupPresenter implements GroupContract.Actions {
     }
 
     @Override
-    public void editStudent(String oldName, String newName) {
+    public void editStudent(String studentKey, String newName) {
         if (mGroupRef == null) {
             return;
         }
@@ -80,9 +80,7 @@ public class GroupPresenter implements GroupContract.Actions {
             mView.showErrorMessage("Name can't be empty");
             return;
         }
-        deleteStudent(oldName);
-        addStudent(newName);
-        return;
+        mGroupRef.child("namesList").child(studentKey).setValue(newName);
     }
 
     @Override
