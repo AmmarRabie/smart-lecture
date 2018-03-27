@@ -18,6 +18,7 @@ import java.util.HashMap;
 public class GroupPresenter implements GroupContract.Actions {
     private static final String TAG = "GroupPresenter";
     private final String GROUP_ID;
+    ArrayList<ValueEventListener> valueEventListeners = new ArrayList<>();
     private GroupContract.Views mView;
     private DatabaseReference mGroupRef;
 
@@ -119,7 +120,13 @@ public class GroupPresenter implements GroupContract.Actions {
 
                     }
                 });
+        valueEventListeners.add(valueEventListener);
     }
 
+    @Override
+    public void end() {
+        for (int i = 0; i < valueEventListeners.size(); i++)
+            mGroupRef.child("namesList").removeEventListener(valueEventListeners.get(i));
+    }
 
 }

@@ -143,7 +143,7 @@ public class GroupFragment extends android.support.v4.app.Fragment implements Gr
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT);
+        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -152,5 +152,12 @@ public class GroupFragment extends android.support.v4.app.Fragment implements Gr
     public void onResume() {
         super.onResume();
         mPresenter.start();
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.end();
     }
 }

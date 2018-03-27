@@ -137,6 +137,6 @@ public class GroupListPresenter implements GroupListContract.Actions {
     }
 
     private DatabaseReference getSessionRef(String groupID) {
-        return FirebaseDatabase.getInstance().getReference("groups").child(groupID);
+        return FirebaseDatabase.getInstance().getReference("sessions").child(groupID);
     }
 }

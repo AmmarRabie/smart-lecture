@@ -141,24 +141,29 @@ public class GroupListFragment extends Fragment implements
         HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
         String groupId = groupClicked.get("id").toString();
         mPresenter.deleteGroup(groupId);
+        mGroupListAdapter.remove(groupClicked);
+        mGroupListAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onEditGroupClick(View view, int position) {
+    public void onEditGroupClick(View view, final int position) {
         HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
         final String groupId = groupClicked.get("id").toString();
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
         View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
         mBuilder.setView(mView);
-        final EditText mGroupName = (EditText) mView.findViewById(R.id.groupDialogName);
-        final Button mAddGroup = (Button) mView.findViewById(R.id.addGroupDialog);
+        final EditText groupNameView = (EditText) mView.findViewById(R.id.groupDialogName);
+        final Button addGroupView = (Button) mView.findViewById(R.id.addGroupDialog);
         final AlertDialog dialog = mBuilder.create();
-        mAddGroup.setText("Change");
-        mAddGroup.setOnClickListener(new View.OnClickListener() {
+        addGroupView.setText("Change");
+        addGroupView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.editGroup(groupId, mGroupName.getText().toString());
+                String groupName = groupNameView.getText().toString();
+                mPresenter.editGroup(groupId, groupName);
+                mGroupListAdapter.getItem(position).put("name",groupName);
+                mGroupListAdapter.notifyDataSetChanged();
                 dialog.dismiss();
             }
         });

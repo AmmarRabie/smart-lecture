@@ -2,8 +2,6 @@ package cmp.sem.team8.smarlecture.group;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
@@ -15,22 +13,25 @@ import cmp.sem.team8.smarlecture.IBaseView;
 
 public interface GroupContract {
 
-    interface  Views extends IBaseView<Actions>{
+    interface Views extends IBaseView<Actions> {
         void showOnSuccess();
 
         void showErrorMessage(String cause);
 
 
-        void showNamesList(ArrayList<HashMap<String,Object>> namesList);
-
+        void showNamesList(ArrayList<HashMap<String, Object>> namesList);
 
 
     }
 
     interface Actions extends IBasePresenter {
-      void addStudent(String name);
-      void editStudent(String oldName,String  newName);
-      void deleteStudent(String name);
+        void addStudent(String name);
+
+        void editStudent(String oldName, String newName);
+
+        void deleteStudent(String name);
+
+        void end();
     }
 
 }
