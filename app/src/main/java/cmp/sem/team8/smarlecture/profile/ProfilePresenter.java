@@ -102,19 +102,6 @@ class ProfilePresenter implements ProfileContract.Actions {
                     }
                 });
 
-//        UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
-//        builder.setDisplayName(newName);
-//
-//        mCurrentUser.updateProfile(builder.build()).addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                if (task.isSuccessful()) {
-//                    mView.showOnChangeNameSuccess();
-//                } else {
-//                    mView.showErrorMessage(task.getException().getMessage());
-//                }
-//            }
-//        });
     }
 
     @Override

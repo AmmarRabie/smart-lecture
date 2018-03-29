@@ -10,7 +10,7 @@
         android:background="@color/tan_background"
         android:orientation="vertical"
         android:padding="12dp"
-        tools:context="cmp.sem.team8.smarlecture.auth.SignupActivity">
+        tools:context="cmp.sem.team8.smarlecture.auth.SignUpActivity">
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/coordinatorLayout"

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DrawableUtils;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,7 @@ import cmp.sem.team8.smarlecture.auth.LoginActivity;
 
 public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
-    private ProfileContract.Actions mPresenter;
+    private ProfileContract.Actions mAction;
 
     private EditText mName;
     private TextView mEmail;
@@ -45,7 +44,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void setPresenter(ProfileContract.Actions presenter) {
-        mPresenter = presenter;
+        mAction = presenter;
     }
 
     @Nullable
@@ -63,7 +62,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         mSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.signOut();
+                mAction.signOut();
             }
         });
 
@@ -71,7 +70,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
             @Override
             public void onClick(View view) {
                 if (mEditState) {
-                    mPresenter.changeName(mName.getText().toString());
+                    mAction.changeName(mName.getText().toString());
                 } else {
                     mEditState = true;
                     mEditName.setBackground(getResources().getDrawable(android.R.drawable.ic_menu_save));
@@ -92,7 +91,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
                     public void onClick(DialogInterface dialog, int which) {
                         String newPass = ((EditText) rootView.getChildAt(0)).getText().toString();
                         String confirmPass = ((EditText) rootView.getChildAt(1)).getText().toString();
-                        mPresenter.changePassword(newPass, confirmPass);
+                        mAction.changePassword(newPass, confirmPass);
                     }
                 });
 
@@ -163,7 +162,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mAction.start();
     }
 
     private LinearLayout buildDialogLayout() {

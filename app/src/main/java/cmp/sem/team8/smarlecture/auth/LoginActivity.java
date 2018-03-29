@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void onCreateAccountClick(View view) {
-        Intent intent = new Intent(this, SignupActivity.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivityForResult(intent, RC_SIGN_UP);
     }
 

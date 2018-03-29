@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     private SignUpContract.Actions mAddEditTaskPresenter;
 

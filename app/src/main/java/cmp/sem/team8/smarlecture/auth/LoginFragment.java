@@ -19,22 +19,11 @@ import cmp.sem.team8.smarlecture.R;
 
 public class LoginFragment extends Fragment implements LoginContract.Views, View.OnClickListener {
 
-    private LoginContract.Actions mPresenter;
+    private LoginContract.Actions mAction;
     private EditText mEmail;
     private EditText mPassword;
 
     private TextView mForgetPassword;
-
-//    private View.OnClickListener mSignUpListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-//            Intent intent = new Intent(getContext(), SignupActivity.class);
-//            startActivityForResult(intent, LoginActivity.RC_SIGN_UP);
-////            if (getActivity() != null) {
-////                getActivity().finish();
-////            }
-//        }
-//    };
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -42,7 +31,7 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
 
     @Override
     public void setPresenter(LoginContract.Actions presenter) {
-        mPresenter = presenter;
+        mAction = presenter;
     }
 
     @Nullable
@@ -58,7 +47,7 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
         mForgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.forgotPassword(mEmail.getText().toString());
+                mAction.forgotPassword(mEmail.getText().toString());
             }
         });
 
@@ -88,12 +77,12 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mAction.start();
     }
 
 
     @Override
     public void onClick(View view) {
-        mPresenter.login(mEmail.getText().toString(), mPassword.getText().toString());
+        mAction.login(mEmail.getText().toString(), mPassword.getText().toString());
     }
 }

@@ -20,7 +20,7 @@ import cmp.sem.team8.smarlecture.R;
 public class SignUpFragment extends Fragment implements SignUpContract.Views, View.OnClickListener {
 
 
-    private SignUpContract.Actions mPresenter;
+    private SignUpContract.Actions mAction;
     private EditText mEmail;
     private EditText mPassword;
     private EditText mName;
@@ -63,7 +63,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+        mAction.start();
     }
 
     @Override
@@ -80,12 +80,12 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
     @Override
     public void onClick(View view) {
-        mPresenter.signUp(mName.getText().toString(), mEmail.getText().toString(),
+        mAction.signUp(mName.getText().toString(), mEmail.getText().toString(),
                 mPassword.getText().toString(), mConfirmPassword.getText().toString());
     }
 
     @Override
     public void setPresenter(SignUpContract.Actions presenter) {
-        mPresenter = presenter;
+        mAction = presenter;
     }
 }

@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".auth.LoginActivity" />
-        <activity android:name=".auth.SignupActivity" />
+        <activity android:name=".auth.SignUpActivity" />
 
         <activity android:name=".profile.ProfileActivity" />
         <activity android:name=".session.SessionActivity"/>
