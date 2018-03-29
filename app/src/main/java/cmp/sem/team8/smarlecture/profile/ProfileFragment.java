@@ -116,12 +116,6 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
 
     @Override
-    public void showOnSuccess() {
-        Toast.makeText(getContext(),
-                "Name changed successfully", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void showOnChangeNameSuccess() {
         Toast.makeText(getContext(), "name changed successfully", Toast.LENGTH_SHORT).show();
         mEditState = false;

@@ -9,7 +9,7 @@ import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private SignUpContract.Actions mAddEditTaskPresenter;
+    private SignUpContract.Actions mSignUpPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         // Create the presenter
-        mAddEditTaskPresenter = new SignUpPresenter(signUpFragment);
+        mSignUpPresenter = new SignUpPresenter(signUpFragment);
 
     }
 }

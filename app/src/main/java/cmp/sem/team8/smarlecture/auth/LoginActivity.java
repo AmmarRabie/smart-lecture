@@ -16,7 +16,7 @@ import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 public class LoginActivity extends AppCompatActivity {
 
     public static final int RC_SIGN_UP = 4646;
-    private LoginPresenter mAddEditTaskPresenter;
+    private LoginPresenter mLoginPresenter;
     private boolean mForceLogin;
 
     @Override
@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Create the presenter
-        mAddEditTaskPresenter = new LoginPresenter(loginFragment, mForceLogin);
+        mLoginPresenter = new LoginPresenter(loginFragment, mForceLogin);
     }
 
 

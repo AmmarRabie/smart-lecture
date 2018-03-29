@@ -16,13 +16,12 @@ interface ProfileContract {
      */
     interface Views extends IBaseView<Actions> {
 
-        void showOnSuccess();
-
         void showErrorMessage(String cause);
 
         void showUserInfo(String name, String email);
 
         void showOnChangeNameSuccess();
+
         void showOnChangePassSuccess();
 
         void showOnSignOutSuccess();
@@ -34,6 +33,7 @@ interface ProfileContract {
      */
     interface Actions extends IBasePresenter {
         void changePassword(String pass, String confirmPass);
+
         void changeName(String newName);
 
         void signOut();

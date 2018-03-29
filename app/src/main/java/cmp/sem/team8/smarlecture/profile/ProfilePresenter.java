@@ -21,7 +21,7 @@ class ProfilePresenter implements ProfileContract.Actions {
 
     private static final String TAG = "ProfilePresenter";
 
-    ProfileContract.Views mView;
+    private ProfileContract.Views mView;
     private FirebaseUser mCurrentUser;
 
     public ProfilePresenter(ProfileContract.Views view) {
