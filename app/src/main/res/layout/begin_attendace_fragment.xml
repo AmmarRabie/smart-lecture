@@ -4,34 +4,34 @@
     android:layout_height="match_parent">
 
 
-    <EditText
+    <Button
+        android:id="@+id/begin_attendance_start_attendance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Secrect :"
-        android:textSize="32sp"/>
+        android:text="Start Attendance" />
+
+
 
     <TextView
         android:id="@+id/begin_attendance_Secrect"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:text="Secrect"
-        android:textSize="30sp" />
-
+        android:text="Secrect :"
+        android:textSize="25sp" />
     <TextView
         android:id="@+id/attendance_timer"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:text="Time"
-        android:textSize="30sp"/>
+        android:text="Seconds remaining  :"
 
-    <EditText
+        android:textSize="25sp"/>
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textImeMultiLine|textPersonName"
-        android:textSize="32sp"
+        android:inputType="none"
+        android:textSize="25sp"
         android:text="Student List :" />
 
     <ListView

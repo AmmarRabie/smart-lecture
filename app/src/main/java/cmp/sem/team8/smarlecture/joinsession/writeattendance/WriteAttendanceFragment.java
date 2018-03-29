@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.session.startsession.StartSessionContract;
 
@@ -38,85 +40,73 @@ public class WriteAttendanceFragment  extends Fragment implements WriteAttendanc
     private int  PreSelectedIndex=-1;
     private WriteAttendanceContract.Actions mPresenter;
 
+    private TextView secrect;
+    private Button takeAttendanceButton;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.fragment_write_attendance, container, false);
+        View root = inflater.inflate(R.layout.frag_attendance, container, false);
 
-        listView=(ListView)root.findViewById(R.id.write_attendance_studentlist);
-        reference= FirebaseDatabase.getInstance().getReference();
+        listView=(ListView)root.findViewById(R.id.attendanceFrag_list);
+        secrect=(TextView)root.findViewById(R.id.attendanceFrag_secret);
+        takeAttendanceButton=(Button)root.findViewById(R.id.attendanceFrag_takeAttendance);
 
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        students=new ArrayList<>();
+        mPresenter=new WriteAttendancePresenter(this);
 
-        final String SessionId=getActivity().getIntent().getStringExtra("sessionid");
-        final String GroupnId=getActivity().getIntent().getStringExtra("groupid");
-
-
-        reference=reference.child("sessions").child(SessionId).child("attendance");
-
-
-        mPresenter=new WriteAttendancePresenter(this,GroupnId,SessionId);
-
-        mPresenter.getStudentsList();
-
-/*
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        takeAttendanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue().toString().equals("open"))
-                {
-                    DatabaseReference nref=FirebaseDatabase.getInstance().getReference();
-                    nref=nref.child("groups").child(GroupnId).child("namesList");
-                    nref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onClick(View v) {
 
-                            for (DataSnapshot child :dataSnapshot.getChildren()) {
-                                String name = child.getValue().toString();
-                                students.add(new UserAttendanceModel(name,false));
-                            }
+                final String SessionId=getActivity().getIntent().getStringExtra("sessionid");
+                final String GroupnId=getActivity().getIntent().getStringExtra("groupid");
 
+                DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
+                ref = ref.child("sessions").child(SessionId);
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        String Secrect="";
+                        String AttendanceFlag="";
+                        for (DataSnapshot children : dataSnapshot.getChildren())
+                        {
+                            if (children.getKey().toString().equals("attendance"))
+                                AttendanceFlag = children.getValue().toString();
+                            else if (children.getKey().toString().equals("attendancesecrect"))
+                                Secrect = children.getValue().toString();
+                        }
+                        if (AttendanceFlag.equals("closed"))
+                        {
+                            Toast.makeText(getActivity(),"Attendance is closed ", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (!Secrect.equals(secrect.getText().toString()))
+                        {
+                            Toast.makeText(getActivity(),"Secrect is Incorrect ", Toast.LENGTH_SHORT).show();
+                            return;
                         }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        reference= FirebaseDatabase.getInstance().getReference();
 
-                        }
-                    });
-                }
-                else
-                {
-                    Toast.makeText(getActivity(),"Attendance is closed ", Toast.LENGTH_SHORT).show();
-                }
-            }
+                        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                        students=new ArrayList<>();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                        reference=reference.child("sessions").child(SessionId).child("attendance");
 
+
+                        mPresenter.getStudentsList(GroupnId,SessionId);
+
+
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
             }
         });
-*/
 
-
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-             UserAttendanceModel model=students.get(position);
-             model.setChecked(true);
-             students.set(position,model);
-             if (PreSelectedIndex>-1)
-             {
-                 UserAttendanceModel pModel=students.get(PreSelectedIndex);
-                 pModel.setChecked(false);
-                 students.set(PreSelectedIndex,pModel);
-             }
-             PreSelectedIndex=position;
-             adapter.updateRecords(students);
-
-
-            }
-        });*/
 
         return root;
     }

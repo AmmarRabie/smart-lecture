@@ -27,7 +27,7 @@ public class WriteAttendanceContract {
      */
     interface Actions extends IBasePresenter {
 
-        void getStudentsList();
+        void getStudentsList(String GroupID,String SessionID);
         void WriteAttendance();
         StudentAttendanceAdapter getAdapter();
 

@@ -145,6 +145,7 @@ public class QuickStatisticsActivity extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(QuickStatisticsActivity.this);
         alert.setView(view);
         final EditText input = (EditText) view.findViewById(R.id.dialog_text);
+        input.setHint("enter session id");
 
         alert.setCancelable(true);
 

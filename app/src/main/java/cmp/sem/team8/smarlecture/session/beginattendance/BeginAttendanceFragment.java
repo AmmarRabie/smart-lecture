@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     private TextView AttendanceTimer;
     private TextView SecrectText;
     private ListView listView;
+    private Button startAttendance;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -34,9 +36,15 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
         AttendanceTimer=root.findViewById(R.id.attendance_timer);
         SecrectText=root.findViewById(R.id.begin_attendance_Secrect);
         listView=root.findViewById(R.id.begin_attandence_list);
+        startAttendance=root.findViewById(R.id.begin_attendance_start_attendance);
+        startAttendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mPresenter.isTaskIsRunning())
+                    mPresenter.BeginAttendance();
+            }
+        });
 
-
-        mPresenter.BeginAttendance();
 
 
         return root;
@@ -76,7 +84,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     @Override
     public void showSecrect(int Secrect) {
 
-        SecrectText.setText(Integer.toString(Secrect));
+        SecrectText.setText("Secrect :"+Integer.toString(Secrect));
     }
 
     @Override

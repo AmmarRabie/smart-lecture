@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.TabItem;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,7 @@ import cmp.sem.team8.smarlecture.joinsession.writeattendance.StudentAttendanceAd
 import cmp.sem.team8.smarlecture.joinsession.writeattendance.WriteAttendanceFragment;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.quickstatistics.QuickStatisticsActivity;
+import cmp.sem.team8.smarlecture.session.*;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
 import cmp.sem.team8.smarlecture.session.startsession.StartSessionFragment;
@@ -49,6 +53,11 @@ public class JoinedSession extends AppCompatActivity {
     private BeginAttendancePresenter mAttendancePresenter;
     private StartSessionPresenter    mStartSessionPresenter;
 
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    TabItem WriteAttendanceTab;
+    PagerAdapter pageAdapter ;
+
     private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +73,22 @@ public class JoinedSession extends AppCompatActivity {
         //
         // begin the session with generating the session.
 
+        tabLayout = findViewById(R.id.joined_session_tablayout);
+        WriteAttendanceTab= findViewById(R.id.joined_session_attendance);
+        viewPager = findViewById(R.id.joined_session_viewPager);
+
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+
+        viewPager.setAdapter(pageAdapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
         /////
 
     }
 
 
-    public void onToFragmentClick(View view) {
+   /* public void onToFragmentClick(View view) {
         int viewId = view.getId();
 
         switch (viewId) {
@@ -158,5 +177,5 @@ public class JoinedSession extends AppCompatActivity {
             ///////////
 
         }
-    }
+    }*/
 }

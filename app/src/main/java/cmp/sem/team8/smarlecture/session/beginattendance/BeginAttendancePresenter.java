@@ -24,6 +24,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     BeginAttendanceContract.Views mView;
     Integer Atime;
     DatabaseReference ref;
+    boolean taskIsRunning;
 
     private  StudentsNamesAdapter adapter;
 
@@ -31,9 +32,12 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
     List<String> students;
 
+
     int maxId=10000000;
     int minId=0;
-    public BeginAttendancePresenter(BeginAttendanceContract.Views view,int SessionId) {
+    public BeginAttendancePresenter(BeginAttendanceContract.Views view)
+    {
+        taskIsRunning=false;
         mView = view;
         mView.setPresenter(this);
 
@@ -54,6 +58,8 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     @Override
     public void BeginAttendance() {
 
+        taskIsRunning=true;
+        SessionId=getSessionIDFromActivity();
         setTime(5);
         mView.showProgressIndicator(3);
 
@@ -149,4 +155,12 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     public void refresh() {
 
     }
+
+    private int getSessionIDFromActivity()
+    {
+        return   ((BeginAttendanceFragment)mView).getActivity().getIntent().getIntExtra("SessionId",0);
+    }
+
+    public boolean isTaskIsRunning()
+    {return taskIsRunning;}
 }

@@ -27,7 +27,7 @@ public class StartSessionFragment  extends Fragment implements StartSessionContr
 
     private StartSessionContract.Actions mPresenter;
     private TextView id;
-
+    private Button endSessionButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -40,6 +40,14 @@ public class StartSessionFragment  extends Fragment implements StartSessionContr
         //int Se=Session.getId();
 
         //Intent intent=((SessionActivity)getActivity()).getIntent();//.putExtra("SessionId",Session.getId());
+
+        endSessionButton=(Button)root.findViewById(R.id.start_sessio_fragment_end_session);
+        endSessionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.endSession();
+            }
+        });
 
         return root;
     }

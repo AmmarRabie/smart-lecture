@@ -2,7 +2,11 @@ package cmp.sem.team8.smarlecture.session;
 
 
 import android.os.Bundle;
+import android.support.design.widget.TabItem;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -28,6 +32,14 @@ public class SessionActivity extends AppCompatActivity {
 
     private BeginAttendancePresenter mAttendancePresenter;
     private StartSessionPresenter mStartSessionPresenter;
+
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    TabItem SessionTab;
+    TabItem AttendanceTab ;
+   PagerAdapter pageAdapter ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,22 +49,34 @@ public class SessionActivity extends AppCompatActivity {
         mAttendanceButton = findViewById(R.id.sessionActivity_attendance);
         mObjectivesButton = findViewById(R.id.sessionActivity_objectives);*/
 
-        mAttendancePresenter = null;
+
+         tabLayout = findViewById(R.id.tablayout);
+         SessionTab= findViewById(R.id.start_end_session_tab);
+         AttendanceTab = findViewById(R.id.begin_attandence_tab);
+         viewPager = findViewById(R.id.viewPager);
+
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+
+        viewPager.setAdapter(pageAdapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+       /* mAttendancePresenter = null;
         mStartSessionPresenter=null;
         //
         // begin the session with generating the session.
         int fragmentId = R.id.contentFrame2;
         StartSessionFragment fragment2 = (StartSessionFragment)
                 getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
-        fragment2 = fragment2 == null ?
-                StartSessionFragment.newInstance()
+         fragment2 = fragment2 == null ?
+               StartSessionFragment.newInstance()
                 : fragment2;
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
 
             mStartSessionPresenter = new StartSessionPresenter(fragment2);
 
 
-        /////
+        /////*/
 
     }
 
@@ -75,7 +99,7 @@ public class SessionActivity extends AppCompatActivity {
             //        mStartSessionPresenter.refresh();
             //    break;
 
-            case R.id.sessionActivity_endsession:
+           /* case R.id.sessionActivity_endsession:
                  mStartSessionPresenter.endSession();
                  mStartSessionPresenter=null;
                  break;
@@ -98,7 +122,7 @@ public class SessionActivity extends AppCompatActivity {
                     break;
 
                 ///////////
-
+*/
         }
     }
 }

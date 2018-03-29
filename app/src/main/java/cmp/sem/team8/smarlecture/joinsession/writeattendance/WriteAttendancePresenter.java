@@ -22,16 +22,12 @@ import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 
 public class WriteAttendancePresenter implements WriteAttendanceContract.Actions {
     private WriteAttendanceContract.Views mView;
-    private String GroupId;
-    private String SessionId;
     List<UserAttendanceModel>students;
     private  StudentAttendanceAdapter adapter;
     private int PreSelectedIndex=-1;
 
-    public WriteAttendancePresenter(WriteAttendanceContract.Views mView,String GroupId,String SessionId) {
+    public WriteAttendancePresenter(WriteAttendanceContract.Views mView) {
         this.mView = mView;
-        this.GroupId=GroupId;
-        this.SessionId=SessionId;
     }
 
 
@@ -41,7 +37,10 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     }
 
     @Override
-    public void getStudentsList() {
+    public void getStudentsList(String GroupID,String SessionID) {
+
+        final String GroupId=GroupID;
+        final String SessionId=SessionID;
 
         students=new ArrayList<>();
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference();

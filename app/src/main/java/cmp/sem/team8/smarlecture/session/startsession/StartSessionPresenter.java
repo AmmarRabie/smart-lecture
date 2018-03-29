@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.model.SessionModel;
+import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 
 /**
  * Created by ramym on 3/15/2018.
@@ -24,6 +25,11 @@ public class StartSessionPresenter implements StartSessionContract.Actions {
     private static final int maxId = 10000000;
     private DatabaseReference mDatabase;
     private int SessionId;
+
+    public int getSessionID()
+    {
+        return SessionId;
+    }
 
     public StartSessionPresenter(StartSessionContract.Views view) {
         mView = view;
@@ -89,6 +95,8 @@ public class StartSessionPresenter implements StartSessionContract.Actions {
         });
 
     }
+
+
 
     @Override
     public void endSession() {
