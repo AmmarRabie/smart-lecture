@@ -6,10 +6,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import cmp.sem.team8.smarlecture.joinsession.writeattendance.WriteAttendanceFragment;
 import cmp.sem.team8.smarlecture.joinsession.writeattendance.WriteAttendancePresenter;
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionFragment;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
 
 /**
  * Created by ramym on 3/25/2018.
@@ -17,16 +13,16 @@ import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 
-    private int numOfTabs;
     WriteAttendanceFragment writeAttendanceFragment;
     WriteAttendancePresenter mwriteAttendancePresenter;
+    private int numOfTabs;
 
     public PagerAdapter(FragmentManager fm, int numOfTabs) {
         super(fm);
         this.numOfTabs = numOfTabs;
 
-         writeAttendanceFragment=null;
-         mwriteAttendancePresenter=null;
+        writeAttendanceFragment = null;
+        mwriteAttendancePresenter = null;
 
     }
 
@@ -42,7 +38,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
             case 1:
             case 2:
-               // return new CallFragment();
+                // return new CallFragment();
             default:
                 return null;
         }

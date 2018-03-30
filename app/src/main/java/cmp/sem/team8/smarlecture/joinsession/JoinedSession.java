@@ -1,40 +1,15 @@
 package cmp.sem.team8.smarlecture.joinsession;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.Map;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
-import cmp.sem.team8.smarlecture.joinsession.writeattendance.StudentAttendanceAdapter;
-import cmp.sem.team8.smarlecture.joinsession.writeattendance.WriteAttendanceFragment;
-import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
-import cmp.sem.team8.smarlecture.quickstatistics.QuickStatisticsActivity;
-import cmp.sem.team8.smarlecture.session.*;
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionFragment;
 import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
 
 /**
@@ -43,22 +18,19 @@ import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
 
 public class JoinedSession extends AppCompatActivity {
 
+    int SessionId;
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    TabItem WriteAttendanceTab;
+    PagerAdapter pageAdapter;
     private Button mQuestionButton;
     private Button mAttendanceButton;
     private Button mObjectivesButton;
     private Button mStartSessionButton;
-
-    int SessionId;
-
     private BeginAttendancePresenter mAttendancePresenter;
-    private StartSessionPresenter    mStartSessionPresenter;
-
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    TabItem WriteAttendanceTab;
-    PagerAdapter pageAdapter ;
-
+    private StartSessionPresenter mStartSessionPresenter;
     private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,14 +39,14 @@ public class JoinedSession extends AppCompatActivity {
 /*        mQuestionButton = findViewById(R.id.sessionActivity_question);
         mAttendanceButton = findViewById(R.id.sessionActivity_attendance);
         mObjectivesButton = findViewById(R.id.sessionActivity_objectives);*/
-        context=this;
+        context = this;
         mAttendancePresenter = null;
-        mStartSessionPresenter=null;
+        mStartSessionPresenter = null;
         //
         // begin the session with generating the session.
 
         tabLayout = findViewById(R.id.joined_session_tablayout);
-        WriteAttendanceTab= findViewById(R.id.joined_session_attendance);
+        WriteAttendanceTab = findViewById(R.id.joined_session_attendance);
         viewPager = findViewById(R.id.joined_session_viewPager);
 
         pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());

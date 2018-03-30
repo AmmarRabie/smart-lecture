@@ -1,9 +1,9 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,130 +11,155 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionContract;
 
-public class WriteAttendanceFragment  extends Fragment implements WriteAttendanceContract.Views {
+public class WriteAttendanceFragment extends Fragment implements WriteAttendanceContract.Views
+        , AdapterView.OnItemClickListener {
 
-    private ListView listView;
-    private DatabaseReference reference;
+    private String mSessionId;
+    private String GroupId;
+
     private List<UserAttendanceModel> students;
-
-    private int  PreSelectedIndex=-1;
+    private StudentAttendanceAdapter mAdapter;
+    private int PreSelectedIndex = -1;
     private WriteAttendanceContract.Actions mPresenter;
 
+    private ListView listView;
     private TextView secrect;
-    private Button takeAttendanceButton;
+    //    private Button takeAttendanceButton;
+    private TextView mTimerCountView;
 
-
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.frag_attendance, container, false);
-
-        listView=(ListView)root.findViewById(R.id.attendanceFrag_list);
-        secrect=(TextView)root.findViewById(R.id.attendanceFrag_secret);
-        takeAttendanceButton=(Button)root.findViewById(R.id.attendanceFrag_takeAttendance);
-
-        mPresenter=new WriteAttendancePresenter(this);
-
-        takeAttendanceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final String SessionId=getActivity().getIntent().getStringExtra("sessionid");
-                final String GroupnId=getActivity().getIntent().getStringExtra("groupid");
-
-                DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
-                ref = ref.child("sessions").child(SessionId);
-
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot)
-                    {
-                        String Secrect="";
-                        String AttendanceFlag="";
-                        for (DataSnapshot children : dataSnapshot.getChildren())
-                        {
-                            if (children.getKey().toString().equals("attendance"))
-                                AttendanceFlag = children.getValue().toString();
-                            else if (children.getKey().toString().equals("attendancesecrect"))
-                                Secrect = children.getValue().toString();
-                        }
-                        if (AttendanceFlag.equals("closed"))
-                        {
-                            Toast.makeText(getActivity(),"Attendance is closed ", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if (!Secrect.equals(secrect.getText().toString()))
-                        {
-                            Toast.makeText(getActivity(),"Secrect is Incorrect ", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        reference= FirebaseDatabase.getInstance().getReference();
-
-                        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                        students=new ArrayList<>();
-
-                        reference=reference.child("sessions").child(SessionId).child("attendance");
-
-
-                        mPresenter.getStudentsList(GroupnId,SessionId);
-
-
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-            }
-        });
-
-
-        return root;
+    public WriteAttendanceFragment() {
     }
-
 
     public static WriteAttendanceFragment newInstance() {
         return new WriteAttendanceFragment();
     }
 
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View root = inflater.inflate(R.layout.frag_attendance, container, false);
+
+        mSessionId = getActivity().getIntent().getStringExtra("sessionid");
+        GroupId = getActivity().getIntent().getStringExtra("groupid");
+
+        listView = (ListView) root.findViewById(R.id.attendanceFrag_list);
+        secrect = (TextView) root.findViewById(R.id.attendanceFrag_secret);
+//        takeAttendanceButton = (Button) root.findViewById(R.id.attendanceFrag_takeAttendance);
+        mTimerCountView = root.findViewById(R.id.attendanceFrag_timerCount);
+
+        students = new ArrayList<>();
+        mAdapter = new StudentAttendanceAdapter(getActivity(), students);
+
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+//        listView.setOnItemClickListener(this);
+
+//        takeAttendanceButton.setOnClickListener(this);
+
+        mPresenter.getStudentsList(GroupId, mSessionId);
+
+        return root;
+    }
+
     @Override
     public void setPresenter(WriteAttendanceContract.Actions presenter) {
+        mPresenter = presenter;
+    }
 
+
+    @Override
+    public void showStudentsList(List<UserAttendanceModel> studentsList) {
+//        mAdapter.(mPresenter.getAdapter());
+        students = studentsList;
+        mAdapter = new StudentAttendanceAdapter(getActivity(), students);
+        listView.setAdapter(mAdapter);
+        listView.setOnItemClickListener(this);
+/*        mAdapter.updateRecords(students);
+        mAdapter.notifyDataSetChanged();*/
+    }
+
+
+    @Override
+    public void endConnection() {
+        /*setAirplaneMode(false);*/
     }
 
     @Override
-    public void showStudents(String id) {
+    public void startConnection() {
+        /*setAirplaneMode(true);*/
+    }
 
+    private void setAirplaneMode(boolean Enable) {
+        // read the airplane mode setting
+        boolean isEnabled = Settings.System.getInt(
+                getContext().getContentResolver(),
+                Settings.System.AIRPLANE_MODE_ON, 0) == 1;
+
+        if (isEnabled)
+            return;
+
+        // toggle airplane mode on
+        Settings.System.putInt(
+                getContext().getContentResolver(),
+                Settings.System.AIRPLANE_MODE_ON, Enable ? 1 : 0);
+
+        // Post an intent to reload
+        Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        intent.putExtra("state", Enable);
+        getContext().sendBroadcast(intent);
     }
 
     @Override
-    public void ListViewSetAdapter(StudentAttendanceAdapter adapter)
-    {
-        listView.setAdapter(mPresenter.getAdapter());
+    public void setTimer(int minutes) {
+        new CountDownTimer(minutes * 60 * 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                mTimerCountView.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                mTimerCountView.setText("Attendance closed!");
+                mPresenter.onTimerFinish(listView.getCheckedItemPosition(), getSecret());
+            }
+        }.start();
     }
 
     @Override
-    public void ListViewSetOnItemClickListener(AdapterView.OnItemClickListener listener) {
+    public void showErrorMessage(String cause) {
+        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
+    }
 
-        listView.setOnItemClickListener(listener);
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        UserAttendanceModel model = students.get(position);
+        model.setChecked(true);
+        students.set(position, model);
+        if (PreSelectedIndex > -1) {
+            UserAttendanceModel pModel = students.get(PreSelectedIndex);
+            pModel.setChecked(false);
+            students.set(PreSelectedIndex, pModel);
+        }
+        PreSelectedIndex = position;
+        mAdapter.updateRecords(students);
+
+    }
+
+
+    private String getSecret() {
+        return secrect.getText().toString();
     }
 }

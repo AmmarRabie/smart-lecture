@@ -1,19 +1,14 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
 import android.app.Activity;
-import android.content.Context;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
@@ -29,13 +24,13 @@ public class StudentAttendanceAdapter extends BaseAdapter {
     private int resource;
     private List<UserAttendanceModel> list;
     private LayoutInflater inflater;
-    private int selectedPosition=-1;
+    private int selectedPosition = -1;
 
-    public StudentAttendanceAdapter(Activity activity, List<UserAttendanceModel>list) {
-        this.activity=activity;
-        this.list=list;
+    public StudentAttendanceAdapter(Activity activity, List<UserAttendanceModel> list) {
+        this.activity = activity;
+        this.list = list;
 
-        inflater=activity.getLayoutInflater();
+        inflater = activity.getLayoutInflater();
     }
 
     @Override
@@ -55,25 +50,23 @@ public class StudentAttendanceAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder=null;
-                if(convertView==null)
-                {
-                    convertView=inflater.inflate(R.layout.student_attendance_item,parent,false);
-                    holder=new ViewHolder();
-                    holder.userName=(TextView)convertView.findViewById(R.id.student_attendance_item_name);
-                    holder.radioButton=(RadioButton)convertView.findViewById(R.id.student_attendance_item_radio);
+        ViewHolder holder = null;
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.student_attendance_item, parent, false);
+            holder = new ViewHolder();
+            holder.userName = (TextView) convertView.findViewById(R.id.student_attendance_item_name);
+            holder.radioButton = (RadioButton) convertView.findViewById(R.id.student_attendance_item_radio);
 
-                    convertView.setTag(holder);
-                }
-                else{
-                    holder=(ViewHolder)convertView.getTag();
-                }
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-                UserAttendanceModel model=list.get(position);
-                holder.radioButton.setChecked(model.getChecked());
+        UserAttendanceModel model = list.get(position);
+        holder.radioButton.setChecked(model.getChecked());
 
-                holder.userName.setText(model.getName());
-                return convertView;
+        holder.userName.setText(model.getName());
+        return convertView;
     }
 
 
@@ -83,13 +76,12 @@ public class StudentAttendanceAdapter extends BaseAdapter {
         return new CharSequence[0];
     }
 
-    public void updateRecords(List<UserAttendanceModel> Students)
-    {
-        this.list=Students;
+    public void updateRecords(List<UserAttendanceModel> Students) {
+        this.list = Students;
         notifyDataSetChanged();
     }
 
-    class ViewHolder{
+    class ViewHolder {
 
         TextView userName;
         RadioButton radioButton;
