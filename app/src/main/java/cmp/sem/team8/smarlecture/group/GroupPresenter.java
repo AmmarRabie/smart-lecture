@@ -1,7 +1,10 @@
 package cmp.sem.team8.smarlecture.group;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,9 +20,13 @@ import java.util.HashMap;
 
 public class GroupPresenter implements GroupContract.Actions {
     private static final String TAG = "GroupPresenter";
+
     private final String GROUP_ID;
+
     ArrayList<ValueEventListener> valueEventListeners = new ArrayList<>();
+
     private GroupContract.Views mView;
+
     private DatabaseReference mGroupRef;
 
     public GroupPresenter(GroupContract.Views view, final String groupId) {
@@ -44,7 +51,7 @@ public class GroupPresenter implements GroupContract.Actions {
                     passStudents();
                 } else {
                     Log.e(TAG, "onDataChange: the Gruop presenter is called with invalid group id");
-                    mView.showErrorMessage("group doesn't exist");
+                    mView.showOnErrorMessage("group doesn't exist");
                     mGroupRef = null;
                 }
             }
@@ -52,43 +59,77 @@ public class GroupPresenter implements GroupContract.Actions {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 mGroupRef = null;
-                mView.showErrorMessage(databaseError.getMessage());
+                mView.showOnErrorMessage(databaseError.getMessage());
             }
         });
     }
 
     @Override
-    public void addStudent(String name) {
+    public void addStudent(final String name) {
         if (mGroupRef == null) {
             Log.e(TAG, "addStudent: called without finding the group");
             return;
         }
         if (name == null || name.isEmpty()) {
-            mView.showErrorMessage("Student must have a name");
+            mView.showOnErrorMessage("Student must have a name");
             return;
         }
-        mGroupRef.child("namesList").push().setValue(name);
+        DatabaseReference newStudentRef = mGroupRef.child("namesList").push();
+        final String key=newStudentRef.getKey();
+        newStudentRef.setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    mView.onAddSuccess(key,name);
+                }
+                else {
+                    mView.showOnErrorMessage(task.getException().getMessage());
+                }
+            }
+        });
+
+        //mGroupRef.child("namesList").push().setValue(name);
 
     }
 
     @Override
-    public void editStudent(String studentKey, String newName) {
+    public void editStudent(final String studentKey, final String newName) {
         if (mGroupRef == null) {
             return;
         }
         if (newName == null || newName.isEmpty()) {
-            mView.showErrorMessage("Name can't be empty");
+            mView.showOnErrorMessage("Name can't be empty");
             return;
         }
-        mGroupRef.child("namesList").child(studentKey).setValue(newName);
+        mGroupRef.child("namesList").child(studentKey).setValue(newName).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    mView.onEditSuccess(studentKey,newName);
+                }
+                else {
+                    mView.showOnErrorMessage(task.getException().getMessage());
+                }
+            }
+        });
     }
 
     @Override
-    public void deleteStudent(String name) {
+    public void deleteStudent(final String studentKey) {
         if (mGroupRef == null) {
             return;
         }
-        mGroupRef.child("namesList").child(name).removeValue();
+        mGroupRef.child("namesList").child(studentKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    mView.onDeleteSuccess(studentKey);
+                }
+                else {
+                    mView.showOnErrorMessage(task.getException().getMessage());
+                }
+            }
+        });
     }
 
 

@@ -35,6 +35,10 @@ public interface GroupListContract {
 
         void showGroupList(ArrayList<HashMap<String, Object>> groupList);
 
+        void onDeleteSuccess(String groupID);
+        void onEditSuccess(String groupID,String newName);
+        void onAddSuccess(String groupID,String newName);
+
     }
 
 

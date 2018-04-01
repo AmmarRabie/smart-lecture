@@ -16,7 +16,10 @@ public interface GroupContract {
     interface Views extends IBaseView<Actions> {
         void showOnSuccess();
 
-        void showErrorMessage(String cause);
+        void showOnErrorMessage(String cause);
+        void onDeleteSuccess(String UID);
+        void onEditSuccess(String UID,String newName);
+        void onAddSuccess(String UID,String name);
 
 
         void showNamesList(ArrayList<HashMap<String, Object>> namesList);

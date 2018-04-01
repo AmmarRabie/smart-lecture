@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -22,19 +21,54 @@ import cmp.sem.team8.smarlecture.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GroupFragment extends android.support.v4.app.Fragment implements GroupContract.Views {
+public class GroupFragment extends android.support.v4.app.Fragment implements
+        GroupContract.Views,
+        GroupAdapter.onItemClickListner {
 
     private GroupContract.Actions mPresenter;
 
     private Button mAddStudent;
 
     private ListView mGroupList;
+
     private GroupAdapter mGroupAdapter;
+
+    private View.OnClickListener mAddStudtentListner=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+
+            View mView = getLayoutInflater().inflate(R.layout.addstudentdialog, null);
+
+            mBuilder.setView(mView);
+
+            final EditText mName = (EditText) mView.findViewById(R.id.studentDialogName);
+
+            Button mAdd = (Button) mView.findViewById(R.id.addStudentDialog);
+
+            final AlertDialog dialog = mBuilder.create();
+
+            dialog.show();
+
+            mAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mPresenter.addStudent(mName.getText().toString());
+                    dialog.dismiss();
+                }
+            });
+
+        }
+    };
+
+    public GroupFragment(){   }
 
     public static GroupFragment newInstance() {
         return new GroupFragment();
     }
 
+    @Override
     public void setPresenter(GroupContract.Actions presenter) {
         mPresenter = presenter;
     }
@@ -50,65 +84,14 @@ public class GroupFragment extends android.support.v4.app.Fragment implements Gr
 
         mGroupList = root.findViewById(R.id.groupFrag_list);
 
-       /*
-       click listner for add student done with alert dialog
-       * */
-        mAddStudent.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                View mView = inflater.inflate(R.layout.addstudentdialog, null);
-                mBuilder.setView(mView);
-                final EditText mName = (EditText) mView.findViewById(R.id.studentDialogName);
-                Button mAdd = (Button) mView.findViewById(R.id.addStudentDialog);
-                final AlertDialog dialog = mBuilder.create();
-                dialog.show();
+        mAddStudent.setOnClickListener(mAddStudtentListner);
 
-                mAdd.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mPresenter.addStudent(mName.getText().toString());
-                        dialog.dismiss();
-                    }
-                });
-            }
-        });
+        mGroupAdapter=new GroupAdapter(getContext(),
+                new ArrayList<HashMap<String, Object>>(),this );
 
+        mGroupList.setAdapter(mGroupAdapter);
 
-        mGroupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (view.getId() == R.id.group_deletename) {
-                    //delete student at position
-                    mPresenter.deleteStudent(mGroupAdapter.getItem(position).toString());
-                }
-                if (view.getId() == R.id.group_editname) {
-                    final String oldName = mGroupAdapter.getItem(position).get
-                            (String.valueOf(position)).toString();
-                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                    View mView = inflater.inflate(R.layout.addstudentdialog, null);
-                    final EditText mName = (EditText) mView.findViewById(R.id.studentDialogName);
-                    Button mAdd = (Button) mView.findViewById(R.id.addStudentDialog);
-                    mAdd.setText("Save");
-                    final AlertDialog dialog = mBuilder.create();
-                    dialog.show();
-
-                    mAdd.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mPresenter.editStudent(oldName, mName.toString());
-                            dialog.dismiss();
-                        }
-                    });
-                    mBuilder.setView(mView);
-                }
-            }
-
-
-        });
 
         return root;
     }
@@ -122,45 +105,45 @@ public class GroupFragment extends android.support.v4.app.Fragment implements Gr
 
     @Override
     public void showNamesList(ArrayList<HashMap<String, Object>> namesList) {
-        mGroupAdapter = new GroupAdapter(getActivity(), namesList, new GroupAdapter.onItemClickListenerInterface() {
 
-            @Override
-            public void onEditItemClick(View v, final int position) {
-                final String key = mGroupAdapter.getItem(position).get("key").toString();
+        mGroupAdapter.clear();
 
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
-                mBuilder.setView(mView);
-                final EditText studentNameView = (EditText) mView.findViewById(R.id.groupDialogName);
-                final Button addGroupView = (Button) mView.findViewById(R.id.addGroupDialog);
-                final AlertDialog dialog = mBuilder.create();
-                addGroupView.setText("Change");
-                addGroupView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String studentName = studentNameView.getText().toString();
-                        mPresenter.editStudent(key, studentName);
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-            }
+        mGroupAdapter.addAll(namesList);
 
-            @Override
-            public void onDeleteItemClick(View v, int position) {
-                String name = mGroupAdapter.getItem(position).get("name").toString();
-                String key = mGroupAdapter.getItem(position).get("key").toString();
-                mPresenter.deleteStudent(key);
-            }
-
-        });
-        mGroupList.setAdapter(mGroupAdapter);
         mGroupAdapter.notifyDataSetChanged();
+
+       }
+
+    @Override
+    public void showOnErrorMessage(String cause) {
+        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
-    public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
+    public void onDeleteSuccess(String UID) {
+       int position=0;
+       while (UID!=mGroupAdapter.getItem(position).get("key").toString()){position++;}
+       HashMap<String,Object> deletedStudent=mGroupAdapter.getItem(position);
+       mGroupAdapter.remove(deletedStudent);
+       mGroupAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onEditSuccess(String UID,String newName) {
+        int position=0;
+        while(UID!=mGroupAdapter.getItem(position).get("key").toString()){position++;}
+        mGroupAdapter.getItem(position).put("name",newName);
+        mGroupAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onAddSuccess(String UID,String newName) {
+        HashMap<String,Object> newStudent=new HashMap<>();
+        newStudent.put("key",UID);
+        newStudent.put("name",newName);
+        mGroupAdapter.add(newStudent);
 
     }
 
@@ -176,5 +159,39 @@ public class GroupFragment extends android.support.v4.app.Fragment implements Gr
     public void onPause() {
         super.onPause();
         mPresenter.end();
+    }
+
+    @Override
+    public void onEditItemClick(View v, int position) {
+        HashMap<String,Object> studentClicked=mGroupAdapter.getItem(position);
+        final String studentID=studentClicked.get("key").toString();
+
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+        View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
+        mBuilder.setView(mView);
+        final EditText studentNameView = (EditText) mView.findViewById(R.id.groupDialogName);
+        final Button addGroupView = (Button) mView.findViewById(R.id.addGroupDialog);
+        final AlertDialog dialog = mBuilder.create();
+        addGroupView.setText("Change");
+        addGroupView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String studentName = studentNameView.getText().toString();
+                mPresenter.editStudent(studentID, studentName);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
+
+    @Override
+    public void onDeleteItemClick(View v, int position) {
+        String name = mGroupAdapter.getItem(position).get("name").toString();
+        String key = mGroupAdapter.getItem(position).get("key").toString();
+        mPresenter.deleteStudent(key);
+
+
     }
 }

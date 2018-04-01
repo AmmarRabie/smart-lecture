@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.grouplist;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
 
@@ -32,6 +34,7 @@ public class GroupListFragment extends Fragment implements
     private GroupListContract.Actions mPresenter;
 
     private FloatingActionButton mAddGroup;
+
     private ListView mGroupList;
 
     private GroupListAdapter mGroupListAdapter;
@@ -39,12 +42,19 @@ public class GroupListFragment extends Fragment implements
     private View.OnClickListener mAddGroupClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+
             View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
+
             mBuilder.setView(mView);
+
             final EditText mGroupName = (EditText) mView.findViewById(R.id.groupDialogName);
+
             final Button mAddGroup = (Button) mView.findViewById(R.id.addGroupDialog);
+
             final AlertDialog dialog = mBuilder.create();
+
             mAddGroup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -67,15 +77,20 @@ public class GroupListFragment extends Fragment implements
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View root = inflater.inflate(R.layout.frag_grouplist, container, false);
 
         mAddGroup = root.findViewById(R.id.groupListFrag_addGroup);
+
         mGroupList = root.findViewById(R.id.groupListFrag_list);
 
         mAddGroup.setOnClickListener(mAddGroupClickListener);
+
         mGroupListAdapter = new GroupListAdapter(getContext(),
                 new ArrayList<HashMap<String, Object>>(), this);
+
         mGroupList.setAdapter(mGroupListAdapter);
+
         return root;
     }
 
@@ -97,6 +112,36 @@ public class GroupListFragment extends Fragment implements
         mGroupListAdapter.clear();
         mGroupListAdapter.addAll(groupList);
         mGroupListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDeleteSuccess(String groupID) {
+        int position=0;
+        while(groupID!=mGroupListAdapter.getItem(position).get("id").toString()){position++;}
+        HashMap<String,Object> deletedGroup= mGroupListAdapter.getItem(position);
+        mGroupListAdapter.remove(deletedGroup);
+        mGroupListAdapter.notifyDataSetChanged();
+
+
+    }
+
+    @Override
+    public void onEditSuccess(String groupID, String newName) {
+        int position=0;
+        while(groupID!=mGroupListAdapter.getItem(position).get("id").toString()){position++;}
+        mGroupListAdapter.getItem(position).put("name",newName);
+        mGroupListAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onAddSuccess(String groupID, String newName) {
+        HashMap<String,Object> newGroup=new HashMap<>();
+        newGroup.put("name",newName);
+        newGroup.put("id",groupID);
+        mGroupListAdapter.add(newGroup);
+        mGroupListAdapter.notifyDataSetChanged();
+
     }
 
     /**
@@ -141,8 +186,7 @@ public class GroupListFragment extends Fragment implements
         HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
         String groupId = groupClicked.get("id").toString();
         mPresenter.deleteGroup(groupId);
-        mGroupListAdapter.remove(groupClicked);
-        mGroupListAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -162,8 +206,8 @@ public class GroupListFragment extends Fragment implements
             public void onClick(View v) {
                 String groupName = groupNameView.getText().toString();
                 mPresenter.editGroup(groupId, groupName);
-                mGroupListAdapter.getItem(position).put("name",groupName);
-                mGroupListAdapter.notifyDataSetChanged();
+
+
                 dialog.dismiss();
             }
         });

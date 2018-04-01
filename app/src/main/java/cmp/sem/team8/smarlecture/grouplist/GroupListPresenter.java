@@ -1,7 +1,10 @@
 package cmp.sem.team8.smarlecture.grouplist;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -51,7 +54,17 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 }
                 // remove after ending, this is out of if because we want to delete the group
                 // even we don't have any session related to it
-                getGroupRef(groupID).removeValue();
+                getGroupRef(groupID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            mView.onDeleteSuccess(groupID);
+                        }
+                        else {
+                            mView.showErrorMessage(task.getException().getMessage());
+                        }
+                    }
+                });
             }
 
             @Override
@@ -63,7 +76,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
     }
 
     @Override
-    public void addGroup(String groupName) {
+    public void addGroup(final String groupName) {
         if (mCurrentUser == null) {
             mView.showErrorMessage("can't find a user, try to re-login");
             Log.e(TAG, "addGroup: can't find current user");
@@ -76,12 +89,25 @@ public class GroupListPresenter implements GroupListContract.Actions {
         }
         DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference("groups");
         DatabaseReference newGroupRef = groupsRef.push();
+
+        final String groupID=newGroupRef.getKey();
+
         newGroupRef.child("group_owner").setValue(userID);
-        newGroupRef.child("name").setValue(groupName);
+        newGroupRef.child("name").setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    mView.onAddSuccess(groupID,groupName);
+                }
+                else{
+                    mView.showErrorMessage(task.getException().getMessage());
+                }
+            }
+        });
     }
 
     @Override
-    public void editGroup(String groupID, String newGroupName) {
+    public void editGroup(final String groupID, final String newGroupName) {
         if (mCurrentUser == null) {
             mView.showErrorMessage("can't find a user, try to re-login");
             Log.e(TAG, "addGroup: can't find current user");
@@ -91,9 +117,17 @@ public class GroupListPresenter implements GroupListContract.Actions {
             mView.showErrorMessage("Group can't have an empty name");
             return;
         }
-//        deleteGroup(groupID);
-//        addGroup(newGroupName);
-        getGroupRef(groupID).child("name").setValue(newGroupName);
+        getGroupRef(groupID).child("name").setValue(newGroupName).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    mView.onAddSuccess(groupID,newGroupName);
+                }
+                else{
+                    mView.showErrorMessage(task.getException().getMessage());
+                }
+            }
+        });
     }
 
     @Override

@@ -19,7 +19,7 @@ import cmp.sem.team8.smarlecture.R;
 public class GroupListAdapter extends ArrayAdapter<HashMap<String, Object>> {
 
     private OnItemClickListener mItemClickListener = null;
-    private View.OnClickListener mOnDeleteClickListener;
+  //  private View.OnClickListener mOnDeleteClickListener;
 
     public GroupListAdapter(Context context, ArrayList<HashMap<String, Object>> nameList,
                             OnItemClickListener onEditClickListener) {
