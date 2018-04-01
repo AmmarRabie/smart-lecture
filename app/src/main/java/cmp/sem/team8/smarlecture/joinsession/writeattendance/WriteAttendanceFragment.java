@@ -1,12 +1,14 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,7 @@ import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 
 public class WriteAttendanceFragment extends Fragment implements WriteAttendanceContract.Views
-        , AdapterView.OnItemClickListener {
+        , AdapterView.OnItemClickListener, ConnectionDetector.OnConnectionChangeListener {
 
     private String mSessionId;
     private String GroupId;
@@ -31,11 +33,12 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     private StudentAttendanceAdapter mAdapter;
     private int PreSelectedIndex = -1;
     private WriteAttendanceContract.Actions mPresenter;
+    private ConnectionDetector mConnectionDetector;
 
     private ListView listView;
     private TextView secrect;
-    //    private Button takeAttendanceButton;
     private TextView mTimerCountView;
+    private TimerAlertDialog dialog = null;
 
     public WriteAttendanceFragment() {
     }
@@ -66,6 +69,7 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
 
         mPresenter.getStudentsList(GroupId, mSessionId);
 
+        mConnectionDetector = new ConnectionDetector(getContext(), this);
         return root;
     }
 
@@ -73,7 +77,6 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     public void setPresenter(WriteAttendanceContract.Actions presenter) {
         mPresenter = presenter;
     }
-
 
     @Override
     public void showStudentsList(List<UserAttendanceModel> studentsList) {
@@ -86,15 +89,15 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
         mAdapter.notifyDataSetChanged();*/
     }
 
-
     @Override
     public void endConnection() {
         /*setAirplaneMode(false);*/
     }
 
     @Override
-    public void startConnection() {
+    public void closeDialog() {
         /*setAirplaneMode(true);*/
+        dialog.dismiss();
     }
 
     private void setAirplaneMode(boolean Enable) {
@@ -117,20 +120,6 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
         getContext().sendBroadcast(intent);
     }
 
-    @Override
-    public void setTimer(int minutes) {
-        new CountDownTimer(minutes * 60 * 1000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                mTimerCountView.setText("seconds remaining: " + millisUntilFinished / 1000);
-            }
-
-            public void onFinish() {
-                mTimerCountView.setText("Attendance closed!");
-                mPresenter.onTimerFinish(listView.getCheckedItemPosition(), getSecret());
-            }
-        }.start();
-    }
 
     @Override
     public void showErrorMessage(String cause) {
@@ -138,9 +127,49 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     }
 
     @Override
+    public void updateEndConnectionRemainingTime(int seconds) {
+/*        if (dialog == null) // first-time calling
+        {
+            dialog = new TimerAlertDialog(getContext());
+        }*/
+        dialog.setTime(seconds);
+        if (seconds == 0)
+            dialog.dismiss();
+    }
+
+    @Override
+    public void requestDisableConnection() {
+        dialog = new TimerAlertDialog(getContext());
+        dialog.show();
+        mConnectionDetector.start();
+    }
+
+    @Override
+    public void updateAttendanceRemainingTime(int seconds) {
+        mTimerCountView.setText("" + seconds);
+    }
+
+    @Override
+    public int getStudentId() {
+        return listView.getCheckedItemPosition() + 1;
+    }
+
+    @Override
+    public String getProvidedSecret() {
+        return secrect.getText().toString();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         mPresenter.start();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mConnectionDetector.end();
     }
 
     @Override
@@ -159,7 +188,50 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     }
 
 
-    private String getSecret() {
-        return secrect.getText().toString();
+    @Override
+    public void onConnectionLost() {
+        mPresenter.onConnectionLost();
+    }
+
+    @Override
+    public void onConnectionBack() {
+        mPresenter.onConnectionBack();
+    }
+
+
+    // [TODO] refactor the class to extend the AlertDialog and has a reference to the builder, not vice versa
+    private class TimerAlertDialog extends AlertDialog.Builder {
+        private TextView mTimeView;
+        private AlertDialog dialog;
+
+        TimerAlertDialog(@NonNull Context context) {
+            super(context);
+            setView(R.layout.dialog_timer);
+            setIcon(android.R.drawable.ic_dialog_alert);
+            setTitle("Quickly");
+//            setCancelable(false);
+            mTimeView = getView().findViewById(R.id.dialogTimer_time);
+        }
+
+        @Override
+        public AlertDialog show() {
+            dialog = super.show();
+            return dialog;
+        }
+
+        public void setTime(int seconds) {
+            if (seconds <= 8)
+                mTimeView.setTextColor(ContextCompat.getColor(this.getContext(),
+                        R.color.timeBelow8));
+            else
+                mTimeView.setTextColor(ContextCompat.getColor(this.getContext(),
+                        R.color.timeUp8));
+            mTimeView.setText(seconds);
+        }
+
+        public void dismiss() {
+            dialog.dismiss();
+        }
+
     }
 }

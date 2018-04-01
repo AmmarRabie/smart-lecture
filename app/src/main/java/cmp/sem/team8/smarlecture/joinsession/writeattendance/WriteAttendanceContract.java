@@ -17,11 +17,28 @@ public class WriteAttendanceContract {
 
         void endConnection();
 
-        void startConnection();
+        void closeDialog();
 
-        void setTimer(int minutes);
+//        void setTimer(int minutes);
+
+        void startAttendanceTimer(int seconds);
+        void startConnectionTimer(int seconds);
+
+        void stopAttendanceTimer();
+        void stopConnectionTimer();
 
         void showErrorMessage(String cause);
+
+        void updateEndConnectionRemainingTime(int seconds);
+
+        void requestDisableConnection();
+
+
+        void updateAttendanceRemainingTime(int seconds);
+
+        int getStudentId();
+
+        String getProvidedSecret();
     }
 
 
@@ -34,7 +51,14 @@ public class WriteAttendanceContract {
 
 //        void writeAttendance(int position, String SessionId, String providedSecret);
 
-        void onTimerFinish(int position, String secretProvided);
+//        void onTimerFinish(int position, String secretProvided);
+
+        void onAttendanceTimeEnd();
+        void onConnectionTimeEnd();
+
+
+        void onConnectionLost();
+        void onConnectionBack();
     }
 
 }
