@@ -12,7 +12,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * This class detects the internet connection or airplane mode state transaction (on->off, off->on).
@@ -32,8 +31,7 @@ public class ConnectionDetector {
     private boolean mAirplaneState;
 
     private boolean mIsStarted = false;
-
-
+    private boolean isLastStateConnection;
     private BroadcastReceiver mConnectionReceiver = new BroadcastReceiver() {
 
         @Override
@@ -113,7 +111,7 @@ public class ConnectionDetector {
         mIsStarted = true;
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-//        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        isLastStateConnection = !isAirplaneModeOn() || isOnline();
         mContext.registerReceiver(mConnectionReceiver, intentFilter);
     }
 
@@ -132,9 +130,15 @@ public class ConnectionDetector {
     private void refreshSubscribers() {
         if (!mIsStarted)
             return;
-        if (isConnected())
+        if (isConnected() && !isLastStateConnection) // transition from (not-connected -> connected)
+        {
             mListener.onConnectionBack();
-        mListener.onConnectionLost();
+            isLastStateConnection = true;
+        } else if (!isConnected() && isLastStateConnection) // transition from (connected-> not-connected )
+        {
+            mListener.onConnectionLost();
+            isLastStateConnection = false;
+        }
     }
 
     interface OnConnectionChangeListener {

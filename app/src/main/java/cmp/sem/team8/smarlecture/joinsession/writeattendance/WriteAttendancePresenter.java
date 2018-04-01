@@ -1,5 +1,9 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,15 +20,21 @@ import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
  */
 
 public class WriteAttendancePresenter implements WriteAttendanceContract.Actions {
+
+    private WriteAttendanceContract.Views mView;
+
     private List<UserAttendanceModel> students;
     private ValueEventListener listener = null;
+
     private String mSessionId;
     private String mGroupId;
-    private WriteAttendanceContract.Views mView;
-    private boolean mIsAttendanceTimeOver = false;
+
     private String mSecret = null;
-    private boolean mHasNamesList = false;
+
+    // flags to determine states of the user
     private boolean mIsConnectionTimeOver = false;
+    private boolean mIsAttendanceTimeOver = false;
+    private boolean mHasNamesList = false;
 
     public WriteAttendancePresenter(WriteAttendanceContract.Views view) {
         this.mView = view;
@@ -118,26 +128,28 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     @Override
     public void onAttendanceTimeEnd() {
         mIsAttendanceTimeOver = true;
+
+        mView.stopAttendanceTimer();
         mView.showErrorMessage("time end");
-        writeAttendance();
+
+        if (verifySecret(mView.getProvidedSecret())) doOnProvidingCorrectSecret();
+        else doOnProvidingWrongSecret();
     }
 
     @Override
     public void onConnectionTimeEnd() {
         mIsConnectionTimeOver = true;
-        // [TODO] show info mesg instead
         mView.stopConnectionTimer();
-        mView.showErrorMessage("attendance time over without closing the connection");
+        mView.stopAttendanceTimer();
+        doOnNotEndingConnection();
     }
 
 
     @Override
     public void onConnectionLost() {
-        if (!mIsConnectionTimeOver) {
+        if (!mIsConnectionTimeOver && mHasNamesList) {
             mView.stopConnectionTimer();
-            // [TODO] tell the view to end dialog
-            // [TODO] change to success mesg
-            mView.showErrorMessage("bravoooo, you can take your attendance 3la mahlak");
+            doOnEndingConnectionProperly();
             return;
         }
         mView.showErrorMessage("ent gay t2felow delo2ty ya...");
@@ -146,10 +158,9 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
     @Override
     public void onConnectionBack() {
-        // if the connection is back, and i still in the attendance time, error
-        if (!mIsAttendanceTimeOver && mIsConnectionTimeOver) {
-            mView.showErrorMessage("fat7th leh ya mohaza2 2bl ma alwa2t y5las");
-            return;
+        if (!mIsAttendanceTimeOver) {
+            mView.stopAttendanceTimer();
+            doOnOpeningConnectionBeforeAttendanceTimeEnd();
         }
     }
 
@@ -182,24 +193,60 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     }
 
     private void writeAttendance() {
-        mView.stopConnectionTimer();
-        mView.stopAttendanceTimer();
-
-        if (!verifySecret(mView.getProvidedSecret()))
-            return;
-
-        DatabaseReference Sessionreference = FirebaseDatabase.getInstance().getReference();
-
-        Sessionreference = Sessionreference.child("sessions").child(mSessionId).child("namesList")
+        DatabaseReference currSessionRef = FirebaseDatabase.getInstance().getReference();
+        currSessionRef = currSessionRef.child("sessions").child(mSessionId).child("namesList")
                 .child(Integer.toString(mView.getStudentId()));
-
-        Sessionreference.setValue(true);
+        currSessionRef.setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    mView.showErrorMessage("success ya zemely");
+                else
+                    mView.showErrorMessage(task.getException().getMessage());
+            }
+        });
     }
 
     private boolean verifySecret(String secret) {
-        boolean isVerified = secret.equals(mSecret);
-        if (!isVerified)
-            mView.showErrorMessage("this secret isn't correct");
-        return isVerified;
+        return secret.equals(mSecret);
+    }
+
+
+    /**
+     * do tasks for case of "user don't end the connection after time is end"
+     */
+    private void doOnNotEndingConnection() {
+        mView.showErrorMessage("You don't close the connection, tabn lk");
+    }
+
+    /**
+     * do tasks for case of "user end the connection within the correct time"
+     */
+    private void doOnEndingConnectionProperly() {
+        mView.showErrorMessage("tmm, but don't try to turn it on, ha ?!");
+    }
+
+    /**
+     * do tasks for case of "user opened the connection before attendance time is ended"
+     */
+    private void doOnOpeningConnectionBeforeAttendanceTimeEnd() {
+        mView.showErrorMessage("5maaaaaaaaaaan");
+    }
+
+    /**
+     * do tasks for case of "after attendance time is end, the user provide correct secret"
+     * this case mean that the user will successfully write his attendance
+     */
+    private void doOnProvidingCorrectSecret() {
+        writeAttendance();
+    }
+
+    /**
+     * do tasks for case of "after attendance time is end, the user provide wrong secret"
+     * this case mean that the user can't write his attendance. this user can be one that is out
+     * of the lecture
+     */
+    private void doOnProvidingWrongSecret() {
+        mView.showErrorMessage("This secret is not correct ya 7eltha");
     }
 }
