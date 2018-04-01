@@ -1,14 +1,14 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +24,19 @@ import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 
 public class WriteAttendanceFragment extends Fragment implements WriteAttendanceContract.Views
-        , AdapterView.OnItemClickListener, ConnectionDetector.OnConnectionChangeListener {
+        , AdapterView.OnItemClickListener
+        , ConnectionDetector.OnConnectionChangeListener {
+    private static final String TAG = "WriteAttendanceFragment";
 
+    private CountDownTimer connectionTimer;
+    private CountDownTimer attendanceTimer;
     private String mSessionId;
     private String GroupId;
-
     private List<UserAttendanceModel> students;
     private StudentAttendanceAdapter mAdapter;
     private int PreSelectedIndex = -1;
     private WriteAttendanceContract.Actions mPresenter;
     private ConnectionDetector mConnectionDetector;
-
     private ListView listView;
     private TextView secrect;
     private TextView mTimerCountView;
@@ -56,16 +58,12 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
 
         listView = (ListView) root.findViewById(R.id.attendanceFrag_list);
         secrect = (TextView) root.findViewById(R.id.attendanceFrag_secret);
-//        takeAttendanceButton = (Button) root.findViewById(R.id.attendanceFrag_takeAttendance);
         mTimerCountView = root.findViewById(R.id.attendanceFrag_timerCount);
 
         students = new ArrayList<>();
         mAdapter = new StudentAttendanceAdapter(getActivity(), students);
 
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-//        listView.setOnItemClickListener(this);
-
-//        takeAttendanceButton.setOnClickListener(this);
 
         mPresenter.getStudentsList(GroupId, mSessionId);
 
@@ -89,37 +87,6 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
         mAdapter.notifyDataSetChanged();*/
     }
 
-    @Override
-    public void endConnection() {
-        /*setAirplaneMode(false);*/
-    }
-
-    @Override
-    public void closeDialog() {
-        /*setAirplaneMode(true);*/
-        dialog.dismiss();
-    }
-
-    private void setAirplaneMode(boolean Enable) {
-        // read the airplane mode setting
-        boolean isEnabled = Settings.System.getInt(
-                getContext().getContentResolver(),
-                Settings.System.AIRPLANE_MODE_ON, 0) == 1;
-
-        if (isEnabled)
-            return;
-
-        // toggle airplane mode on
-        Settings.System.putInt(
-                getContext().getContentResolver(),
-                Settings.System.AIRPLANE_MODE_ON, Enable ? 1 : 0);
-
-        // Post an intent to reload
-        Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        intent.putExtra("state", Enable);
-        getContext().sendBroadcast(intent);
-    }
-
 
     @Override
     public void showErrorMessage(String cause) {
@@ -127,26 +94,52 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     }
 
     @Override
-    public void updateEndConnectionRemainingTime(int seconds) {
-/*        if (dialog == null) // first-time calling
-        {
-            dialog = new TimerAlertDialog(getContext());
-        }*/
-        dialog.setTime(seconds);
-        if (seconds == 0)
-            dialog.dismiss();
+    public void startAttendanceTimer(int seconds) {
+        attendanceTimer = new CountDownTimer(seconds * 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                mTimerCountView.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+//                AttendanceTimer.setText("done!");
+                mPresenter.onAttendanceTimeEnd();
+            }
+        }.start();
+    }
+
+    @Override
+    public void startConnectionTimer(int seconds) {
+        dialog = new TimerAlertDialog(getContext());
+        dialog.show();
+        connectionTimer = new CountDownTimer(seconds * 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                dialog.setTime(millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+//                AttendanceTimer.setText("done!");
+                mPresenter.onConnectionTimeEnd();
+            }
+        }.start();
+    }
+
+    @Override
+    public void stopAttendanceTimer() {
+        attendanceTimer.cancel();
+        mTimerCountView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void stopConnectionTimer() {
+        connectionTimer.cancel();
+        dialog.dismiss();
     }
 
     @Override
     public void requestDisableConnection() {
-        dialog = new TimerAlertDialog(getContext());
-        dialog.show();
         mConnectionDetector.start();
-    }
-
-    @Override
-    public void updateAttendanceRemainingTime(int seconds) {
-        mTimerCountView.setText("" + seconds);
     }
 
     @Override
@@ -169,6 +162,7 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     @Override
     public void onPause() {
         super.onPause();
+        // insure that mConnectionDetector ends, so that receivers unregistered successfully
         mConnectionDetector.end();
     }
 
@@ -190,11 +184,13 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
 
     @Override
     public void onConnectionLost() {
+        Log.i(TAG, "onConnectionLost: connection lost");
         mPresenter.onConnectionLost();
     }
 
     @Override
     public void onConnectionBack() {
+        Log.i(TAG, "onConnectionBack: ");
         mPresenter.onConnectionBack();
     }
 
@@ -206,11 +202,13 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
 
         TimerAlertDialog(@NonNull Context context) {
             super(context);
-            setView(R.layout.dialog_timer);
+            View view = getLayoutInflater().inflate(R.layout.dialog_timer, null);
+//            setView(R.layout.dialog_timer);
+            setView(view);
             setIcon(android.R.drawable.ic_dialog_alert);
             setTitle("Quickly");
 //            setCancelable(false);
-            mTimeView = getView().findViewById(R.id.dialogTimer_time);
+            mTimeView = view.findViewById(R.id.dialogTimer_time);
         }
 
         @Override
@@ -219,17 +217,17 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
             return dialog;
         }
 
-        public void setTime(int seconds) {
+        void setTime(long seconds) {
             if (seconds <= 8)
                 mTimeView.setTextColor(ContextCompat.getColor(this.getContext(),
                         R.color.timeBelow8));
             else
                 mTimeView.setTextColor(ContextCompat.getColor(this.getContext(),
                         R.color.timeUp8));
-            mTimeView.setText(seconds);
+            mTimeView.setText(seconds + "");
         }
 
-        public void dismiss() {
+        void dismiss() {
             dialog.dismiss();
         }
 

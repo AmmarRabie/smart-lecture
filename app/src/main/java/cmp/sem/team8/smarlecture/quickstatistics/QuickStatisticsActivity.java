@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -141,11 +142,16 @@ public class QuickStatisticsActivity extends AppCompatActivity {
 
 
     public void connectSession(View v) {
-        View view = (LayoutInflater.from(QuickStatisticsActivity.this)).inflate(R.layout.dialog, null);
+        Intent intent = new Intent(this, JoinedSession.class);
+        intent.putExtra("sessionid", "123");
+        intent.putExtra("groupid","id1");
+        startActivity(intent);
+        /*View view = (LayoutInflater.from(QuickStatisticsActivity.this)).inflate(R.layout.dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(QuickStatisticsActivity.this);
         alert.setView(view);
         final EditText input = (EditText) view.findViewById(R.id.dialog_text);
         input.setHint("enter session id");
+
 
         alert.setCancelable(true);
 
@@ -178,7 +184,7 @@ public class QuickStatisticsActivity extends AppCompatActivity {
                             }
 
                             String SessionID = input.getText().toString();
-                            i.putExtra("sessionid", SessionID);
+                            i.putExtra("sessionid", 123);
 
                             startActivity(i);
                             dialog.cancel();
@@ -199,7 +205,7 @@ public class QuickStatisticsActivity extends AppCompatActivity {
         });
 
         Dialog dialogg = alert.create();
-        dialogg.show();
+        dialogg.show();*/
     }
 
     public void beginSession(View v) {

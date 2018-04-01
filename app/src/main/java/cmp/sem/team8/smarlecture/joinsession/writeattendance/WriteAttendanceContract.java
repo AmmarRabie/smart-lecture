@@ -15,12 +15,6 @@ public class WriteAttendanceContract {
 
         void showStudentsList(List<UserAttendanceModel> list);
 
-        void endConnection();
-
-        void closeDialog();
-
-//        void setTimer(int minutes);
-
         void startAttendanceTimer(int seconds);
         void startConnectionTimer(int seconds);
 
@@ -29,15 +23,9 @@ public class WriteAttendanceContract {
 
         void showErrorMessage(String cause);
 
-        void updateEndConnectionRemainingTime(int seconds);
-
         void requestDisableConnection();
 
-
-        void updateAttendanceRemainingTime(int seconds);
-
         int getStudentId();
-
         String getProvidedSecret();
     }
 

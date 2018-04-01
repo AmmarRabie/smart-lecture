@@ -11,6 +11,8 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
+import android.util.Log;
+import android.widget.Toast;
 
 /**
  * This class detects the internet connection or airplane mode state transaction (on->off, off->on).
@@ -19,6 +21,8 @@ import android.provider.Settings;
  * This class is used to detect
  */
 public class ConnectionDetector {
+
+    private static final String TAG = "ConnectionDetector";
 
     private static final String ACTION_CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
     private OnConnectionChangeListener mListener;
@@ -38,6 +42,7 @@ public class ConnectionDetector {
             switch (action) {
                 case Intent.ACTION_AIRPLANE_MODE_CHANGED:
                     boolean isTurnedOn = intent.getBooleanExtra("state", false);
+                    Log.i(TAG, "onReceive AIRPLANE_MODE: " + isTurnedOn);
                     if (isTurnedOn) {
                         onAirplaneModeActivated();
                         break;
@@ -46,6 +51,7 @@ public class ConnectionDetector {
                     break;
 
                 case ACTION_CONNECTIVITY_CHANGE:
+                    Log.i(TAG, "onReceive CONNECTIVTY: " + isOnline());
                     if (isOnline()) {
                         onInternetConnectionActivated();
                         break;
@@ -104,6 +110,7 @@ public class ConnectionDetector {
     public void start() {
         if (mIsStarted)
             return;
+        mIsStarted = true;
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 //        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
@@ -118,17 +125,16 @@ public class ConnectionDetector {
     }
 
     public boolean isConnected() {
-        return mAirplaneState && mInternetState;
+        return !mAirplaneState || mInternetState;
     }
 
 
     private void refreshSubscribers() {
         if (!mIsStarted)
             return;
-        if (mAirplaneState && mInternetState)
+        if (isConnected())
             mListener.onConnectionBack();
-        else if (!mAirplaneState && !mInternetState)
-            mListener.onConnectionLost();
+        mListener.onConnectionLost();
     }
 
     interface OnConnectionChangeListener {
@@ -136,6 +142,4 @@ public class ConnectionDetector {
 
         void onConnectionBack();
     }
-
-
 }

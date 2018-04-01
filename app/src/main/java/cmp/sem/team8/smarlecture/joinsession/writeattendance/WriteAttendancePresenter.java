@@ -8,8 +8,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 
@@ -20,68 +18,22 @@ import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 public class WriteAttendancePresenter implements WriteAttendanceContract.Actions {
     private List<UserAttendanceModel> students;
     private ValueEventListener listener = null;
-    private Timer endConnectionTimer;
-    private Timer attendanceTimer;
     private String mSessionId;
     private String mGroupId;
     private WriteAttendanceContract.Views mView;
     private boolean mIsAttendanceTimeOver = false;
     private String mSecret = null;
-    private TimerTask attendanceTimeTask;
     private boolean mHasNamesList = false;
     private boolean mIsConnectionTimeOver = false;
-    private TimerTask endConnectionTimerTask;
-
-    private long mainThreadId;
 
     public WriteAttendancePresenter(WriteAttendanceContract.Views view) {
         this.mView = view;
         mView.setPresenter(this);
-        endConnectionTimer = new Timer();
-        attendanceTimer = new Timer();
-        endConnectionTimerTask = new TimerTask() {
-            private int mSecondsLeft = 20;
-            private Thread mainThread = null;
-
-            public void run() {
-                if (mainThread == null) {
-                    for (Thread t : Thread.getAllStackTraces().keySet())
-                        if (t.getId() == mainThreadId) {
-                            mainThread = t;
-                        }
-                }
-
-                mView.updateEndConnectionRemainingTime(mSecondsLeft--);
-                if (mSecondsLeft == 0) {
-                    endConnectionTimer.cancel();
-                    mIsConnectionTimeOver = true;
-                    // [TODO] show info mesg instead
-                    mView.closeDialog();
-                    mView.showErrorMessage("attendance time over without closing the connection");
-                }
-                Thread.currentThread().getId();
-            }
-        };
-
-        attendanceTimeTask = new TimerTask() {
-            private int mSecondsLeft = 60; // 1 minute
-
-            public void run() {
-                mView.updateAttendanceRemainingTime(mSecondsLeft--);
-                if (mSecondsLeft == 0) {
-                    attendanceTimer.cancel();
-                    mIsAttendanceTimeOver = true;
-                    mView.showErrorMessage("time end");
-                    writeAttendance();
-                }
-            }
-        };
-
     }
 
     @Override
     public void start() {
-        mainThreadId = Thread.currentThread().getId();
+
     }
 
     @Override
@@ -144,11 +96,9 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                         if (state.equals("open") && mHasNamesList) {
                             // Not-Active -> open; begin of the attendance
 
-//                            mView.setTimer(1);  // count attendance time
-//                            mView.endConnection();
                             mView.requestDisableConnection();
-                            endConnectionTimer.scheduleAtFixedRate(endConnectionTimerTask, 0, 1000); //1000ms = 1sec
-                            attendanceTimer.scheduleAtFixedRate(attendanceTimeTask, 0, 1000);
+                            mView.startAttendanceTimer(1 * 60);
+                            mView.startConnectionTimer(15);
                             FirebaseDatabase.getInstance().getReference("sessions")
                                     .child(mSessionId).child("attendance")
                                     .removeEventListener(this);
@@ -165,13 +115,27 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         }
     }
 
+    @Override
+    public void onAttendanceTimeEnd() {
+        mIsAttendanceTimeOver = true;
+        mView.showErrorMessage("time end");
+        writeAttendance();
+    }
+
+    @Override
+    public void onConnectionTimeEnd() {
+        mIsConnectionTimeOver = true;
+        // [TODO] show info mesg instead
+        mView.stopConnectionTimer();
+        mView.showErrorMessage("attendance time over without closing the connection");
+    }
+
 
     @Override
     public void onConnectionLost() {
         if (!mIsConnectionTimeOver) {
-            endConnectionTimer.cancel();
+            mView.stopConnectionTimer();
             // [TODO] tell the view to end dialog
-            mView.closeDialog();
             // [TODO] change to success mesg
             mView.showErrorMessage("bravoooo, you can take your attendance 3la mahlak");
             return;
@@ -218,7 +182,8 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     }
 
     private void writeAttendance() {
-        mView.closeDialog();
+        mView.stopConnectionTimer();
+        mView.stopAttendanceTimer();
 
         if (!verifySecret(mView.getProvidedSecret()))
             return;
