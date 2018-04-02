@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
 
@@ -18,6 +19,8 @@ public class GroupListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent i=new Intent(this, LoginActivity.class);
+        startActivity(i);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grouplist);
         GroupListFragment grouplistfragment = (GroupListFragment) getSupportFragmentManager()

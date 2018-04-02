@@ -121,7 +121,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    mView.onAddSuccess(groupID,newGroupName);
+                    mView.onEditSuccess(groupID,newGroupName);
                 }
                 else{
                     mView.showErrorMessage(task.getException().getMessage());

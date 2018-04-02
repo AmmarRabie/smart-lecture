@@ -123,7 +123,8 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onDeleteSuccess(String UID) {
        int position=0;
-       while (UID!=mGroupAdapter.getItem(position).get("key").toString()){position++;}
+
+      while ( !(UID.equals( mGroupAdapter.getItem(position).get("key").toString()))){position++;}
        HashMap<String,Object> deletedStudent=mGroupAdapter.getItem(position);
        mGroupAdapter.remove(deletedStudent);
        mGroupAdapter.notifyDataSetChanged();
@@ -131,8 +132,8 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public void onEditSuccess(String UID,String newName) {
-        int position=0;
-        while(UID!=mGroupAdapter.getItem(position).get("key").toString()){position++;}
+       int position=0;
+        while(!(UID.equals( mGroupAdapter.getItem(position).get("key").toString()))){position++;}
         mGroupAdapter.getItem(position).put("name",newName);
         mGroupAdapter.notifyDataSetChanged();
 
@@ -144,6 +145,7 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
         newStudent.put("key",UID);
         newStudent.put("name",newName);
         mGroupAdapter.add(newStudent);
+        mGroupAdapter.notifyDataSetChanged();
 
     }
 
@@ -188,7 +190,6 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public void onDeleteItemClick(View v, int position) {
-        String name = mGroupAdapter.getItem(position).get("name").toString();
         String key = mGroupAdapter.getItem(position).get("key").toString();
         mPresenter.deleteStudent(key);
 

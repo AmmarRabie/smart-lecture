@@ -137,8 +137,32 @@ public class GroupPresenter implements GroupContract.Actions {
         if (mGroupRef == null) {
             return;
         }
+        mGroupRef.child("namesList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if(!dataSnapshot.exists())
+                        continue;
+                    String key = child.getKey();
+                    String name = child.getValue(String.class);
+                    HashMap<String, Object> thisStudent = new HashMap<>();
+                    thisStudent.put("key", key);
+                    thisStudent.put("name", name);
+                    list.add(thisStudent);
+                }
+                mView.showNamesList(list);
 
-        ValueEventListener valueEventListener = mGroupRef.child("namesList").
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+       /* ValueEventListener valueEventListener = mGroupRef.child("namesList").
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -159,7 +183,7 @@ public class GroupPresenter implements GroupContract.Actions {
 
                     }
                 });
-        valueEventListeners.add(valueEventListener);
+        valueEventListeners.add(valueEventListener);*/
     }
 
     @Override
