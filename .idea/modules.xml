@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-lecture.iml" filepath="$PROJECT_DIR$/smart-lecture.iml" />
-      <module fileurl="file://C:\Users\Ammar Rabie\android_workspace\smart-lecture\smart-lecture.iml" filepath="C:\Users\Ammar Rabie\android_workspace\smart-lecture\smart-lecture.iml" />
     </modules>
   </component>
 </project>

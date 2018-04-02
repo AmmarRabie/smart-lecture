@@ -1,10 +1,13 @@
-package cmp.sem.team8.smarlecture.quickstatistics;
+package cmp.sem.team8.smarlecture.grouplist;
 
 
 /**
  * Created by AmmarRabie on 08/03/2018.
  */
 
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
@@ -20,13 +23,21 @@ import cmp.sem.team8.smarlecture.IBaseView;
  * presenter at its creation that he should't look for the user as the user is passes to
  * him at creation
  */
-public interface QuickStatisticsContract {
+public interface GroupListContract {
 
 
     /**
      * views methods implemented by fragment
      */
     interface Views extends IBaseView<Actions> {
+
+        void showErrorMessage(String cause);
+
+        void showGroupList(ArrayList<HashMap<String, Object>> groupList);
+
+        void onDeleteSuccess(String groupID);
+        void onEditSuccess(String groupID,String newName);
+        void onAddSuccess(String groupID,String newName);
 
     }
 
@@ -36,18 +47,11 @@ public interface QuickStatisticsContract {
      */
     interface Actions extends IBasePresenter {
 
-        /**
-         * called only when the presenter is constructed with no user
-         * and he could find the current user in the model.
-         * <p>
-         *     The viewer should update the user info to let the user know that he is being
-         *     signed in.
-         *
-         * </p>
-         * @param name the name of the user
-         * @param email the email of the user
-         */
-        void displayUserInfo(String name, String email);
+        void deleteGroup(String groupID);
+
+        void addGroup(String groupName);
+
+        void editGroup(String groupID, String newGroupName);
 
     }
 }

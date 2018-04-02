@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="cmp.sem.team8.smarlecture">
@@ -22,11 +23,12 @@
 
         <activity android:name=".auth.LoginActivity" />
         <activity android:name=".auth.SignUpActivity" />
-
         <activity android:name=".profile.ProfileActivity" />
         <activity android:name=".session.SessionActivity" />
         <activity android:name=".joinsession.JoinedSession" />
-        <activity android:name=".quickstatistics.QuickStatisticsActivity">
+        <activity android:name=".group.GroupActivity"/>
+
+        <activity android:name=".grouplist.GroupListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -36,4 +38,5 @@
         </activity>
 
     </application>
+
 </manifest>
