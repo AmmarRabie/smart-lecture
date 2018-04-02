@@ -31,6 +31,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/quick_beginsession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Begin session"
+        android:onClick="beginSession"
+        app:layout_constraintStart_toStartOf="@+id/testForceLogin"
+        app:layout_constraintTop_toBottomOf="@+id/testForceLogin" />
+
+
+    <Button
+        android:id="@+id/quick_connectsession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Connect Session"
+        android:onClick="connectSession"
+        app:layout_constraintStart_toStartOf="@+id/quick_beginsession"
+        app:layout_constraintTop_toBottomOf="@+id/quick_beginsession" />
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -42,6 +62,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/testProfile">
+
+
 
         <FrameLayout
             android:id="@+id/contentFrame"

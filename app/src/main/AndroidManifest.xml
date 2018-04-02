@@ -1,8 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="cmp.sem.team8.smarlecture">
 
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+
 
     <application
         android:allowBackup="true"
@@ -16,8 +24,8 @@
         <activity android:name=".auth.SignUpActivity" />
 
         <activity android:name=".profile.ProfileActivity" />
-        <activity android:name=".session.SessionActivity"/>
-        <activity android:name=".joinsession.JoinedSession"/>
+        <activity android:name=".session.SessionActivity" />
+        <activity android:name=".joinsession.JoinedSession" />
         <activity android:name=".quickstatistics.QuickStatisticsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

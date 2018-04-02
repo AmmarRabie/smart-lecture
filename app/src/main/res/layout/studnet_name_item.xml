@@ -8,5 +8,5 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="RamySaied"
-        android:textSize="32sp"/>
+        android:textSize="20sp"/>
 </LinearLayout>

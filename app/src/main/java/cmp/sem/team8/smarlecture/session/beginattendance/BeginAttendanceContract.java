@@ -45,6 +45,8 @@ public class BeginAttendanceContract {
         void BeginAttendance();
         void endAttendance();
 
+        boolean isTaskIsRunning();
+
         void setTime(int time);
 
         void refresh();

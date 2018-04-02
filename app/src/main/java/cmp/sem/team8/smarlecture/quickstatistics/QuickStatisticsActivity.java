@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -34,7 +35,8 @@ public class QuickStatisticsActivity extends AppCompatActivity {
     private DatabaseReference ref;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_statistics);
 
@@ -45,9 +47,8 @@ public class QuickStatisticsActivity extends AppCompatActivity {
 
 
         // TODO: This was conflict, now the same buttons has 2 diff listeners. Update it
-        ref = FirebaseDatabase.getInstance().getReference();
 
-        BeginSession = (Button) findViewById(R.id.button3);
+        /*BeginSession = (Button) findViewById(R.id.button3);
         BeginSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +122,7 @@ public class QuickStatisticsActivity extends AppCompatActivity {
                 Dialog dialogg = alert.create();
                 dialogg.show();
             }
-        });
+        });*/
 
     }
 
@@ -140,6 +141,77 @@ public class QuickStatisticsActivity extends AppCompatActivity {
     }
 
 
+    public void connectSession(View v) {
+        Intent intent = new Intent(this, JoinedSession.class);
+        intent.putExtra("sessionid", "123");
+        intent.putExtra("groupid","id1");
+        startActivity(intent);
+        /*View view = (LayoutInflater.from(QuickStatisticsActivity.this)).inflate(R.layout.dialog, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(QuickStatisticsActivity.this);
+        alert.setView(view);
+        final EditText input = (EditText) view.findViewById(R.id.dialog_text);
+        input.setHint("enter session id");
+
+
+        alert.setCancelable(true);
+
+
+        alert.setPositiveButton("join", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, int which) {
+
+                ref = FirebaseDatabase.getInstance().getReference();
+                ref = ref.child("sessions").child(input.getText().toString());
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+
+                            Intent i = new Intent(context, JoinedSession.class);
+
+                            for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+
+                                if (childDataSnapshot.getKey().equals("status")) {
+                                    if (childDataSnapshot.getValue().equals("closed")) {
+                                        Toast.makeText(context, " Session has been closed ",
+                                                Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+                                } else if (childDataSnapshot.getKey().toString().equals("group")) {
+                                    i.putExtra("groupid", childDataSnapshot.getValue().toString());
+                                }
+                            }
+
+                            String SessionID = input.getText().toString();
+                            i.putExtra("sessionid", 123);
+
+                            startActivity(i);
+                            dialog.cancel();
+
+                        } else {
+                            Toast.makeText(context, " Session not exists ",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        Dialog dialogg = alert.create();
+        dialogg.show();*/
+    }
+
+    public void beginSession(View v) {
+        Intent intent = new Intent(v.getContext(), SessionActivity.class);
+        startActivity(intent);
+    }
 }
 
 

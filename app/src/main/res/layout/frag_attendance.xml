@@ -10,12 +10,23 @@
         android:layout_height="wrap_content"
         android:hint="secret" />
 
-    <Button
-        android:id="@+id/attendanceFrag_takeAttendance"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take attendance" />
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/attendanceFrag_takeAttendance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take attendance" />
+        <TextView
+            android:id="@+id/attendanceFrag_timerCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" " />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/attendanceFrag_list"

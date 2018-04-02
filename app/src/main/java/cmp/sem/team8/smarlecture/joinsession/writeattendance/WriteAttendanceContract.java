@@ -1,14 +1,10 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
-import android.widget.AdapterView;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionContract;
 
 /**
  * Created by ramym on 3/20/2018.
@@ -16,9 +12,21 @@ import cmp.sem.team8.smarlecture.session.startsession.StartSessionContract;
 
 public class WriteAttendanceContract {
     interface Views extends IBaseView<WriteAttendanceContract.Actions> {
-        void showStudents(String id);
-        void ListViewSetAdapter(StudentAttendanceAdapter adapter);
-        void ListViewSetOnItemClickListener(AdapterView.OnItemClickListener listener);
+
+        void showStudentsList(List<UserAttendanceModel> list);
+
+        void startAttendanceTimer(int seconds);
+        void startConnectionTimer(int seconds);
+
+        void stopAttendanceTimer();
+        void stopConnectionTimer();
+
+        void showErrorMessage(String cause);
+
+        void requestDisableConnection();
+
+        int getStudentId();
+        String getProvidedSecret();
     }
 
 
@@ -27,10 +35,18 @@ public class WriteAttendanceContract {
      */
     interface Actions extends IBasePresenter {
 
-        void getStudentsList();
-        void WriteAttendance();
-        StudentAttendanceAdapter getAdapter();
+        void getStudentsList(String GroupID, String SessionID);
 
+//        void writeAttendance(int position, String SessionId, String providedSecret);
+
+//        void onTimerFinish(int position, String secretProvided);
+
+        void onAttendanceTimeEnd();
+        void onConnectionTimeEnd();
+
+
+        void onConnectionLost();
+        void onConnectionBack();
     }
 
 }
