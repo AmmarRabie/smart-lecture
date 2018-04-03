@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import cmp.sem.team8.smarlecture.R;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -49,15 +50,14 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
     @Override
     public void showOnSuccess() {
-        Toast.makeText(getContext(), "Signed in successfully", Toast.LENGTH_SHORT).show();
+        Toasty.success(getContext(), "Signed in successfully", Toast.LENGTH_SHORT,true).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
-
     }
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
+        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT,true).show();
     }
 
     @Override

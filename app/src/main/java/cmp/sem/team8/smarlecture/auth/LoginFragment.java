@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cmp.sem.team8.smarlecture.R;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -59,19 +60,19 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
 
     @Override
     public void showOnSuccess(String userName) {
-        Toast.makeText(getContext(), "Hello " + userName, Toast.LENGTH_SHORT).show();
+        Toasty.normal(getContext(), "Hello " + userName, Toast.LENGTH_SHORT).show();
         getActivity().finish();
     }
 
     @Override
     public void showOnResetPasswordEmailSend() {
-        Toast.makeText(getContext(), "The reset email is send successfully",
-                Toast.LENGTH_SHORT).show();
+        Toasty.info(getContext(), "The reset email is send successfully",
+                Toast.LENGTH_SHORT,true).show();
     }
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
+        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT,true).show();
     }
 
     @Override
