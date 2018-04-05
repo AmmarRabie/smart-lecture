@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -68,8 +68,8 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="password"
-            android:inputType="textVisiblePassword" />
+            android:hint="Password"
+            android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
 
 
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Foreget Password?"
+        android:text="Forget Password?"
         android:textSize="16dip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
