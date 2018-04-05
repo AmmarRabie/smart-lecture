@@ -21,6 +21,8 @@ interface LoginContract {
         void showErrorMessage(String cause);
 
         void showOnResetPasswordEmailSend();
+
+        void showProgressIndicator(String progressWorkMessage);
     }
 
 

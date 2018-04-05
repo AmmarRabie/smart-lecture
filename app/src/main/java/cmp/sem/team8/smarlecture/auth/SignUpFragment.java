@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.auth;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,8 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     private EditText mName;
     private EditText mConfirmPassword;
 
+    //    private View ProgressView;
+    private ProgressDialog progressDialog = null;
 
     public static SignUpFragment newInstance() {
         return new SignUpFragment();
@@ -37,6 +40,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.frag_signup, container, false);
+//        ProgressView = root.findViewById(R.id.signUp_progressView);
         mEmail = root.findViewById(R.id.signUp_email);
         mPassword = root.findViewById(R.id.signUp_pass);
         mName = root.findViewById(R.id.signUp_name);
@@ -47,17 +51,16 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
         return root;
     }
 
-
     @Override
     public void showOnSuccess() {
-        Toasty.success(getContext(), "Signed in successfully", Toast.LENGTH_SHORT,true).show();
+        Toasty.success(getContext(), "Signed in successfully", Toast.LENGTH_SHORT, true).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 
     @Override
     public void showErrorMessage(String cause) {
-        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT,true).show();
+        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT, true).show();
     }
 
     @Override
@@ -68,14 +71,19 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
     @Override
     public void showProgressIndicator() {
-        // empty for now
-        Toast.makeText(getContext(), "start", Toast.LENGTH_SHORT).show();
+        if (progressDialog == null)
+            progressDialog = ProgressDialog.show(getContext(),
+                    null, "Signing up"
+                    , true, false);
+        else
+            progressDialog.show();
+
     }
 
     @Override
     public void hideProgressIndicator() {
-        // empty for now
-        Toast.makeText(getContext(), "end", Toast.LENGTH_SHORT).show();
+        if(progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override

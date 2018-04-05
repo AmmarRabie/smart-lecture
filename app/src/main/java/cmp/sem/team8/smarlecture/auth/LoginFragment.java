@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.auth;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,10 +21,10 @@ import es.dmoral.toasty.Toasty;
 
 public class LoginFragment extends Fragment implements LoginContract.Views, View.OnClickListener {
 
+    ProgressDialog progressDialog;
     private LoginContract.Actions mAction;
     private EditText mEmail;
     private EditText mPassword;
-
     private TextView mForgetPassword;
 
     public static LoginFragment newInstance() {
@@ -57,22 +58,37 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
         return root;
     }
 
-
     @Override
     public void showOnSuccess(String userName) {
+        progressDialog.dismiss();
         Toasty.normal(getContext(), "Hello " + userName, Toast.LENGTH_SHORT).show();
         getActivity().finish();
     }
 
     @Override
     public void showOnResetPasswordEmailSend() {
+        progressDialog.dismiss();
         Toasty.info(getContext(), "The reset email is send successfully",
-                Toast.LENGTH_SHORT,true).show();
+                Toast.LENGTH_SHORT, true).show();
+    }
+
+    @Override
+    public void showProgressIndicator(String progressWorkMessage) {
+        if (progressDialog == null)
+            progressDialog = ProgressDialog.show(getContext(),
+                    null, progressWorkMessage
+                    , true, false);
+        else {
+            progressDialog.setMessage(progressWorkMessage);
+            progressDialog.show();
+        }
     }
 
     @Override
     public void showErrorMessage(String cause) {
-        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT,true).show();
+        if (progressDialog != null)
+            progressDialog.dismiss();
+        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT, true).show();
     }
 
     @Override

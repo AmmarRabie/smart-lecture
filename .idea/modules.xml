@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/smart-lecture.iml" filepath="$PROJECT_DIR$/smart-lecture.iml" />
+      <module fileurl="file://C:\Users\Ammar Rabie\android_workspace\smart-lecture_\app\app.iml" filepath="C:\Users\Ammar Rabie\android_workspace\smart-lecture_\app\app.iml" />
+      <module fileurl="file://C:\Users\Ammar Rabie\android_workspace\smart-lecture_\smart-lecture.iml" filepath="C:\Users\Ammar Rabie\android_workspace\smart-lecture_\smart-lecture.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smart-lecture_.iml" filepath="$PROJECT_DIR$/smart-lecture_.iml" />
     </modules>
   </component>
 </project>

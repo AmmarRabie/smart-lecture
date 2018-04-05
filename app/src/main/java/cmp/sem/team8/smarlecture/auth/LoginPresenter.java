@@ -45,6 +45,7 @@ class LoginPresenter implements LoginContract.Actions {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             mFoundUser = true;
+            mView.showProgressIndicator("try finding a user");
             getUserNameAndCallViewSuccess();
         }
 
@@ -74,6 +75,7 @@ class LoginPresenter implements LoginContract.Actions {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail: success");
+                            mView.showProgressIndicator("logging in...");
                             getUserNameAndCallViewSuccess();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -92,7 +94,7 @@ class LoginPresenter implements LoginContract.Actions {
             mView.showErrorMessage("Email can't be empty");
             return;
         }
-
+        mView.showProgressIndicator("sending...");
         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
