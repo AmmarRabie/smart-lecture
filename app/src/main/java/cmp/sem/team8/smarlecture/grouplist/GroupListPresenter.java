@@ -54,11 +54,14 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 }
                 // remove after ending, this is out of if because we want to delete the group
                 // even we don't have any session related to it
+                final boolean isOffline = mView.getOfflineState();
+                if (isOffline)
+                    mView.onDeleteSuccess(groupID);
                 getGroupRef(groupID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            if (mView != null)
+                            if (mView != null && !isOffline)
                                 mView.onDeleteSuccess(groupID);
                         } else {
                             if (mView != null)
@@ -94,12 +97,15 @@ public class GroupListPresenter implements GroupListContract.Actions {
 
         final String groupID = newGroupRef.getKey();
 
+        final boolean isOffline = mView.getOfflineState();
+        if (isOffline)
+            mView.onAddSuccess(groupID, groupName);
         newGroupRef.child("group_owner").setValue(userID);
         newGroupRef.child("name").setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    if (mView != null)
+                    if (mView != null && !isOffline)
                         mView.onAddSuccess(groupID, groupName);
                 } else {
                     if (mView != null)
@@ -120,11 +126,15 @@ public class GroupListPresenter implements GroupListContract.Actions {
             mView.showErrorMessage("Group can't have an empty name");
             return;
         }
+
+        final boolean isOffline = mView.getOfflineState();
+        if (isOffline)
+            mView.onEditSuccess(groupID, newGroupName);
         getGroupRef(groupID).child("name").setValue(newGroupName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    if (mView != null)
+                    if (mView != null && !isOffline)
                         mView.onEditSuccess(groupID, newGroupName);
                 } else {
                     if (mView != null)
@@ -136,6 +146,8 @@ public class GroupListPresenter implements GroupListContract.Actions {
 
     @Override
     public void start() {
+        mView.handleOfflineStates();
+
         // fetch the all groups name of this user
         if (mCurrentUser == null) {
             mView.showErrorMessage("can't find a user, try to re-login");

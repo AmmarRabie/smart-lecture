@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
 
@@ -34,12 +35,13 @@ import cmp.sem.team8.smarlecture.session.SessionActivity;
  */
 public class GroupListFragment extends Fragment implements
         GroupListContract.Views,
-        GroupListRecyclerAdapter.OnItemClickListener {
+        GroupListRecyclerAdapter.OnItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
 
 
     Animator spruceAnimator;
     private GroupListContract.Actions mPresenter;
     private FloatingActionButton mAddGroup;
+    private View mOfflineView;
     private RecyclerView mGroupRecyclerView;
     private GroupListRecyclerAdapter mGroupListAdapter;
     private ArrayList<HashMap<String, Object>> mGroupList;
@@ -66,6 +68,8 @@ public class GroupListFragment extends Fragment implements
             mBuilder.show();
         }
     };
+    private boolean mInternetState;
+    private InternetConnectivityReceiver internetConnectivityReceiver;
 
     public GroupListFragment() {
         // Required empty public constructor
@@ -82,13 +86,13 @@ public class GroupListFragment extends Fragment implements
         View root = inflater.inflate(R.layout.frag_grouplist, container, false);
 
         mAddGroup = root.findViewById(R.id.groupListFrag_addGroup);
-
+        mOfflineView = root.findViewById(R.id.offlineView);
         mGroupRecyclerView = root.findViewById(R.id.groupListFrag_list);
         mGroupRecyclerView.setHasFixedSize(true);
 
         mAddGroup.setOnClickListener(mAddGroupClickListener);
 
-        mGroupList = new ArrayList<HashMap<String, Object>>();
+        mGroupList = new ArrayList<>();
 
         mGroupListAdapter = new GroupListRecyclerAdapter(getContext(),
                 mGroupList, this);
@@ -137,7 +141,7 @@ public class GroupListFragment extends Fragment implements
             position++;
         }
         mGroupList.remove(position);
-        mGroupListAdapter.notifyItemRemoved(position);
+        mGroupListAdapter.notifyDataSetChanged(); // call this instead to get onBind called on all views so that onClick listeners get updated with correct position
     }
 
     @Override
@@ -148,8 +152,6 @@ public class GroupListFragment extends Fragment implements
         }
         mGroupList.get(position).put("name", newName);
         mGroupListAdapter.notifyItemChanged(position, null);
-        Toast.makeText(getContext(), "Error: " + newName, Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -159,6 +161,18 @@ public class GroupListFragment extends Fragment implements
         newGroup.put("id", groupID);
         mGroupList.add(newGroup);
         mGroupListAdapter.notifyItemInserted(mGroupList.size());
+    }
+
+    @Override
+    public void handleOfflineStates() {
+
+        internetConnectivityReceiver =
+                new InternetConnectivityReceiver(this).start(getContext());
+    }
+
+    @Override
+    public boolean getOfflineState() {
+        return mInternetState;
     }
 
     /**
@@ -173,6 +187,11 @@ public class GroupListFragment extends Fragment implements
         mPresenter.start();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        internetConnectivityReceiver.end(getContext());
+    }
 
     @Override
     public void onStartSessionClick(View view, int position) {
@@ -202,7 +221,6 @@ public class GroupListFragment extends Fragment implements
     public void onDeleteGroupClick(View view, int position) {
         HashMap<String, Object> groupClicked = mGroupList.get(position);
         final String groupId = groupClicked.get("id").toString();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Delete Group");
         builder.setMessage("This group and all its sessions will be permanently deleted");
@@ -251,7 +269,6 @@ public class GroupListFragment extends Fragment implements
         mBuilder.show();
     }
 
-
     private EditText buildEditTextDialogView(String hint, String text) {
         EditText input = new EditText(getContext());
         input.setLayoutParams(new LinearLayout.LayoutParams(
@@ -264,4 +281,15 @@ public class GroupListFragment extends Fragment implements
         return input;
     }
 
+    @Override
+    public void onInternetConnectionLost() {
+        mInternetState = false;
+        mOfflineView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onInternetConnectionBack() {
+        mInternetState = true;
+        mOfflineView.setVisibility(View.GONE);
+    }
 }
