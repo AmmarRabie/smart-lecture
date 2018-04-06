@@ -57,11 +57,12 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 getGroupRef(groupID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            mView.onDeleteSuccess(groupID);
-                        }
-                        else {
-                            mView.showErrorMessage(task.getException().getMessage());
+                        if (task.isSuccessful()) {
+                            if (mView != null)
+                                mView.onDeleteSuccess(groupID);
+                        } else {
+                            if (mView != null)
+                                mView.showErrorMessage(task.getException().getMessage());
                         }
                     }
                 });
@@ -69,7 +70,8 @@ public class GroupListPresenter implements GroupListContract.Actions {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                mView.showErrorMessage("can't delete");
+                if (mView != null)
+                    mView.showErrorMessage("can't delete");
             }
         });
 
@@ -90,17 +92,18 @@ public class GroupListPresenter implements GroupListContract.Actions {
         DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference("groups");
         DatabaseReference newGroupRef = groupsRef.push();
 
-        final String groupID=newGroupRef.getKey();
+        final String groupID = newGroupRef.getKey();
 
         newGroupRef.child("group_owner").setValue(userID);
         newGroupRef.child("name").setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    mView.onAddSuccess(groupID,groupName);
-                }
-                else{
-                    mView.showErrorMessage(task.getException().getMessage());
+                if (task.isSuccessful()) {
+                    if (mView != null)
+                        mView.onAddSuccess(groupID, groupName);
+                } else {
+                    if (mView != null)
+                        mView.showErrorMessage(task.getException().getMessage());
                 }
             }
         });
@@ -120,11 +123,12 @@ public class GroupListPresenter implements GroupListContract.Actions {
         getGroupRef(groupID).child("name").setValue(newGroupName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    mView.onEditSuccess(groupID,newGroupName);
-                }
-                else{
-                    mView.showErrorMessage(task.getException().getMessage());
+                if (task.isSuccessful()) {
+                    if (mView != null)
+                        mView.onEditSuccess(groupID, newGroupName);
+                } else {
+                    if (mView != null)
+                        mView.showErrorMessage(task.getException().getMessage());
                 }
             }
         });
@@ -155,12 +159,14 @@ public class GroupListPresenter implements GroupListContract.Actions {
 
                     list.add(thisGroup);
                 }
-                mView.showGroupList(list);
+                if (mView != null)
+                    mView.showGroupList(list);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                mView.showErrorMessage(databaseError.getMessage());
+                if (mView != null)
+                    mView.showErrorMessage(databaseError.getMessage());
             }
         });
     }

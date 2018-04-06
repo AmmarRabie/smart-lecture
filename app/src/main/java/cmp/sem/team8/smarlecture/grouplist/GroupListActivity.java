@@ -19,31 +19,29 @@ public class GroupListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent i=new Intent(this, LoginActivity.class);
-        startActivity(i);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grouplist);
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
+
         GroupListFragment grouplistfragment = (GroupListFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
 
-        if(grouplistfragment==null){
-            grouplistfragment=GroupListFragment.newInstance();
+        if (grouplistfragment == null) {
+            grouplistfragment = GroupListFragment.newInstance();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     grouplistfragment, R.id.contentFrame);
         }
 
-        mGroupListPresenter=new GroupListPresenter(grouplistfragment);
+        mGroupListPresenter = new GroupListPresenter(grouplistfragment);
     }
 
 
-
-    public void test(View view)
-    {
-        Intent intent = new Intent(this,GroupActivity.class);
-        intent.putExtra("group_key","id1");
+    public void test(View view) {
+        Intent intent = new Intent(this, GroupActivity.class);
+        intent.putExtra("group_key", "id1");
         startActivity(intent);
     }
-
 
 
 }
