@@ -52,7 +52,7 @@ public class GroupListFragment extends Fragment implements
             final EditText groupNameView = buildEditTextDialogView("Name", null);
             mBuilder.setView(groupNameView);
             mBuilder.setTitle("Add Group");
-            mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+            mBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     mPresenter.addGroup(groupNameView.getText().toString());
@@ -172,7 +172,7 @@ public class GroupListFragment extends Fragment implements
 
     @Override
     public boolean getOfflineState() {
-        return mInternetState;
+        return !mInternetState;
     }
 
     /**
