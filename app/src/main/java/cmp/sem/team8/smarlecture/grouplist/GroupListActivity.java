@@ -77,6 +77,7 @@ public class GroupListActivity extends AppCompatActivity {
         View view = (LayoutInflater.from(this)).inflate(R.layout.dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setView(view);
+        alert.setTitle("Join Session");
         final EditText input = (EditText) view.findViewById(R.id.dialog_text);
         alert.setPositiveButton("join", new DialogInterface.OnClickListener() {
             @Override
