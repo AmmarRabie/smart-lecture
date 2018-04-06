@@ -14,17 +14,19 @@ import cmp.sem.team8.smarlecture.IBaseView;
 public interface GroupContract {
 
     interface Views extends IBaseView<Actions> {
-        void showOnSuccess();
 
         void showOnErrorMessage(String cause);
-        void onDeleteSuccess(String UID);
-        void onEditSuccess(String UID,String newName);
-        void onAddSuccess(String UID,String name);
 
+        void onDeleteSuccess(String UID);
+
+        void onEditSuccess(String UID, String newName);
+
+        void onAddSuccess(String UID, String name);
 
         void showNamesList(ArrayList<HashMap<String, Object>> namesList);
 
-
+        void handleOfflineStates();
+        boolean getOfflineState();
     }
 
     interface Actions extends IBasePresenter {

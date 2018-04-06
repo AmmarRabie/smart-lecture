@@ -1,68 +1,47 @@
 package cmp.sem.team8.smarlecture.group;
 
 
-import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
+import es.dmoral.toasty.Toasty;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class GroupFragment extends android.support.v4.app.Fragment implements
         GroupContract.Views,
-        GroupAdapter.onItemClickListner {
+        GroupRecyclerAdapter.onItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
 
     private GroupContract.Actions mPresenter;
 
-    private Button mAddStudent;
+    private RecyclerView mGroupRecyclerView;
+    private View mOfflineView;
 
-    private ListView mGroupList;
+    private GroupRecyclerAdapter mGroupRecyclerAdapter;
 
-    private GroupAdapter mGroupAdapter;
+    private ArrayList<HashMap<String, Object>> mNamesList;
+    private InternetConnectivityReceiver internetConnectivityReceiver;
+    private boolean mInternetState;
 
-    private View.OnClickListener mAddStudtentListner=new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-
-            View mView = getLayoutInflater().inflate(R.layout.addstudentdialog, null);
-
-            mBuilder.setView(mView);
-
-            final EditText mName = (EditText) mView.findViewById(R.id.studentDialogName);
-
-            Button mAdd = (Button) mView.findViewById(R.id.addStudentDialog);
-
-            final AlertDialog dialog = mBuilder.create();
-
-            dialog.show();
-
-            mAdd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mPresenter.addStudent(mName.getText().toString());
-                    dialog.dismiss();
-                }
-            });
-
-        }
-    };
-
-    public GroupFragment(){   }
+    public GroupFragment() {
+    }
 
     public static GroupFragment newInstance() {
         return new GroupFragment();
@@ -80,75 +59,72 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
 
         View root = inflater.inflate(R.layout.frag_group, container, false);
 
-        mAddStudent = root.findViewById(R.id.groupFrag_addStudent);
+        mGroupRecyclerView = root.findViewById(R.id.groupFrag_list);
+        mOfflineView = root.findViewById(R.id.offlineView);
+        mNamesList = new ArrayList<>();
 
-        mGroupList = root.findViewById(R.id.groupFrag_list);
+        mGroupRecyclerAdapter = new GroupRecyclerAdapter(getContext(),
+                mNamesList, this);
 
-
-        mAddStudent.setOnClickListener(mAddStudtentListner);
-
-        mGroupAdapter=new GroupAdapter(getContext(),
-                new ArrayList<HashMap<String, Object>>(),this );
-
-        mGroupList.setAdapter(mGroupAdapter);
-
+        mGroupRecyclerView.setAdapter(mGroupRecyclerAdapter);
+        mGroupRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return root;
     }
 
     @Override
-    public void showOnSuccess() {
-
-
+    public void showNamesList(ArrayList<HashMap<String, Object>> namesList) {
+        if (namesList.equals(mNamesList))
+            return;
+        mNamesList.clear();
+        mNamesList.addAll(namesList);
+        mGroupRecyclerAdapter.notifyDataSetChanged(/*0,mNamesList.size()*/);
     }
 
+    @Override
+    public void handleOfflineStates() {
+        internetConnectivityReceiver =
+                new InternetConnectivityReceiver(this).start(getContext());
+    }
 
     @Override
-    public void showNamesList(ArrayList<HashMap<String, Object>> namesList) {
-
-        mGroupAdapter.clear();
-
-        mGroupAdapter.addAll(namesList);
-
-        mGroupAdapter.notifyDataSetChanged();
-
-       }
+    public boolean getOfflineState() {
+        return !mInternetState;
+    }
 
     @Override
     public void showOnErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
-
+        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT, true).show();
     }
 
     @Override
     public void onDeleteSuccess(String UID) {
-       int position=0;
-
-      while ( !(UID.equals( mGroupAdapter.getItem(position).get("key").toString()))){position++;}
-       HashMap<String,Object> deletedStudent=mGroupAdapter.getItem(position);
-       mGroupAdapter.remove(deletedStudent);
-       mGroupAdapter.notifyDataSetChanged();
+        int position = 0;
+        while (!(UID.equals(mNamesList.get(position).get("key").toString()))) {
+            position++;
+        }
+        mNamesList.remove(position);
+        mGroupRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onEditSuccess(String UID,String newName) {
-       int position=0;
-        while(!(UID.equals( mGroupAdapter.getItem(position).get("key").toString()))){position++;}
-        mGroupAdapter.getItem(position).put("name",newName);
-        mGroupAdapter.notifyDataSetChanged();
-
+    public void onEditSuccess(String UID, String newName) {
+        int position = 0;
+        while (!(UID.equals(mNamesList.get(position).get("key").toString()))) {
+            position++;
+        }
+        mNamesList.get(position).put("name", newName);
+        mGroupRecyclerAdapter.notifyItemChanged(position, null);
     }
 
     @Override
-    public void onAddSuccess(String UID,String newName) {
-        HashMap<String,Object> newStudent=new HashMap<>();
-        newStudent.put("key",UID);
-        newStudent.put("name",newName);
-        mGroupAdapter.add(newStudent);
-        mGroupAdapter.notifyDataSetChanged();
-
+    public void onAddSuccess(String UID, String newName) {
+        HashMap<String, Object> newStudent = new HashMap<>();
+        newStudent.put("key", UID);
+        newStudent.put("name", newName);
+        mNamesList.add(newStudent);
+        mGroupRecyclerAdapter.notifyItemInserted(mNamesList.size());
     }
-
 
     @Override
     public void onResume() {
@@ -156,43 +132,71 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
         mPresenter.start();
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
         mPresenter.end();
+        if (internetConnectivityReceiver != null)
+            internetConnectivityReceiver.end(getContext());
     }
 
     @Override
     public void onEditItemClick(View v, int position) {
-        HashMap<String,Object> studentClicked=mGroupAdapter.getItem(position);
-        final String studentID=studentClicked.get("key").toString();
-
+        HashMap<String, Object> studentClicked = mNamesList.get(position);
+        final String studentID = studentClicked.get("key").toString();
+        final String studentName = studentClicked.get("name").toString();
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-        View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
-        mBuilder.setView(mView);
-        final EditText studentNameView = (EditText) mView.findViewById(R.id.groupDialogName);
-        final Button addGroupView = (Button) mView.findViewById(R.id.addGroupDialog);
-        final AlertDialog dialog = mBuilder.create();
-        addGroupView.setText("Change");
-        addGroupView.setOnClickListener(new View.OnClickListener() {
+        final EditText newNameView = buildEditTextDialogView(studentName);
+        mBuilder.setView(newNameView);
+        mBuilder.setTitle("Edit name");
+        mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String studentName = studentNameView.getText().toString();
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String studentName = newNameView.getText().toString();
                 mPresenter.editStudent(studentID, studentName);
-                dialog.dismiss();
+                dialogInterface.dismiss();
             }
         });
-        dialog.show();
-
+        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        mBuilder.show();
     }
 
     @Override
     public void onDeleteItemClick(View v, int position) {
-        String key = mGroupAdapter.getItem(position).get("key").toString();
+        String key = mNamesList.get(position).get("key").toString();
         mPresenter.deleteStudent(key);
+    }
 
+    @Override
+    public void onSaveItemClick(View v, String name, int position) {
+        mPresenter.addStudent(name);
+    }
 
+    private EditText buildEditTextDialogView(String name) {
+        EditText input = new EditText(getContext());
+        input.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+        input.setText(name);
+        input.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
+        return input;
+    }
+
+    @Override
+    public void onInternetConnectionLost() {
+        mInternetState = false;
+        mOfflineView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onInternetConnectionBack() {
+        mInternetState = true;
+        mOfflineView.setVisibility(View.GONE);
     }
 }

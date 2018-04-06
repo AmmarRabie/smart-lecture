@@ -23,8 +23,6 @@ public class GroupPresenter implements GroupContract.Actions {
 
     private final String GROUP_ID;
 
-    ArrayList<ValueEventListener> valueEventListeners = new ArrayList<>();
-
     private GroupContract.Views mView;
 
     private DatabaseReference mGroupRef;
@@ -41,6 +39,9 @@ public class GroupPresenter implements GroupContract.Actions {
     }
 
     public void start() {
+
+        mView.handleOfflineStates();
+
         FirebaseDatabase.getInstance().getReference("groups")
                 .child(GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -75,14 +76,18 @@ public class GroupPresenter implements GroupContract.Actions {
             return;
         }
         DatabaseReference newStudentRef = mGroupRef.child("namesList").push();
-        final String key=newStudentRef.getKey();
+        final String key = newStudentRef.getKey();
+
+        final boolean isOffline = mView.getOfflineState();
+        if (isOffline)
+            mView.onAddSuccess(key, name);
         newStudentRef.setValue(name).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    mView.onAddSuccess(key,name);
-                }
-                else {
+                if (task.isSuccessful()) {
+                    if (!isOffline)
+                        mView.onAddSuccess(key, name);
+                } else {
                     mView.showOnErrorMessage(task.getException().getMessage());
                 }
             }
@@ -101,13 +106,16 @@ public class GroupPresenter implements GroupContract.Actions {
             mView.showOnErrorMessage("Name can't be empty");
             return;
         }
+        final boolean isOffline = mView.getOfflineState();
+        if (isOffline)
+            mView.onEditSuccess(studentKey, newName);
         mGroupRef.child("namesList").child(studentKey).setValue(newName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    mView.onEditSuccess(studentKey,newName);
-                }
-                else {
+                if (task.isSuccessful()) {
+                    if (!isOffline)
+                        mView.onEditSuccess(studentKey, newName);
+                } else {
                     mView.showOnErrorMessage(task.getException().getMessage());
                 }
             }
@@ -119,13 +127,16 @@ public class GroupPresenter implements GroupContract.Actions {
         if (mGroupRef == null) {
             return;
         }
+        final boolean isOffline = mView.getOfflineState();
+        if (isOffline)
+            mView.onDeleteSuccess(studentKey);
         mGroupRef.child("namesList").child(studentKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    mView.onDeleteSuccess(studentKey);
-                }
-                else {
+                if (task.isSuccessful()) {
+                    if (!isOffline)
+                        mView.onDeleteSuccess(studentKey);
+                } else {
                     mView.showOnErrorMessage(task.getException().getMessage());
                 }
             }
@@ -142,7 +153,7 @@ public class GroupPresenter implements GroupContract.Actions {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if(!dataSnapshot.exists())
+                    if (!dataSnapshot.exists())
                         continue;
                     String key = child.getKey();
                     String name = child.getValue(String.class);
@@ -188,8 +199,8 @@ public class GroupPresenter implements GroupContract.Actions {
 
     @Override
     public void end() {
-        for (int i = 0; i < valueEventListeners.size(); i++)
-            mGroupRef.child("namesList").removeEventListener(valueEventListeners.get(i));
+/*        for (int i = 0; i < valueEventListeners.size(); i++)
+            mGroupRef.child("namesList").removeEventListener(valueEventListeners.get(i));*/
     }
 
 }
