@@ -82,6 +82,11 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
+    public void showGroupName(String groupName) {
+        getActivity().setTitle(groupName);
+    }
+
+    @Override
     public void handleOfflineStates() {
         internetConnectivityReceiver =
                 new InternetConnectivityReceiver(this).start(getContext());

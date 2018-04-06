@@ -212,8 +212,10 @@ public class GroupListFragment extends Fragment implements
     public void onItemClick(View view, int position) {
         HashMap<String, Object> groupClicked = mGroupList.get(position);
         String groupId = groupClicked.get("id").toString();
+        String groupName = groupClicked.get("name").toString();
         Intent groupActivity = new Intent(getContext(), GroupActivity.class);
         groupActivity.putExtra("group_id", groupId);
+        groupActivity.putExtra("group_name", groupName);
         startActivity(groupActivity);
     }
 

@@ -25,7 +25,10 @@ public interface GroupContract {
 
         void showNamesList(ArrayList<HashMap<String, Object>> namesList);
 
+        void showGroupName(String groupName);
+
         void handleOfflineStates();
+
         boolean getOfflineState();
     }
 

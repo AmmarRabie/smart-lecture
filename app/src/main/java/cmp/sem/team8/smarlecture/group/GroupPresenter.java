@@ -22,14 +22,16 @@ public class GroupPresenter implements GroupContract.Actions {
     private static final String TAG = "GroupPresenter";
 
     private final String GROUP_ID;
+    private final String GROUP_NAME;
 
     private GroupContract.Views mView;
 
     private DatabaseReference mGroupRef;
 
-    public GroupPresenter(GroupContract.Views view, final String groupId) {
+    public GroupPresenter(GroupContract.Views view, final String groupId, final String groupName) {
         mView = view;
         GROUP_ID = groupId;
+        GROUP_NAME = groupName;
         mGroupRef = null;
         if (groupId == null) {
             Log.e(TAG, "GroupPresenter: group passed as null");
@@ -41,6 +43,7 @@ public class GroupPresenter implements GroupContract.Actions {
     public void start() {
 
         mView.handleOfflineStates();
+        mView.showGroupName(GROUP_NAME);
 
         FirebaseDatabase.getInstance().getReference("groups")
                 .child(GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
