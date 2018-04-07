@@ -1,8 +1,5 @@
 package cmp.sem.team8.smarlecture.session.beginattendance;
 
-import android.media.MediaCas;
-import android.text.format.Time;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -11,100 +8,83 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by ramym on 3/17/2018.
  */
 
-public class BeginAttendancePresenter implements BeginAttendanceContract.Actions{
+public class BeginAttendancePresenter implements BeginAttendanceContract.Actions {
+    private final String GROUP_ID;
     BeginAttendanceContract.Views mView;
-    Integer Atime;
     DatabaseReference ref;
     boolean taskIsRunning;
-
-    private  StudentsNamesAdapter adapter;
-
     int SessionId;
-
     List<String> students;
+    int maxId = 9999;
+    int minId = 0;
+    private StudentsNamesAdapter adapter;
 
-
-    int maxId=10000000;
-    int minId=0;
-    public BeginAttendancePresenter(BeginAttendanceContract.Views view)
-    {
-        taskIsRunning=false;
+    public BeginAttendancePresenter(BeginAttendanceContract.Views view, String groupId) {
+        GROUP_ID = groupId;
+        taskIsRunning = false;
         mView = view;
         mView.setPresenter(this);
 
-        Atime=null;
+        ref = FirebaseDatabase.getInstance().getReference();
 
-        this.SessionId= SessionId;
-        ref= FirebaseDatabase.getInstance().getReference();
-
-        students=new ArrayList<>();
+        students = new ArrayList<>();
 
 
     }
+
     @Override
     public void start() {
-
+        mView.showSecrect(generateRandomSecret());
     }
 
     @Override
     public void BeginAttendance() {
 
-        taskIsRunning=true;
-        SessionId=getSessionIDFromActivity();
-        setTime(5);
+        taskIsRunning = true;
+        SessionId = getSessionIDFromActivity();
         mView.showProgressIndicator(3);
 
-        Random rand = new Random(System.currentTimeMillis());
-        //get the range, casting to long to avoid overflow problems
-        long range = (long)maxId - (long)minId + 1;
-        // compute a fraction of the range, 0 <= frac < range
-        long fraction = (long)(range * rand.nextDouble());
-        Integer randomNumber =  (int)(fraction + minId);
 
-        DatabaseReference nref=ref.child("sessions").child(Integer.toString(SessionId)).child("attendance");
+        DatabaseReference nref = ref.child("sessions").child(Integer.toString(SessionId)).child("attendance");
 
         nref.setValue("open");
 
-        nref=ref.child("sessions").child(Integer.toString(SessionId)).child("attendancesecrect");
+        nref = ref.child("sessions").child(Integer.toString(SessionId)).child("attendancesecrect");
 
-        nref.setValue(randomNumber.toString());
+        nref.setValue(mView.getSecret());
 
-        mView.showSecrect(randomNumber);
+        nref = FirebaseDatabase.getInstance().getReference();
+        nref = nref.child("sessions").child(Integer.toString(SessionId)).child("namesList");
 
-        nref=FirebaseDatabase.getInstance().getReference();
-        nref=nref.child("sessions").child(Integer.toString(SessionId)).child("namesList");
-
-        adapter=new StudentsNamesAdapter(((BeginAttendanceFragment)mView).getActivity(),students);
+        adapter = new StudentsNamesAdapter(((BeginAttendanceFragment) mView).getActivity(), students);
 
         mView.listViewSetAdapter(adapter);
 
         nref.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s)
-            {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                DatabaseReference mref=FirebaseDatabase.getInstance().getReference();
-                mref=mref.child("groups").child("id1").child("namesList").child(dataSnapshot.getKey().toString());
+                DatabaseReference mref = FirebaseDatabase.getInstance().getReference();
+                mref = mref.child("groups").child(GROUP_ID).child("namesList").child(dataSnapshot.getKey());
 
                 mref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot)
-                    {
-                     students.add(dataSnapshot.getValue().toString());
-                     adapter.updateRecords(students);
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            students.add(dataSnapshot.getValue().toString());
+                            adapter.updateRecords(students);
+                        }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        mView.showErrorMessage(databaseError.getMessage());
                     }
                 });
 
@@ -128,7 +108,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                mView.showErrorMessage(databaseError.getMessage());
             }
         });
 
@@ -142,13 +122,6 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
     }
 
-    @Override
-    public void setTime(int time) {
-       // implement it later
-        Atime=new Integer(5);
-
-    }
-
 
 
     @Override
@@ -156,11 +129,20 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
     }
 
-    private int getSessionIDFromActivity()
-    {
-        return   ((BeginAttendanceFragment)mView).getActivity().getIntent().getIntExtra("SessionId",0);
+    private int getSessionIDFromActivity() {
+        return ((BeginAttendanceFragment) mView).getActivity().getIntent().getIntExtra("SessionId", 0);
     }
 
-    public boolean isTaskIsRunning()
-    {return taskIsRunning;}
+    public boolean isTaskIsRunning() {
+        return taskIsRunning;
+    }
+
+
+    private String generateRandomSecret() {
+        Integer r1 = (int) (Math.random() * 10); // r1 if from 0->9
+        Integer r2 = (int) (Math.random() * 10); // r2 if from 0->9
+        Integer r3 = (int) (Math.random() * 10); // r3 if from 0->9
+        Integer r4 = (int) (Math.random() * 10); // r4 if from 0->9
+        return r1.toString() + r2.toString() + r3.toString() + r4.toString();
+    }
 }

@@ -31,7 +31,6 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
         , AdapterView.OnItemClickListener
         , ConnectionDetector.OnConnectionChangeListener, View.OnClickListener {
     private static final String TAG = "WriteAttendanceFragment";
-    View dialogRootView;
     private CountDownTimer connectionTimer;
     private CountDownTimer attendanceTimer;
     private String mSessionId;
@@ -222,7 +221,7 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     @Override
     public void onClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        dialogRootView = LayoutInflater.from(getContext()).
+        View dialogRootView = LayoutInflater.from(getContext()).
                 inflate(R.layout.dialog_change_secret, null);
         builder.setView(dialogRootView);
         builder.setTitle("Please enter PIN");

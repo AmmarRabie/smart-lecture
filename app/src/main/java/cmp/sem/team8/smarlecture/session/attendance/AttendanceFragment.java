@@ -23,6 +23,9 @@ import cmp.sem.team8.smarlecture.R;
  * Created by AmmarRabie on 11/03/2018.
  */
 
+/**
+ * @deprecated use {@link cmp.sem.team8.smarlecture.joinsession.writeattendance.WriteAttendancePresenter} instead
+ */
 public class AttendanceFragment extends Fragment implements AttendanceContract.Views {
 
 

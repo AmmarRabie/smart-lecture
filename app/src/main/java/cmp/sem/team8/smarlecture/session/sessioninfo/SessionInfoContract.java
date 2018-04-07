@@ -1,20 +1,13 @@
-package cmp.sem.team8.smarlecture.session.startsession;
-
-import android.text.format.Time;
-
-import java.util.List;
-import java.util.Map;
+package cmp.sem.team8.smarlecture.session.sessioninfo;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
-import cmp.sem.team8.smarlecture.model.SessionModel;
-import cmp.sem.team8.smarlecture.session.attendance.AttendanceContract;
 
 /**
  * Created by ramym on 3/15/2018.
  */
 
-public class StartSessionContract {
+public class SessionInfoContract {
     /**
      * views methods implemented by fragment
      */

@@ -48,7 +48,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         mSessionId = sessionId;
         mGroupId = groupId;
 
-        DatabaseReference thisSessionRef = FirebaseDatabase.getInstance()
+        final DatabaseReference thisSessionRef = FirebaseDatabase.getInstance()
                 .getReference("sessions").child(sessionId);
 
         thisSessionRef.
@@ -78,11 +78,12 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
 
         thisSessionRef.
-                child("attendancesecrect").addListenerForSingleValueEvent(new ValueEventListener() {
+                child("attendancesecrect").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     mSecret = dataSnapshot.getValue(String.class);
+                    thisSessionRef.child("attendancesecrect").removeEventListener(this);
                 }
             }
 
@@ -104,7 +105,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
                             mView.requestDisableConnection();
                             mView.startAttendanceTimer(1 * 60);
-                            mView.startConnectionTimer(15);
+                            mView.startConnectionTimer(35);
                             FirebaseDatabase.getInstance().getReference("sessions")
                                     .child(mSessionId).child("attendance")
                                     .removeEventListener(this);
@@ -126,7 +127,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         mIsAttendanceTimeOver = true;
 
         mView.stopAttendanceTimer();
-        mView.showErrorMessage("time end");
+        mView.showInfoMessage("time end");
 
         if (verifySecret(mView.getProvidedSecret())) doOnProvidingCorrectSecret();
         else doOnProvidingWrongSecret();
@@ -148,7 +149,6 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
             doOnEndingConnectionProperly();
             return;
         }
-        mView.showErrorMessage("ent gay t2felow delo2ty ya...");
     }
 
 

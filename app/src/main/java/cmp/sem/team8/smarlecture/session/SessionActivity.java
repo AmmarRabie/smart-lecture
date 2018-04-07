@@ -1,17 +1,19 @@
 package cmp.sem.team8.smarlecture.session;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
+import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class SessionActivity extends AppCompatActivity {
 
@@ -23,7 +25,7 @@ public class SessionActivity extends AppCompatActivity {
     int SessionId;
 
     private BeginAttendancePresenter mAttendancePresenter;
-    private StartSessionPresenter mStartSessionPresenter;
+    private SessionInfoPresenter mSessionInfoPresenter;
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -47,25 +49,26 @@ public class SessionActivity extends AppCompatActivity {
          AttendanceTab = findViewById(R.id.begin_attandence_tab);
          viewPager = findViewById(R.id.viewPager);
 
-        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),
+                getIntent().getStringExtra("group_id"));
 
         viewPager.setAdapter(pageAdapter);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
        /* mAttendancePresenter = null;
-        mStartSessionPresenter=null;
+        mSessionInfoPresenter=null;
         //
         // begin the session with generating the session.
         int fragmentId = R.id.contentFrame2;
-        StartSessionFragment fragment2 = (StartSessionFragment)
+        SessionInfoFragment fragment2 = (SessionInfoFragment)
                 getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
          fragment2 = fragment2 == null ?
-               StartSessionFragment.newInstance()
+               SessionInfoFragment.newInstance()
                 : fragment2;
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
 
-            mStartSessionPresenter = new StartSessionPresenter(fragment2);
+            mSessionInfoPresenter = new SessionInfoPresenter(fragment2);
 
 
         /////*/
@@ -78,22 +81,22 @@ public class SessionActivity extends AppCompatActivity {
 
         switch (viewId) {
            // case R.id.sessionActivity_startsession:
-            //    StartSessionFragment fragment2 = (StartSessionFragment)
+            //    SessionInfoFragment fragment2 = (SessionInfoFragment)
              //           getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
             //    fragment2 = fragment2 == null ?
-            //            StartSessionFragment.newInstance()
+            //            SessionInfoFragment.newInstance()
             //            : fragment2;
             //    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
 
-            //    if (mStartSessionPresenter == null)
-            //        mStartSessionPresenter = new StartSessionPresenter(fragment2);
+            //    if (mSessionInfoPresenter == null)
+            //        mSessionInfoPresenter = new SessionInfoPresenter(fragment2);
             //    else
-            //        mStartSessionPresenter.refresh();
+            //        mSessionInfoPresenter.refresh();
             //    break;
 
            /* case R.id.sessionActivity_endsession:
-                 mStartSessionPresenter.endSession();
-                 mStartSessionPresenter=null;
+                 mSessionInfoPresenter.endSession();
+                 mSessionInfoPresenter=null;
                  break;
 
             case R.id.sessionActivity_attendance:
@@ -116,5 +119,21 @@ public class SessionActivity extends AppCompatActivity {
                 ///////////
 */
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
+        mAlertBuilder.setTitle("Confirmation");
+        mAlertBuilder.setIcon(android.R.drawable.ic_dialog_alert);
+        mAlertBuilder.setMessage("The session will be ended. are you sure to continue");
+        mAlertBuilder.setPositiveButton("End Session", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                SessionActivity.super.onBackPressed();
+            }
+        });
+        mAlertBuilder.show();
     }
 }

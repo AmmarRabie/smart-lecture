@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionFragment;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
+import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoFragment;
+import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 /**
  * Created by ramym on 3/25/2018.
@@ -16,37 +16,40 @@ import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
 public class PagerAdapter extends FragmentPagerAdapter {
 
     private int numOfTabs;
-    StartSessionFragment startSessionFragment;
-    StartSessionPresenter mStartSessionPresenter;
+    private String mGroupId = null;
+    SessionInfoFragment sessionInfoFragment;
+    SessionInfoPresenter mSessionInfoPresenter;
 
     BeginAttendanceFragment beginAttendanceFragment;
     BeginAttendancePresenter mBeginAttendancePresenter;
-    public PagerAdapter(FragmentManager fm,int numOfTabs) {
+
+    public PagerAdapter(FragmentManager fm,int numOfTabs, String groupId) {
         super(fm);
         this.numOfTabs = numOfTabs;
 
         mBeginAttendancePresenter=null;
-        mStartSessionPresenter=null;
-        startSessionFragment=null;
+        mSessionInfoPresenter =null;
+        sessionInfoFragment =null;
         beginAttendanceFragment=null;
-
+        mGroupId = groupId;
     }
+
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                startSessionFragment = startSessionFragment == null ?
-                        StartSessionFragment.newInstance()
-                        : startSessionFragment;
-                mStartSessionPresenter = new StartSessionPresenter(startSessionFragment);
-                return startSessionFragment;
+                sessionInfoFragment = sessionInfoFragment == null ?
+                        SessionInfoFragment.newInstance()
+                        : sessionInfoFragment;
+                mSessionInfoPresenter = new SessionInfoPresenter(sessionInfoFragment,mGroupId);
+                return sessionInfoFragment;
 
             case 1:
                 beginAttendanceFragment = beginAttendanceFragment == null ?
                         BeginAttendanceFragment.newInstance()
                         : beginAttendanceFragment;
-                mBeginAttendancePresenter = new BeginAttendancePresenter(beginAttendanceFragment);
+                mBeginAttendancePresenter = new BeginAttendancePresenter(beginAttendanceFragment,mGroupId);
 
                 return beginAttendanceFragment;
             case 2:
