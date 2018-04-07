@@ -6,19 +6,11 @@ import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
-import cmp.sem.team8.smarlecture.model.SessionModel;
-import cmp.sem.team8.smarlecture.session.attendance.AttendanceFragment;
-import cmp.sem.team8.smarlecture.session.attendance.AttendancePresenter;
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionFragment;
 import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
 
 public class SessionActivity extends AppCompatActivity {

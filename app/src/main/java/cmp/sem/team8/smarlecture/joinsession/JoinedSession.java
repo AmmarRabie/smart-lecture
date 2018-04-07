@@ -6,7 +6,6 @@ import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
@@ -23,10 +22,6 @@ public class JoinedSession extends AppCompatActivity {
     TabLayout tabLayout;
     TabItem WriteAttendanceTab;
     PagerAdapter pageAdapter;
-    private Button mQuestionButton;
-    private Button mAttendanceButton;
-    private Button mObjectivesButton;
-    private Button mStartSessionButton;
     private BeginAttendancePresenter mAttendancePresenter;
     private StartSessionPresenter mStartSessionPresenter;
     private Context context;
@@ -36,14 +31,9 @@ public class JoinedSession extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joined__session);
 
-/*        mQuestionButton = findViewById(R.id.sessionActivity_question);
-        mAttendanceButton = findViewById(R.id.sessionActivity_attendance);
-        mObjectivesButton = findViewById(R.id.sessionActivity_objectives);*/
         context = this;
         mAttendancePresenter = null;
         mStartSessionPresenter = null;
-        //
-        // begin the session with generating the session.
 
         tabLayout = findViewById(R.id.joined_session_tablayout);
         WriteAttendanceTab = findViewById(R.id.joined_session_attendance);

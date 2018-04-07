@@ -22,6 +22,8 @@ public class WriteAttendanceContract {
         void stopConnectionTimer();
 
         void showErrorMessage(String cause);
+        void showInfoMessage(String info);
+        void showSuccessMessage(String successMes);
 
         void requestDisableConnection();
 
