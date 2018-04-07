@@ -1,7 +1,6 @@
 package cmp.sem.team8.smarlecture.auth;
 
 
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -45,6 +44,7 @@ class LoginPresenter implements LoginContract.Actions {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             mFoundUser = true;
+            mView.showProgressIndicator("try finding a user");
             getUserNameAndCallViewSuccess();
         }
 
@@ -66,6 +66,7 @@ class LoginPresenter implements LoginContract.Actions {
             return;
         }
 
+        mView.showProgressIndicator("logging in...");
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email,
                 password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -92,7 +93,7 @@ class LoginPresenter implements LoginContract.Actions {
             mView.showErrorMessage("Email can't be empty");
             return;
         }
-
+        mView.showProgressIndicator("sending...");
         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

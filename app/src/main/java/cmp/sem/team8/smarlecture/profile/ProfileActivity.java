@@ -19,6 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setTitle("Profile");
 
         ProfileFragment profileFragment = (ProfileFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);

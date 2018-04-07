@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.auth;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cmp.sem.team8.smarlecture.R;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -19,10 +21,10 @@ import cmp.sem.team8.smarlecture.R;
 
 public class LoginFragment extends Fragment implements LoginContract.Views, View.OnClickListener {
 
+    ProgressDialog progressDialog;
     private LoginContract.Actions mAction;
     private EditText mEmail;
     private EditText mPassword;
-
     private TextView mForgetPassword;
 
     public static LoginFragment newInstance() {
@@ -56,22 +58,37 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
         return root;
     }
 
-
     @Override
     public void showOnSuccess(String userName) {
-        Toast.makeText(getContext(), "Hello " + userName, Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss();
+        Toasty.normal(getContext(), "Hello " + userName, Toast.LENGTH_SHORT).show();
         getActivity().finish();
     }
 
     @Override
     public void showOnResetPasswordEmailSend() {
-        Toast.makeText(getContext(), "The reset email is send successfully",
-                Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss();
+        Toasty.info(getContext(), "The reset email is send successfully",
+                Toast.LENGTH_SHORT, true).show();
+    }
+
+    @Override
+    public void showProgressIndicator(String progressWorkMessage) {
+        if (progressDialog == null)
+            progressDialog = ProgressDialog.show(getContext(),
+                    null, progressWorkMessage
+                    , true, false);
+        else {
+            progressDialog.setMessage(progressWorkMessage);
+            progressDialog.show();
+        }
     }
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
+        if (progressDialog != null)
+            progressDialog.dismiss();
+        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT, true).show();
     }
 
     @Override

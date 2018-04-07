@@ -12,7 +12,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 /**
+ * @deprecated use {@link cmp.sem.team8.smarlecture.joinsession.writeattendance.WriteAttendancePresenter} instead
+ * <p>
  * Responsible for attendance processes:-
+ * </p>
  * <p>
  * get all student names of specific session
  * </P>

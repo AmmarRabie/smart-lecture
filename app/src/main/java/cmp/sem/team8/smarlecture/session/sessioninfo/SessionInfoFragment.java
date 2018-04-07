@@ -1,6 +1,5 @@
-package cmp.sem.team8.smarlecture.session.startsession;
+package cmp.sem.team8.smarlecture.session.sessioninfo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,25 +8,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.model.SessionModel;
-import cmp.sem.team8.smarlecture.session.SessionActivity;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionContract;
 
 /**
  * Created by ramym on 3/15/2018.
  */
 
-public class StartSessionFragment  extends Fragment implements StartSessionContract.Views{
+public class SessionInfoFragment extends Fragment implements SessionInfoContract.Views{
 
-    private StartSessionContract.Actions mPresenter;
+    private SessionInfoContract.Actions mPresenter;
     private TextView id;
-    private Button endSessionButton;
+    private View endSessionButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -41,7 +35,7 @@ public class StartSessionFragment  extends Fragment implements StartSessionContr
 
         //Intent intent=((SessionActivity)getActivity()).getIntent();//.putExtra("SessionId",Session.getId());
 
-        endSessionButton=(Button)root.findViewById(R.id.start_sessio_fragment_end_session);
+        endSessionButton=root.findViewById(R.id.start_sessio_fragment_end_session);
         endSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +53,7 @@ public class StartSessionFragment  extends Fragment implements StartSessionContr
     }
 
     @Override
-    public void setPresenter(StartSessionContract.Actions presenter) {
+    public void setPresenter(SessionInfoContract.Actions presenter) {
 
         mPresenter = presenter;
     }
@@ -76,8 +70,14 @@ public class StartSessionFragment  extends Fragment implements StartSessionContr
     }
 
 
-    public static StartSessionFragment newInstance() {
-        return new StartSessionFragment();
+    public static SessionInfoFragment newInstance() {
+        return new SessionInfoFragment();
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
+    }
 }

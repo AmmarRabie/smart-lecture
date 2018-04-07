@@ -1,7 +1,6 @@
 package cmp.sem.team8.smarlecture.session.attendance;
 
 
-import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +23,9 @@ import cmp.sem.team8.smarlecture.R;
  * Created by AmmarRabie on 11/03/2018.
  */
 
+/**
+ * @deprecated use {@link cmp.sem.team8.smarlecture.joinsession.writeattendance.WriteAttendancePresenter} instead
+ */
 public class AttendanceFragment extends Fragment implements AttendanceContract.Views {
 
 
@@ -45,7 +47,6 @@ public class AttendanceFragment extends Fragment implements AttendanceContract.V
         View root = inflater.inflate(R.layout.frag_attendance, container, false);
 
         mSecret = root.findViewById(R.id.attendanceFrag_secret);
-        mGetAttendances = root.findViewById(R.id.attendanceFrag_takeAttendance);
         mGetAttendances.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

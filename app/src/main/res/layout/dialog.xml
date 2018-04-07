@@ -6,10 +6,11 @@
     <EditText
         android:id="@+id/dialog_text"
         android:layout_width="match_parent"
+        android:layout_margin="8dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Enter the secrect" />
+        android:inputType="numberSigned"
+        android:hint="Session id" />
 
 
 </LinearLayout>

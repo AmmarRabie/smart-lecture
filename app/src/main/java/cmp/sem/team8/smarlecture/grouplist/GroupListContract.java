@@ -39,6 +39,8 @@ public interface GroupListContract {
         void onEditSuccess(String groupID,String newName);
         void onAddSuccess(String groupID,String newName);
 
+        void handleOfflineStates();
+        boolean getOfflineState();
     }
 
 

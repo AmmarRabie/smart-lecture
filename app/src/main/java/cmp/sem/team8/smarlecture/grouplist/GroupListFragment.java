@@ -1,25 +1,32 @@
 package cmp.sem.team8.smarlecture.grouplist;
 
 
-import android.app.Activity;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.willowtreeapps.spruce.Spruce;
+import com.willowtreeapps.spruce.animation.DefaultAnimations;
+import com.willowtreeapps.spruce.sort.CorneredSort;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.auth.LoginActivity;
+import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
 
@@ -28,43 +35,41 @@ import cmp.sem.team8.smarlecture.session.SessionActivity;
  */
 public class GroupListFragment extends Fragment implements
         GroupListContract.Views,
-        GroupListAdapter.OnItemClickListener {
+        GroupListRecyclerAdapter.OnItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
 
 
+    Animator spruceAnimator;
     private GroupListContract.Actions mPresenter;
-
     private FloatingActionButton mAddGroup;
-
-    private ListView mGroupList;
-
-    private GroupListAdapter mGroupListAdapter;
-
+    private View mOfflineView;
+    private RecyclerView mGroupRecyclerView;
+    private GroupListRecyclerAdapter mGroupListAdapter;
+    private ArrayList<HashMap<String, Object>> mGroupList;
     private View.OnClickListener mAddGroupClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-
-            View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
-
-            mBuilder.setView(mView);
-
-            final EditText mGroupName = (EditText) mView.findViewById(R.id.groupDialogName);
-
-            final Button mAddGroup = (Button) mView.findViewById(R.id.addGroupDialog);
-
-            final AlertDialog dialog = mBuilder.create();
-
-            mAddGroup.setOnClickListener(new View.OnClickListener() {
+            final EditText groupNameView = buildEditTextDialogView("Name", null);
+            mBuilder.setView(groupNameView);
+            mBuilder.setTitle("Add Group");
+            mBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    mPresenter.addGroup(mGroupName.getText().toString());
-                    dialog.dismiss();
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mPresenter.addGroup(groupNameView.getText().toString());
+                    dialogInterface.dismiss();
                 }
             });
-            dialog.show();
+            mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            mBuilder.show();
         }
     };
+    private boolean mInternetState;
+    private InternetConnectivityReceiver internetConnectivityReceiver;
 
     public GroupListFragment() {
         // Required empty public constructor
@@ -81,67 +86,93 @@ public class GroupListFragment extends Fragment implements
         View root = inflater.inflate(R.layout.frag_grouplist, container, false);
 
         mAddGroup = root.findViewById(R.id.groupListFrag_addGroup);
-
-        mGroupList = root.findViewById(R.id.groupListFrag_list);
+        mOfflineView = root.findViewById(R.id.offlineView);
+        mGroupRecyclerView = root.findViewById(R.id.groupListFrag_list);
+        mGroupRecyclerView.setHasFixedSize(true);
 
         mAddGroup.setOnClickListener(mAddGroupClickListener);
 
-        mGroupListAdapter = new GroupListAdapter(getContext(),
-                new ArrayList<HashMap<String, Object>>(), this);
+        mGroupList = new ArrayList<>();
 
-        mGroupList.setAdapter(mGroupListAdapter);
+        mGroupListAdapter = new GroupListRecyclerAdapter(getContext(),
+                mGroupList, this);
+
+        mGroupRecyclerView.setAdapter(mGroupListAdapter);
+        mGroupRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                super.onLayoutChildren(recycler, state);
+                if (state.didStructureChange())
+                    spruceAnimator = new Spruce.SpruceBuilder(mGroupRecyclerView)
+                            .sortWith(new CorneredSort(150, false, CorneredSort.Corner.TOP_LEFT))
+                            .animateWith(DefaultAnimations.fadeInAnimator(mGroupRecyclerView, 800)
+                                    , ObjectAnimator.ofFloat(mGroupRecyclerView, "translationX", -mGroupRecyclerView.getWidth(), 0f).setDuration(800)
+                            )
+                            .start();
+            }
+        });
 
         return root;
     }
 
-
     @Override
     public void setPresenter(GroupListContract.Actions presenter) {
         mPresenter = presenter;
-
     }
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(getContext(), "Error: " + cause, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showGroupList(ArrayList<HashMap<String, Object>> groupList) {
-        mGroupListAdapter.clear();
-        mGroupListAdapter.addAll(groupList);
+        if (groupList.equals(mGroupList))
+            return;
+        mGroupList.clear();
+        mGroupList.addAll(groupList);
         mGroupListAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onDeleteSuccess(String groupID) {
-        int position=0;
-        while(groupID!=mGroupListAdapter.getItem(position).get("id").toString()){position++;}
-        HashMap<String,Object> deletedGroup= mGroupListAdapter.getItem(position);
-        mGroupListAdapter.remove(deletedGroup);
-        mGroupListAdapter.notifyDataSetChanged();
-
-
+    public void onDeleteSuccess(final String groupID) {
+        int position = 0;
+        while (!groupID.equals(mGroupList.get(position).get("id").toString())) {
+            position++;
+        }
+        mGroupList.remove(position);
+        mGroupListAdapter.notifyDataSetChanged(); // call this instead to get onBind called on all views so that onClick listeners get updated with correct position
     }
 
     @Override
     public void onEditSuccess(String groupID, String newName) {
-        int position=0;
-        while(groupID!=mGroupListAdapter.getItem(position).get("id").toString()){position++;}
-        mGroupListAdapter.getItem(position).put("name",newName);
-        mGroupListAdapter.notifyDataSetChanged();
-
+        int position = 0;
+        while (!groupID.equals(mGroupList.get(position).get("id").toString())) {
+            position++;
+        }
+        mGroupList.get(position).put("name", newName);
+        mGroupListAdapter.notifyItemChanged(position, null);
     }
 
     @Override
     public void onAddSuccess(String groupID, String newName) {
-        HashMap<String,Object> newGroup=new HashMap<>();
-        newGroup.put("name",newName);
-        newGroup.put("id",groupID);
-        mGroupListAdapter.add(newGroup);
-        mGroupListAdapter.notifyDataSetChanged();
+        HashMap<String, Object> newGroup = new HashMap<>();
+        newGroup.put("name", newName);
+        newGroup.put("id", groupID);
+        mGroupList.add(newGroup);
+        mGroupListAdapter.notifyItemInserted(mGroupList.size());
+    }
 
+    @Override
+    public void handleOfflineStates() {
+
+        internetConnectivityReceiver =
+                new InternetConnectivityReceiver(this).start(getContext());
+    }
+
+    @Override
+    public boolean getOfflineState() {
+        return !mInternetState;
     }
 
     /**
@@ -156,10 +187,15 @@ public class GroupListFragment extends Fragment implements
         mPresenter.start();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        internetConnectivityReceiver.end(getContext());
+    }
 
     @Override
     public void onStartSessionClick(View view, int position) {
-        HashMap<String, Object> groupSessionClicked = mGroupListAdapter.getItem(position);
+        HashMap<String, Object> groupSessionClicked = mGroupList.get(position);
         String groupId = groupSessionClicked.get("id").toString();
         Intent sessionActivity = new Intent(getContext(), SessionActivity.class);
         sessionActivity.putExtra("group_id", groupId);
@@ -174,43 +210,88 @@ public class GroupListFragment extends Fragment implements
      */
     @Override
     public void onItemClick(View view, int position) {
-        HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
+        HashMap<String, Object> groupClicked = mGroupList.get(position);
         String groupId = groupClicked.get("id").toString();
+        String groupName = groupClicked.get("name").toString();
         Intent groupActivity = new Intent(getContext(), GroupActivity.class);
         groupActivity.putExtra("group_id", groupId);
+        groupActivity.putExtra("group_name", groupName);
         startActivity(groupActivity);
     }
 
     @Override
     public void onDeleteGroupClick(View view, int position) {
-        HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
-        String groupId = groupClicked.get("id").toString();
-        mPresenter.deleteGroup(groupId);
-
+        HashMap<String, Object> groupClicked = mGroupList.get(position);
+        final String groupId = groupClicked.get("id").toString();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Delete Group");
+        builder.setMessage("This group and all its sessions will be permanently deleted");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mPresenter.deleteGroup(groupId);
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
     }
 
     @Override
     public void onEditGroupClick(View view, final int position) {
-        HashMap<String, Object> groupClicked = mGroupListAdapter.getItem(position);
+        HashMap<String, Object> groupClicked = mGroupList.get(position);
         final String groupId = groupClicked.get("id").toString();
+        final String groupName = groupClicked.get("name").toString();
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-        View mView = getLayoutInflater().inflate(R.layout.addgroupdialog, null);
-        mBuilder.setView(mView);
-        final EditText groupNameView = (EditText) mView.findViewById(R.id.groupDialogName);
-        final Button addGroupView = (Button) mView.findViewById(R.id.addGroupDialog);
-        final AlertDialog dialog = mBuilder.create();
-        addGroupView.setText("Change");
-        addGroupView.setOnClickListener(new View.OnClickListener() {
+        final EditText newNameView = buildEditTextDialogView(null, groupName);
+        mBuilder.setView(newNameView);
+        mBuilder.setTitle("Edit group name");
+        mBuilder.setIcon(android.R.drawable.ic_menu_edit);
+        mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String groupName = groupNameView.getText().toString();
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String groupName = newNameView.getText().toString();
                 mPresenter.editGroup(groupId, groupName);
-
-
-                dialog.dismiss();
+                dialogInterface.dismiss();
             }
         });
-        dialog.show();
+        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        mBuilder.show();
+    }
+
+    private EditText buildEditTextDialogView(String hint, String text) {
+        EditText input = new EditText(getContext());
+        input.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+        input.setHint(hint);
+        input.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
+        input.setText(text);
+        input.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
+        return input;
+    }
+
+    @Override
+    public void onInternetConnectionLost() {
+        mInternetState = false;
+        mOfflineView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onInternetConnectionBack() {
+        mInternetState = true;
+        mOfflineView.setVisibility(View.GONE);
     }
 }

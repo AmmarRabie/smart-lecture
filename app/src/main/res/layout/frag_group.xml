@@ -4,19 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/inc_offlineview" />
 
-    <Button
-        android:id="@+id/groupFrag_addStudent"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
-        android:layout_gravity="center"/>
+        android:text="Names list:"
+        android:textAppearance="?android:textAppearanceMedium" />
 
-
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/groupFrag_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ListView>
+        android:layout_height="match_parent" />
 </LinearLayout>

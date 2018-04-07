@@ -6,11 +6,10 @@ import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
-import cmp.sem.team8.smarlecture.session.startsession.StartSessionPresenter;
+import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 /**
  * Created by ramym on 3/17/2018.
@@ -23,12 +22,8 @@ public class JoinedSession extends AppCompatActivity {
     TabLayout tabLayout;
     TabItem WriteAttendanceTab;
     PagerAdapter pageAdapter;
-    private Button mQuestionButton;
-    private Button mAttendanceButton;
-    private Button mObjectivesButton;
-    private Button mStartSessionButton;
     private BeginAttendancePresenter mAttendancePresenter;
-    private StartSessionPresenter mStartSessionPresenter;
+    private SessionInfoPresenter mSessionInfoPresenter;
     private Context context;
 
     @Override
@@ -36,14 +31,9 @@ public class JoinedSession extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joined__session);
 
-/*        mQuestionButton = findViewById(R.id.sessionActivity_question);
-        mAttendanceButton = findViewById(R.id.sessionActivity_attendance);
-        mObjectivesButton = findViewById(R.id.sessionActivity_objectives);*/
         context = this;
         mAttendancePresenter = null;
-        mStartSessionPresenter = null;
-        //
-        // begin the session with generating the session.
+        mSessionInfoPresenter = null;
 
         tabLayout = findViewById(R.id.joined_session_tablayout);
         WriteAttendanceTab = findViewById(R.id.joined_session_attendance);
@@ -65,17 +55,17 @@ public class JoinedSession extends AppCompatActivity {
 
         switch (viewId) {
             // case R.id.sessionActivity_startsession:
-            //    StartSessionFragment fragment2 = (StartSessionFragment)
+            //    SessionInfoFragment fragment2 = (SessionInfoFragment)
             //           getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
             //    fragment2 = fragment2 == null ?
-            //            StartSessionFragment.newInstance()
+            //            SessionInfoFragment.newInstance()
             //            : fragment2;
             //    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
 
-            //    if (mStartSessionPresenter == null)
-            //        mStartSessionPresenter = new StartSessionPresenter(fragment2);
+            //    if (mSessionInfoPresenter == null)
+            //        mSessionInfoPresenter = new SessionInfoPresenter(fragment2);
             //    else
-            //        mStartSessionPresenter.refresh();
+            //        mSessionInfoPresenter.refresh();
             //    break;
 
             case R.id.joinedsession_write_attendance:

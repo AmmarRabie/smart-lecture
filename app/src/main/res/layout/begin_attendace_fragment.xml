@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
 
 
     <Button
@@ -11,34 +14,67 @@
         android:text="Start Attendance" />
 
 
-
-    <TextView
-        android:id="@+id/begin_attendance_Secrect"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="Secrect :"
-        android:textSize="25sp" />
-    <TextView
-        android:id="@+id/attendance_timer"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="Seconds remaining  :"
-
-        android:textSize="25sp"/>
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Secrect: "
+            android:textAppearance="?android:textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/begin_attendance_Secrect"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium"
+            tools:text="5489" />
+
+
+        <ImageView
+            android:id="@+id/beginAttendanceFragment_changeSecret"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:src="@drawable/change_black" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seconds remaining: "
+            android:textAppearance="?android:textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/attendance_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium"
+            tools:text="20" />
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:inputType="none"
-        android:textSize="25sp"
-        android:text="Student List :" />
+        android:text="Student List: "
+        android:textAppearance="?android:textAppearanceLarge" />
 
     <ListView
-    android:id="@+id/begin_attandence_list"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        android:id="@+id/begin_attandence_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</ListView>
+    </ListView>
 
 </LinearLayout>

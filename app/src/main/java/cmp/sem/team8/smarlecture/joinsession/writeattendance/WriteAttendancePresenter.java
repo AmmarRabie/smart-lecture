@@ -1,9 +1,5 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,7 +48,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         mSessionId = sessionId;
         mGroupId = groupId;
 
-        DatabaseReference thisSessionRef = FirebaseDatabase.getInstance()
+        final DatabaseReference thisSessionRef = FirebaseDatabase.getInstance()
                 .getReference("sessions").child(sessionId);
 
         thisSessionRef.
@@ -82,11 +78,12 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
 
         thisSessionRef.
-                child("attendancesecrect").addListenerForSingleValueEvent(new ValueEventListener() {
+                child("attendancesecrect").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     mSecret = dataSnapshot.getValue(String.class);
+                    thisSessionRef.child("attendancesecrect").removeEventListener(this);
                 }
             }
 
@@ -108,7 +105,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
                             mView.requestDisableConnection();
                             mView.startAttendanceTimer(1 * 60);
-                            mView.startConnectionTimer(15);
+                            mView.startConnectionTimer(35);
                             FirebaseDatabase.getInstance().getReference("sessions")
                                     .child(mSessionId).child("attendance")
                                     .removeEventListener(this);
@@ -130,7 +127,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         mIsAttendanceTimeOver = true;
 
         mView.stopAttendanceTimer();
-        mView.showErrorMessage("time end");
+        mView.showInfoMessage("time end");
 
         if (verifySecret(mView.getProvidedSecret())) doOnProvidingCorrectSecret();
         else doOnProvidingWrongSecret();
@@ -152,7 +149,6 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
             doOnEndingConnectionProperly();
             return;
         }
-        mView.showErrorMessage("ent gay t2felow delo2ty ya...");
     }
 
 
@@ -181,8 +177,6 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
                     mView.showStudentsList(students);
                     mHasNamesList = true;
-//                mView.endConnection();
-//                mView.setTimer(1);
                 }
             }
 
@@ -196,7 +190,9 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         DatabaseReference currSessionRef = FirebaseDatabase.getInstance().getReference();
         currSessionRef = currSessionRef.child("sessions").child(mSessionId).child("namesList")
                 .child(Integer.toString(mView.getStudentId()));
-        currSessionRef.setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mView.showSuccessMessage("Your attendance saved locally.");
+        mView.showInfoMessage("open your internet now so that lecturer find you");
+        currSessionRef.setValue(true)/*.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful())
@@ -204,7 +200,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                 else
                     mView.showErrorMessage(task.getException().getMessage());
             }
-        });
+        })*/;
     }
 
     private boolean verifySecret(String secret) {
@@ -216,21 +212,22 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
      * do tasks for case of "user don't end the connection after time is end"
      */
     private void doOnNotEndingConnection() {
-        mView.showErrorMessage("You don't close the connection, tabn lk");
+        mView.showErrorMessage("You don't close the connection. Your attendance is ignored");
     }
 
     /**
      * do tasks for case of "user end the connection within the correct time"
      */
     private void doOnEndingConnectionProperly() {
-        mView.showErrorMessage("tmm, but don't try to turn it on, ha ?!");
+        mView.showSuccessMessage("Connection ended successfully.");
+        mView.showInfoMessage("Don't turn on the connection before attendance time over");
     }
 
     /**
      * do tasks for case of "user opened the connection before attendance time is ended"
      */
     private void doOnOpeningConnectionBeforeAttendanceTimeEnd() {
-        mView.showErrorMessage("5maaaaaaaaaaan");
+        mView.showErrorMessage("Connection detected. your attendance is ignored");
     }
 
     /**
@@ -247,6 +244,6 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
      * of the lecture
      */
     private void doOnProvidingWrongSecret() {
-        mView.showErrorMessage("This secret is not correct ya 7eltha");
+        mView.showErrorMessage("This secret is not correct. You attendance is ignored");
     }
 }

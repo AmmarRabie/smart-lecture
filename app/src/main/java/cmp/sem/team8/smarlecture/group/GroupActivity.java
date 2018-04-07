@@ -29,7 +29,8 @@ public class GroupActivity extends AppCompatActivity {
         }
 
         String groupId = getIntent().getStringExtra("group_id");
+        String groupName = getIntent().getStringExtra("group_name");
         // Create the presenter
-        mGroupPresenter = new GroupPresenter(groupfragment, groupId);
+        mGroupPresenter = new GroupPresenter(groupfragment, groupId, groupName);
     }
 }

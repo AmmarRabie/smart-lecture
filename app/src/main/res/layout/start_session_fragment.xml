@@ -1,29 +1,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/session_label"
-        android:layout_width="match_parent"
-        android:layout_height="39dp"
-        android:text="Session ID"
-        android:textSize="25sp"/>
-
-    <TextView
-        android:id="@+id/session_id"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:textSize="20sp"
-        android:text="Session ID" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/start_sessio_fragment_end_session"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="End Session" />
 
+        <TextView
+            android:id="@+id/session_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID: "
+            android:textAppearance="?android:textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/session_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium"
+            tools:text="1785465648" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/start_sessio_fragment_end_session"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/exit_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/start_sessio_fragment_end_session"
+            android:text="End Session"
+            android:textAppearance="?android:textAppearanceSmall" />
+    </LinearLayout>
 
 </LinearLayout>

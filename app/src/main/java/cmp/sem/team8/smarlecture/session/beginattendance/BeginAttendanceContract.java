@@ -19,21 +19,16 @@ public class BeginAttendanceContract {
      */
     interface Views extends IBaseView<Actions> {
 
-        void showOnCompleteFetchDataMessage();
 
         void showErrorMessage(String cause);
 
         void showProgressIndicator(int minutes);
 
-        void showSecrect(int Secrect);
-
-        void hideProgressIndicator();
-
-        void showAttendanceList(List<Map> attendanceList);
-
-        boolean getConnectionState(boolean includeInternet, boolean includeSim);
+        void showSecrect(String secret);
 
         void listViewSetAdapter(StudentsNamesAdapter adapter);
+
+        String getSecret();
     }
 
 
@@ -46,8 +41,6 @@ public class BeginAttendanceContract {
         void endAttendance();
 
         boolean isTaskIsRunning();
-
-        void setTime(int time);
 
         void refresh();
     }
