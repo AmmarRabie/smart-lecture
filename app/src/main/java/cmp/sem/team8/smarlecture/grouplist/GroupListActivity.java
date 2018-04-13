@@ -61,71 +61,12 @@ public class GroupListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.optionGroupList_joinSession:
-//                return false; // make the fragment handle this instead
-                joinSession();
-                return true;
+                return false; // make the fragment handle this instead
             case R.id.optionGroupList_profile:
                 Intent profileActivity = new Intent(this, ProfileActivity.class);
                 startActivity(profileActivity);
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    void joinSession() {
-        View view = (LayoutInflater.from(this)).inflate(R.layout.dialog, null);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setView(view);
-        alert.setTitle("Join Session");
-        final EditText input = (EditText) view.findViewById(R.id.dialog_text);
-        alert.setPositiveButton("join", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialog, int which) {
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref = ref.child("sessions").child(input.getText().toString());
-
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-
-                            Intent i = new Intent(GroupListActivity.this, JoinedSession.class);
-
-                            for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-
-                                if (childDataSnapshot.getKey().equals("status")) {
-                                    if (childDataSnapshot.getValue().equals("closed")) {
-                                        Toast.makeText(GroupListActivity.this, " Session has been closed ",
-                                                Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-                                } else if (childDataSnapshot.getKey().toString().equals("group")) {
-                                    i.putExtra("groupid", childDataSnapshot.getValue().toString());
-                                }
-                            }
-
-                            String SessionID = input.getText().toString();
-                            i.putExtra("sessionid", SessionID);
-
-                            startActivity(i);
-                            dialog.cancel();
-
-                        } else {
-                            Toast.makeText(GroupListActivity.this, " Session not exists ",
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-            }
-        });
-        alert.show();
     }
 }

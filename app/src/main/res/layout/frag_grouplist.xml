@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#FFFFFF">
 
     <LinearLayout
@@ -23,8 +25,42 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="22dp"
-        android:src="@drawable/ic_add" />
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        app:fabSize="normal" />
 
+
+    <!--group empty view-->
+    <LinearLayout
+        android:id="@+id/groupListFrag_emptyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You have no groups"
+            android:textAppearance="?android:textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/groupListFrag_addGroupEmptyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Add your first group" />
+
+        <Button
+            android:id="@+id/groupListFrag_joinSessionEmptyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Join Session" />
+
+    </LinearLayout>
 
 </RelativeLayout>
