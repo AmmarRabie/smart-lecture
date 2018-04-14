@@ -31,9 +31,6 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
         SessionId = -1;
     }
 
-    public int getSessionID() {
-        return SessionId;
-    }
 
     @Override
     public void start() {
@@ -67,12 +64,9 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
                     map.put("group", GROUP_ID);
                     map.put("attendance", "not-active");
                     mDatabase.setValue(map);   // id of the  that  ownes the session
-
-
                     SessionId = newID;
                     mView.showSessionId(newID.toString());
                     mView.sendSessioIdToActivity(newID);
-
                     DatabaseReference groupref = FirebaseDatabase.getInstance().getReference();
                     groupref = groupref.child("groups").child(GROUP_ID).child("Sessions").child(newID.toString());
                     groupref.setValue(true);
@@ -94,16 +88,11 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
 
     @Override
     public void endSession() {
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref = ref.child("sessions").child(Integer.toString(SessionId)).child("status");
         ref.setValue("closed");
-
-
     }
 
-    public void refresh() {
 
-    }
 
 }

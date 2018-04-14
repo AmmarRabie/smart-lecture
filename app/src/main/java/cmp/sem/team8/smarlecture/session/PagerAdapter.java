@@ -34,6 +34,9 @@ public class PagerAdapter extends FragmentPagerAdapter {
         mGroupId = groupId;
     }
 
+    public SessionInfoPresenter getSessionPresenter(){
+        return mSessionInfoPresenter;
+    }
 
     @Override
     public Fragment getItem(int position) {

@@ -26,20 +26,14 @@ public class SessionInfoFragment extends Fragment implements SessionInfoContract
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.start_session_fragment, container, false);
-
         id=root.findViewById(R.id.session_id);
-
         mPresenter.startSession();
-
-        //int Se=Session.getId();
-
-        //Intent intent=((SessionActivity)getActivity()).getIntent();//.putExtra("SessionId",Session.getId());
 
         endSessionButton=root.findViewById(R.id.start_sessio_fragment_end_session);
         endSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.endSession();
+                getActivity().onBackPressed();
             }
         });
 
@@ -49,7 +43,6 @@ public class SessionInfoFragment extends Fragment implements SessionInfoContract
     @Override
     public void onStart() {
         super.onStart();
-        //startActivity(intent);
     }
 
     @Override

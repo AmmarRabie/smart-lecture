@@ -62,7 +62,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         nref = FirebaseDatabase.getInstance().getReference();
         nref = nref.child("sessions").child(Integer.toString(SessionId)).child("namesList");
 
-        adapter = new StudentsNamesAdapter(((BeginAttendanceFragment) mView).getActivity(), students);
+        adapter = mView.getStudnetNameAdapter(students);
 
         mView.listViewSetAdapter(adapter);
 

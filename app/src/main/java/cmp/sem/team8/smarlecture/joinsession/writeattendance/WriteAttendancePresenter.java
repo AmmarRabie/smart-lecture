@@ -172,7 +172,8 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         String name = child.getValue(String.class);
-                        students.add(new UserAttendanceModel(name, false));
+                        String key  = child.getKey();
+                        students.add(new UserAttendanceModel(name,key, false));
                     }
 
                     mView.showStudentsList(students);
@@ -189,7 +190,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     private void writeAttendance() {
         DatabaseReference currSessionRef = FirebaseDatabase.getInstance().getReference();
         currSessionRef = currSessionRef.child("sessions").child(mSessionId).child("namesList")
-                .child(Integer.toString(mView.getStudentId()));
+                .child(mView.getStudentId());
         mView.showSuccessMessage("Your attendance saved locally.");
         mView.showInfoMessage("open your internet now so that lecturer find you");
         currSessionRef.setValue(true)/*.addOnCompleteListener(new OnCompleteListener<Void>() {
