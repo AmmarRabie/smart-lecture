@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.auth;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -62,6 +63,7 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
     public void showOnSuccess(String userName) {
         progressDialog.dismiss();
         Toasty.normal(getContext(), "Hello " + userName, Toast.LENGTH_SHORT).show();
+        getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 

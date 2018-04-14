@@ -51,8 +51,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        // don't end the activity
+        super.onBackPressed();
     }
 
 
@@ -66,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_UP && resultCode == RESULT_OK) {
+            setResult(RESULT_OK);
             finish();
         }
     }

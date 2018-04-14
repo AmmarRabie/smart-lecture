@@ -12,12 +12,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.willowtreeapps.spruce.Spruce;
 import com.willowtreeapps.spruce.animation.DefaultAnimations;
 import com.willowtreeapps.spruce.sort.CorneredSort;
@@ -28,6 +34,7 @@ import java.util.HashMap;
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
+import cmp.sem.team8.smarlecture.joinsession.JoinedSession;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
 
 /**
@@ -42,6 +49,9 @@ public class GroupListFragment extends Fragment implements
     private GroupListContract.Actions mPresenter;
     private FloatingActionButton mAddGroup;
     private View mOfflineView;
+    private ViewGroup mGroupsEmptyView;
+    private View mAddGroupEmptyView;
+    private View mJoinSessionEmptyView;
     private RecyclerView mGroupRecyclerView;
     private GroupListRecyclerAdapter mGroupListAdapter;
     private ArrayList<HashMap<String, Object>> mGroupList;
@@ -70,6 +80,7 @@ public class GroupListFragment extends Fragment implements
     };
     private boolean mInternetState;
     private InternetConnectivityReceiver internetConnectivityReceiver;
+    private boolean isInEmptyView = false;
 
     public GroupListFragment() {
         // Required empty public constructor
@@ -84,13 +95,25 @@ public class GroupListFragment extends Fragment implements
                              Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.frag_grouplist, container, false);
+        setHasOptionsMenu(true);
 
         mAddGroup = root.findViewById(R.id.groupListFrag_addGroup);
+        mAddGroupEmptyView = root.findViewById(R.id.groupListFrag_addGroupEmptyView);
+        mJoinSessionEmptyView = root.findViewById(R.id.groupListFrag_joinSessionEmptyView);
         mOfflineView = root.findViewById(R.id.offlineView);
         mGroupRecyclerView = root.findViewById(R.id.groupListFrag_list);
-        mGroupRecyclerView.setHasFixedSize(true);
+        mGroupsEmptyView = root.findViewById(R.id.groupListFrag_emptyView);
+        mGroupRecyclerView.setHasFixedSize(true);       // optimize the performance
+
 
         mAddGroup.setOnClickListener(mAddGroupClickListener);
+        mAddGroupEmptyView.setOnClickListener(mAddGroupClickListener);
+        mJoinSessionEmptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                joinSession();
+            }
+        });
 
         mGroupList = new ArrayList<>();
 
@@ -112,7 +135,30 @@ public class GroupListFragment extends Fragment implements
             }
         });
 
+        refreshEmptyState();
         return root;
+    }
+
+    private void refreshEmptyState() {
+        if (mGroupList.isEmpty() && !isInEmptyView) {
+            showEmptyView();
+            isInEmptyView = true;
+        } else if (!mGroupList.isEmpty() && isInEmptyView) {
+            disableEmptyView();
+            isInEmptyView = false;
+        }
+    }
+
+    private void showEmptyView() {
+        mGroupsEmptyView.setVisibility(View.VISIBLE);
+        mAddGroup.setVisibility(View.GONE);
+        mGroupRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void disableEmptyView() {
+        mGroupsEmptyView.setVisibility(View.GONE);
+        mAddGroup.setVisibility(View.VISIBLE);
+        mGroupRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -132,6 +178,7 @@ public class GroupListFragment extends Fragment implements
         mGroupList.clear();
         mGroupList.addAll(groupList);
         mGroupListAdapter.notifyDataSetChanged();
+        refreshEmptyState();
     }
 
     @Override
@@ -142,6 +189,7 @@ public class GroupListFragment extends Fragment implements
         }
         mGroupList.remove(position);
         mGroupListAdapter.notifyDataSetChanged(); // call this instead to get onBind called on all views so that onClick listeners get updated with correct position
+        refreshEmptyState();
     }
 
     @Override
@@ -161,6 +209,7 @@ public class GroupListFragment extends Fragment implements
         newGroup.put("id", groupID);
         mGroupList.add(newGroup);
         mGroupListAdapter.notifyItemInserted(mGroupList.size());
+        refreshEmptyState();
     }
 
     @Override
@@ -173,6 +222,73 @@ public class GroupListFragment extends Fragment implements
     @Override
     public boolean getOfflineState() {
         return !mInternetState;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.optionGroupList_joinSession:
+                joinSession();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void joinSession() {
+        View view = (LayoutInflater.from(getContext())).inflate(R.layout.dialog, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setView(view);
+        alert.setTitle("Join Session");
+        final EditText input = (EditText) view.findViewById(R.id.dialog_text);
+        alert.setPositiveButton("join", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, int which) {
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                ref = ref.child("sessions").child(input.getText().toString());
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+
+                            Intent i = new Intent(getContext(), JoinedSession.class);
+
+                            for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+
+                                if (childDataSnapshot.getKey().equals("status")) {
+                                    if (childDataSnapshot.getValue().equals("closed")) {
+                                        Toast.makeText(getContext(), " Session has been closed ",
+                                                Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+                                } else if (childDataSnapshot.getKey().toString().equals("group")) {
+                                    i.putExtra("groupid", childDataSnapshot.getValue().toString());
+                                }
+                            }
+
+                            String SessionID = input.getText().toString();
+                            i.putExtra("sessionid", SessionID);
+
+                            startActivity(i);
+                            dialog.cancel();
+
+                        } else {
+                            Toast.makeText(getContext(), " Session not exists ",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+        alert.show();
     }
 
     /**

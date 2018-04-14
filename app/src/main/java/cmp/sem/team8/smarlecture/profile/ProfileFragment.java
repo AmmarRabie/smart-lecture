@@ -1,12 +1,12 @@
 package cmp.sem.team8.smarlecture.profile;
 
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -80,7 +81,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         });
 
 
-        AlertDialog.Builder changePasswordDialogBuilder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder changePasswordDialogBuilder = new AlertDialog.Builder(getActivity());
         changePasswordDialogBuilder.setTitle("password change");
         final LinearLayout rootView = buildDialogLayout();
         changePasswordDialogBuilder.setView(rootView);
@@ -125,14 +126,12 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void showOnChangePassSuccess() {
-        Toast.makeText(getContext(),
-                "Password changed successfully", Toast.LENGTH_SHORT).show();
+        Toasty.success(getContext(),
+                "Password changed successfully", Toast.LENGTH_SHORT,true).show();
     }
 
     @Override
     public void showOnSignOutSuccess() {
-        Toast.makeText(getContext(), "signed out successfully", Toast.LENGTH_SHORT).show();
-
         // direct user to the log in screen
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
@@ -150,7 +149,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
+        Toasty.error(getContext(), cause, Toast.LENGTH_SHORT,true).show();
     }
 
     @Override
@@ -168,7 +167,9 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         pass.setHint("New password");
-        pass.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        pass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        pass.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
+        pass.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
 
         EditText confirmPass = new EditText(getContext());
         confirmPass.setLayoutParams(new ViewGroup.LayoutParams(
@@ -176,6 +177,8 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         confirmPass.setHint("Confirm password");
         confirmPass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        confirmPass.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
+        confirmPass.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
 
         layout.addView(pass, 0);
         layout.addView(confirmPass, 1);
