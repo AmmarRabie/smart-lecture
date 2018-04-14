@@ -28,5 +28,5 @@
     <color name="circleColorStroke">#000000</color>
 
     <color name="timeUp8">#ffffff</color>
-    <color name="timeBelow8">#c92047</color>
+    <color name="timeBelow8">#000000</color>
 </resources>
