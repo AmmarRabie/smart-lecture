@@ -17,16 +17,6 @@ import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class SessionActivity extends AppCompatActivity {
 
-    private Button mQuestionButton;
-    private Button mAttendanceButton;
-    private Button mObjectivesButton;
-    private Button mStartSessionButton;
-
-    int SessionId;
-
-    private BeginAttendancePresenter mAttendancePresenter;
-    private SessionInfoPresenter mSessionInfoPresenter;
-
     ViewPager viewPager;
     TabLayout tabLayout;
     TabItem SessionTab;
@@ -56,72 +46,14 @@ public class SessionActivity extends AppCompatActivity {
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-       /* mAttendancePresenter = null;
-        mSessionInfoPresenter=null;
-        //
-        // begin the session with generating the session.
-        int fragmentId = R.id.contentFrame2;
-        SessionInfoFragment fragment2 = (SessionInfoFragment)
-                getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
-         fragment2 = fragment2 == null ?
-               SessionInfoFragment.newInstance()
-                : fragment2;
-        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
-
-            mSessionInfoPresenter = new SessionInfoPresenter(fragment2);
-
-
-        /////*/
-
     }
 
-
-    public void onToFragmentClick(View view) {
-        int viewId = view.getId();
-
-        switch (viewId) {
-           // case R.id.sessionActivity_startsession:
-            //    SessionInfoFragment fragment2 = (SessionInfoFragment)
-             //           getSupportFragmentManager().findFragmentById(R.id.contentFrame2);
-            //    fragment2 = fragment2 == null ?
-            //            SessionInfoFragment.newInstance()
-            //            : fragment2;
-            //    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
-
-            //    if (mSessionInfoPresenter == null)
-            //        mSessionInfoPresenter = new SessionInfoPresenter(fragment2);
-            //    else
-            //        mSessionInfoPresenter.refresh();
-            //    break;
-
-           /* case R.id.sessionActivity_endsession:
-                 mSessionInfoPresenter.endSession();
-                 mSessionInfoPresenter=null;
-                 break;
-
-            case R.id.sessionActivity_attendance:
-                int fragmentId = R.id.contentFrame3;
-                    BeginAttendanceFragment fragment2 = (BeginAttendanceFragment)
-                getSupportFragmentManager().findFragmentById(R.id.contentFrame3);
-                   fragment2 = fragment2 == null ?
-                           BeginAttendanceFragment.newInstance()
-                            : fragment2;
-                    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), fragment2, fragmentId);
-
-                   if (mAttendancePresenter == null)
-                   {
-                       mAttendancePresenter = new BeginAttendancePresenter(fragment2,getIntent().getIntExtra("SessionId",1));
-                   }
-                   else
-                        mAttendancePresenter.refresh();
-                    break;
-
-                ///////////
-*/
-        }
-    }
-
-
+    //********** onBackPressed  ****************
+    // to close session session activity and return back to the previous activity.
+    // steps
+    // 1- warning message before close
+    // 2- end session before closing the activity
+    // 3-
     @Override
     public void onBackPressed() {
         AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
@@ -131,6 +63,7 @@ public class SessionActivity extends AppCompatActivity {
         mAlertBuilder.setPositiveButton("End Session", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                pageAdapter.getSessionPresenter().endSession();
                 SessionActivity.super.onBackPressed();
             }
         });

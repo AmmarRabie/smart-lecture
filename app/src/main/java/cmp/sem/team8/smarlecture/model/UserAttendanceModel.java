@@ -7,15 +7,18 @@ package cmp.sem.team8.smarlecture.model;
 public class UserAttendanceModel {
     public String Name;
     public boolean checked;
+    public String key;
 
-    public UserAttendanceModel(String name, boolean checked) {
+    public UserAttendanceModel(String name,String key, boolean checked) {
         Name = name;
         this.checked = checked;
+        this.key=key;
     }
 
     public String getName() {
         return Name;
     }
+
 
     public void setName(String name) {
         Name = name;
@@ -27,5 +30,13 @@ public class UserAttendanceModel {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

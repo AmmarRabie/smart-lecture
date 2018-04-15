@@ -27,7 +27,7 @@ public class WriteAttendanceContract {
 
         void requestDisableConnection();
 
-        int getStudentId();
+        String getStudentId();
         String getProvidedSecret();
     }
 

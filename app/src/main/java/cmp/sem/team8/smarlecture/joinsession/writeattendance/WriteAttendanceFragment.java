@@ -87,13 +87,11 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
 
     @Override
     public void showStudentsList(List<UserAttendanceModel> studentsList) {
-//        mAdapter.(mPresenter.getAdapter());
         students = studentsList;
         mAdapter = new StudentAttendanceAdapter(getActivity(), students);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
-/*        mAdapter.updateRecords(students);
-        mAdapter.notifyDataSetChanged();*/
+
     }
 
     @Override
@@ -168,8 +166,10 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     }
 
     @Override
-    public int getStudentId() {
-        return listView.getCheckedItemPosition() + 1;
+    public String getStudentId() {
+        //return (listView.getCheckedItemPosition());
+       UserAttendanceModel model= students.get(listView.getCheckedItemPosition());
+       return model.getKey();
     }
 
     @Override

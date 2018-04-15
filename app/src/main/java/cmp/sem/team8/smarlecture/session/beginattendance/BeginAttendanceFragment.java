@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.SecretWheels;
+import cmp.sem.team8.smarlecture.session.SessionActivity;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -40,7 +44,11 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
         super.onResume();
         mPresenter.start();
     }
-
+    @Override
+    public StudentsNamesAdapter getStudnetNameAdapter(List<String> students)
+    {
+        return new StudentsNamesAdapter(getActivity(),students);
+    }
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.begin_attendace_fragment, container, false);

@@ -64,7 +64,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         nref = FirebaseDatabase.getInstance().getReference();
         nref = nref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_NAMES_LIST);
 
-        adapter = new StudentsNamesAdapter(((BeginAttendanceFragment) mView).getActivity(), students);
+        adapter = mView.getStudnetNameAdapter(students);
 
         mView.listViewSetAdapter(adapter);
 
@@ -125,11 +125,6 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     }
 
 
-
-    @Override
-    public void refresh() {
-
-    }
 
     private int getSessionIDFromActivity() {
         return ((BeginAttendanceFragment) mView).getActivity().getIntent().getIntExtra("SessionId", 0);
