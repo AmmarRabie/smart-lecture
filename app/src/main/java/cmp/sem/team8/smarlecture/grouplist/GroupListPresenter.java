@@ -14,14 +14,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.MapUtils;
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract;
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.model.GroupModel;
-
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
 
 /**
  * Created by Loai Ali on 3/19/2018.
@@ -143,6 +143,42 @@ public class GroupListPresenter implements GroupListContract.Actions {
                     if (mView != null)
                         mView.showErrorMessage(task.getException().getMessage());
                 }
+            }
+        });
+    }
+
+    @Override
+    public void joinSession(final String sessionId) {
+        DatabaseReference thisSession = FirebaseDatabase.getInstance()
+                .getReference(SessionEntry.KEY_THIS).child(sessionId);
+        thisSession.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String groupId = null;
+                    for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+
+                        if (childDataSnapshot.getKey().equals(SessionEntry.KEY_SESSION_STATUS)) {
+                            if (childDataSnapshot.getValue().equals(FirebaseContract.SessionEntry.AttendanceStatus.CLOSED.toString())) {
+                                mView.showErrorMessage("Session has been closed");
+                                return;
+                            }
+                        } else if (childDataSnapshot.getKey().equals(SessionEntry.KEY_FOR_GROUP_ID)) {
+                            groupId = childDataSnapshot.getValue().toString();
+                        }
+                    }
+
+
+                    if (groupId != null)
+                        mView.startJoinSessionView(sessionId, groupId);
+
+                } else {
+                    mView.showErrorMessage("Session not exists");
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
     }

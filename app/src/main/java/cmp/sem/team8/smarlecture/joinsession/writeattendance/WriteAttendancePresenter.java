@@ -59,12 +59,12 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String attendanceState = dataSnapshot.getValue(String.class);
-                    if (attendanceState.equals(SessionEntry.AttendanceStatus.OPEN)) {
+                    if (attendanceState.equals(SessionEntry.AttendanceStatus.OPEN.toString())) {
                         mView.showErrorMessage("you can't take the attendance while" +
                                 " session attendance is open");
                         return;
                     }
-                    if (attendanceState.equals(SessionEntry.AttendanceStatus.CLOSED)) {
+                    if (attendanceState.equals(SessionEntry.AttendanceStatus.CLOSED.toString())) {
                         // [TODO]: this could be removed after adding objectives and questions
                         mView.showErrorMessage("The attendance is already taken");
                         return;
@@ -102,7 +102,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         String state = dataSnapshot.getValue(String.class);
-                        if (state.equals(SessionEntry.AttendanceStatus.OPEN) && mHasNamesList) {
+                        if (state.equals(SessionEntry.AttendanceStatus.OPEN.toString()) && mHasNamesList) {
                             // Not-Active -> open; begin of the attendance
 
                             mView.requestDisableConnection();

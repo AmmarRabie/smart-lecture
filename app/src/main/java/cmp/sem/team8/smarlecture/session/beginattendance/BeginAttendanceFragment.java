@@ -77,9 +77,9 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
                 View dialogRootView = LayoutInflater.from(getContext()).
                         inflate(R.layout.dialog_change_secret, null);
                 builder.setView(dialogRootView);
-                builder.setTitle("Please enter PIN");
+                builder.setTitle(getString(R.string.mes_enterPin));
                 final SecretWheels secretWheelsView = dialogRootView.findViewById(R.id.dialogChangeSecret_secretWheels);
-                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.dAction_save), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         secretView.setText(secretWheelsView.getSecret());
@@ -93,7 +93,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
                         secretWheelsView.mixWheels(1000);
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
@@ -127,7 +127,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
             }
 
             public void onFinish() {
-                AttendanceTimer.setText("done!");
+                AttendanceTimer.setText(getString(R.string.mes_done));
                 mPresenter.endAttendance();
             }
         }.start();

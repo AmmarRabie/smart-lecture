@@ -39,6 +39,8 @@ public interface GroupListContract {
         void onEditSuccess(String groupID,String newName);
         void onAddSuccess(String groupID,String newName);
 
+        void startJoinSessionView(String sessionId, String groupId);
+
         void handleOfflineStates();
         boolean getOfflineState();
     }
@@ -55,5 +57,6 @@ public interface GroupListContract {
 
         void editGroup(String groupID, String newGroupName);
 
+        void joinSession(String sessionId);
     }
 }

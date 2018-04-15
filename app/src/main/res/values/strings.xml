@@ -6,6 +6,7 @@
 
 
     <string name="mes_passwordChanged">password changed successfully</string>
+    <string name="mes_enterPin">Please enter PIN</string>
     <string name="mes_done">done!</string>
     <string name="mes_sessionNotExists">Session has been closed</string>
     <string name="mes_sessionClosed">Session not exists</string>
@@ -37,5 +38,6 @@
     <!--dMes stands for dialog message-->
     <string name="dMes_deleteGroup">This group and all its sessions will be permanently deleted</string>
     <string name="dMes_connection">Turn of the internet connection + turn on airplane mode</string>
+    <string name="dTitle_enterPin">Please enter PIN</string>
 
 </resources>

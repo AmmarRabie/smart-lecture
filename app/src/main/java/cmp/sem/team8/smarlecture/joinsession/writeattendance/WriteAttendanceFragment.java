@@ -59,8 +59,8 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.frag_attendance, container, false);
 
-        mSessionId = getActivity().getIntent().getStringExtra("sessionid");
-        GroupId = getActivity().getIntent().getStringExtra("groupid");
+        mSessionId = getActivity().getIntent().getStringExtra(getString(R.string.IKey_sessionId));
+        GroupId = getActivity().getIntent().getStringExtra(getString(R.string.IKey_groupId));
 
         listView = root.findViewById(R.id.attendanceFrag_list);
         secret = root.findViewById(R.id.attendanceFrag_secret);
@@ -224,15 +224,17 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
         View dialogRootView = LayoutInflater.from(getContext()).
                 inflate(R.layout.dialog_change_secret, null);
         builder.setView(dialogRootView);
-        builder.setTitle("Please enter PIN");
+        builder.setTitle(R.string.dTitle_enterPin);
         final SecretWheels secretWheels = dialogRootView.findViewById(R.id.dialogChangeSecret_secretWheels);
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        View mixView = dialogRootView.findViewById(R.id.dialogChangeSecret_mix);
+        mixView.setVisibility(View.GONE);
+        builder.setPositiveButton(getString(R.string.dAction_save), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 secret.setText(secretWheels.getSecret());
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -253,8 +255,8 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
 //            setView(R.layout.dialog_timer);
             setView(view);
             setIcon(android.R.drawable.ic_dialog_alert);
-            setTitle("Close the connection");
-            setMessage("Turn of the internet connection + turn on airplane mode");
+            setTitle(getString(R.string.dTitle_closeConnection));
+            setMessage(getString(R.string.dMes_connection));
             setCancelable(false);
             mTimeView = view.findViewById(R.id.dialogTimer_time);
         }

@@ -82,11 +82,11 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
 
         final AlertDialog.Builder changePasswordDialogBuilder = new AlertDialog.Builder(getActivity());
-        changePasswordDialogBuilder.setTitle("password change");
+        changePasswordDialogBuilder.setTitle(getString(R.string.dTitle_changePass));
         final LinearLayout rootView = buildDialogLayout();
         changePasswordDialogBuilder.setView(rootView);
 
-        changePasswordDialogBuilder.setPositiveButton("change",
+        changePasswordDialogBuilder.setPositiveButton(getString(R.string.dAction_change),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -96,7 +96,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
                     }
                 });
 
-        changePasswordDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        changePasswordDialogBuilder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -118,7 +118,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void showOnChangeNameSuccess() {
-        Toast.makeText(getContext(), "name changed successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.mes_nameChanged), Toast.LENGTH_SHORT).show();
         mEditState = false;
         mEditName.setBackground(getResources().getDrawable(android.R.drawable.ic_menu_edit));
         mName.setEnabled(false);
@@ -127,7 +127,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
     @Override
     public void showOnChangePassSuccess() {
         Toasty.success(getContext(),
-                "Password changed successfully", Toast.LENGTH_SHORT,true).show();
+                getString(R.string.mes_passwordChanged), Toast.LENGTH_SHORT,true).show();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         pass.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        pass.setHint("New password");
+        pass.setHint(getString(R.string.newPass));
         pass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
         pass.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
         pass.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
@@ -175,7 +175,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         confirmPass.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        confirmPass.setHint("Confirm password");
+        confirmPass.setHint(getString(R.string.confirmPass));
         confirmPass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
         confirmPass.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
         confirmPass.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));

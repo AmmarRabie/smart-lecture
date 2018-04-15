@@ -19,11 +19,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.willowtreeapps.spruce.Spruce;
 import com.willowtreeapps.spruce.animation.DefaultAnimations;
 import com.willowtreeapps.spruce.sort.CorneredSort;
@@ -33,7 +28,6 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
 import cmp.sem.team8.smarlecture.joinsession.JoinedSession;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
@@ -62,15 +56,15 @@ public class GroupListFragment extends Fragment implements
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
             final EditText groupNameView = buildEditTextDialogView("Name", null);
             mBuilder.setView(groupNameView);
-            mBuilder.setTitle("Add Group");
-            mBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            mBuilder.setTitle(getString(R.string.dTitle_addGroup));
+            mBuilder.setPositiveButton(getString(R.string.dAction_add), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     mPresenter.addGroup(groupNameView.getText().toString());
                     dialogInterface.dismiss();
                 }
             });
-            mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            mBuilder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
@@ -169,7 +163,7 @@ public class GroupListFragment extends Fragment implements
 
     @Override
     public void showErrorMessage(String cause) {
-        Toast.makeText(getContext(), "Error: " + cause, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -214,6 +208,14 @@ public class GroupListFragment extends Fragment implements
     }
 
     @Override
+    public void startJoinSessionView(String sessionId, String groupId) {
+        Intent joinSessionActivity = new Intent(getContext(), JoinedSession.class);
+        joinSessionActivity.putExtra(getString(R.string.IKey_groupId),groupId);
+        joinSessionActivity.putExtra(getString(R.string.IKey_sessionId),sessionId);
+        startActivity(joinSessionActivity);
+    }
+
+    @Override
     public void handleOfflineStates() {
 
         internetConnectivityReceiver =
@@ -240,53 +242,13 @@ public class GroupListFragment extends Fragment implements
         View view = (LayoutInflater.from(getContext())).inflate(R.layout.dialog, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setView(view);
-        alert.setTitle("Join Session");
+        alert.setTitle(getString(R.string.dTitle_joinSession));
         final EditText input = (EditText) view.findViewById(R.id.dialog_text);
-        alert.setPositiveButton("join", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(getString(R.string.dAction_join), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref = ref.child(FirebaseContract.SessionEntry.KEY_THIS).child(input.getText().toString());
-
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-
-                            Intent i = new Intent(getContext(), JoinedSession.class);
-
-                            for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-
-                                if (childDataSnapshot.getKey().equals("status")) {
-                                    if (childDataSnapshot.getValue().equals(FirebaseContract.SessionEntry.AttendanceStatus.CLOSED)) {
-                                        Toast.makeText(getContext(), " Session has been closed ",
-                                                Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-                                } else if (childDataSnapshot.getKey().toString().equals("group")) {
-                                    i.putExtra("groupid", childDataSnapshot.getValue().toString());
-                                }
-                            }
-
-                            String SessionID = input.getText().toString();
-                            i.putExtra("sessionid", SessionID);
-
-                            startActivity(i);
-                            dialog.cancel();
-
-                        } else {
-                            Toast.makeText(getContext(), " Session not exists ",
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                mPresenter.joinSession(input.getText().toString());
+                dialog.dismiss();
             }
         });
         alert.show();
@@ -341,17 +303,17 @@ public class GroupListFragment extends Fragment implements
         HashMap<String, Object> groupClicked = mGroupList.get(position);
         final String groupId = groupClicked.get("id").toString();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Delete Group");
-        builder.setMessage("This group and all its sessions will be permanently deleted");
+        builder.setTitle(getString(R.string.dTitle_deleteGroup));
+        builder.setMessage(getString(R.string.dMes_deleteGroup));
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dAction_delete), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mPresenter.deleteGroup(groupId);
                 dialogInterface.dismiss();
             }
         });
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -371,7 +333,7 @@ public class GroupListFragment extends Fragment implements
         mBuilder.setView(newNameView);
         mBuilder.setTitle("Edit group name");
         mBuilder.setIcon(android.R.drawable.ic_menu_edit);
-        mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+        mBuilder.setPositiveButton(getString(R.string.dAction_change), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String groupName = newNameView.getText().toString();
@@ -379,7 +341,7 @@ public class GroupListFragment extends Fragment implements
                 dialogInterface.dismiss();
             }
         });
-        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        mBuilder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();

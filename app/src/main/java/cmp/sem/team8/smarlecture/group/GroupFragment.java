@@ -154,8 +154,8 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
         final EditText newNameView = buildEditTextDialogView(studentName);
         mBuilder.setView(newNameView);
-        mBuilder.setTitle("Edit name");
-        mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+        mBuilder.setTitle(getString(R.string.dTitle_editName));
+        mBuilder.setPositiveButton(getString(R.string.dAction_change), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String studentName = newNameView.getText().toString();
@@ -163,7 +163,7 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
                 dialogInterface.dismiss();
             }
         });
-        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        mBuilder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();

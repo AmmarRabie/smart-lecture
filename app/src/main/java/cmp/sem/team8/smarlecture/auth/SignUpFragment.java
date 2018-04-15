@@ -53,7 +53,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
     @Override
     public void showOnSuccess() {
-        Toasty.success(getContext(), "Signed in successfully", Toast.LENGTH_SHORT, true).show();
+        Toasty.success(getContext(), getString(R.string.mes_signedInSuccess), Toast.LENGTH_SHORT, true).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -73,7 +73,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     public void showProgressIndicator() {
         if (progressDialog == null)
             progressDialog = ProgressDialog.show(getContext(),
-                    null, "Signing up"
+                    null, getString(R.string.mes_signingUp_indicator)
                     , true, false);
         else
             progressDialog.show();

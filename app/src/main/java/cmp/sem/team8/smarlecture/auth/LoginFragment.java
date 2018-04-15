@@ -62,7 +62,8 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
     @Override
     public void showOnSuccess(String userName) {
         progressDialog.dismiss();
-        Toasty.normal(getContext(), "Hello " + userName, Toast.LENGTH_SHORT).show();
+        final String helloMes = String.format(getString(R.string.FMT_welcomeBackMes), userName);
+        Toasty.normal(getContext(), helloMes, Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -70,7 +71,7 @@ public class LoginFragment extends Fragment implements LoginContract.Views, View
     @Override
     public void showOnResetPasswordEmailSend() {
         progressDialog.dismiss();
-        Toasty.info(getContext(), "The reset email is send successfully",
+        Toasty.info(getContext(), getString(R.string.mes_resetEmailSent),
                 Toast.LENGTH_SHORT, true).show();
     }
 

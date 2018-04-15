@@ -55,7 +55,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
         DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_ATTENDANCE_STATUS);
 
-        nref.setValue(SessionEntry.AttendanceStatus.OPEN);
+        nref.setValue(SessionEntry.AttendanceStatus.OPEN.toString());
 
         nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SECRET);
 
