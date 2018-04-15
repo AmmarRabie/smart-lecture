@@ -4,12 +4,15 @@ package cmp.sem.team8.smarlecture.auth;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -134,9 +137,9 @@ class SignUpPresenter implements SignUpContract.Actions {
     }
 
     private void insertUser(String name, String email, String id) {
-        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference("user");
+        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference(UserEntry.KEY_THIS);
         DatabaseReference thisUserReference = usersReference.child(id);
-        thisUserReference.child("name").setValue(name).addOnCompleteListener(loggingListener);
-        thisUserReference.child("email").setValue(email).addOnCompleteListener(loggingListener);
+        thisUserReference.child(UserEntry.KEY_NAME).setValue(name).addOnCompleteListener(loggingListener);
+        thisUserReference.child(UserEntry.KEY_NAME).setValue(email).addOnCompleteListener(loggingListener);
     }
 }

@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+
 /**
  * Created by AmmarRabie on 08/03/2018.
  */
@@ -86,10 +88,10 @@ class ProfilePresenter implements ProfileContract.Actions {
 
 
         final DatabaseReference thisUserRef = FirebaseDatabase.getInstance().getReference()
-                .child("user").child(mCurrentUser.getUid());
+                .child(UserEntry.KEY_THIS).child(mCurrentUser.getUid());
 
 
-        thisUserRef.child("name").setValue(newName)
+        thisUserRef.child(UserEntry.KEY_NAME).setValue(newName)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -119,13 +121,13 @@ class ProfilePresenter implements ProfileContract.Actions {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference userRef =
-                FirebaseDatabase.getInstance().getReference("user").child(currentUser.getUid());
+                FirebaseDatabase.getInstance().getReference(UserEntry.KEY_THIS).child(currentUser.getUid());
 
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String userName = dataSnapshot.child("name").getValue(String.class);
-                String userEmail = dataSnapshot.child("email").getValue(String.class);
+                String userName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
+                String userEmail = dataSnapshot.child(UserEntry.KEY_EMAIL).getValue(String.class);
                 mView.showUserInfo(userName, userEmail);
 
                 // remove the value after updating the view

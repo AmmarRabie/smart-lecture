@@ -33,6 +33,7 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
 import cmp.sem.team8.smarlecture.joinsession.JoinedSession;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
@@ -246,7 +247,7 @@ public class GroupListFragment extends Fragment implements
             public void onClick(final DialogInterface dialog, int which) {
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref = ref.child("sessions").child(input.getText().toString());
+                ref = ref.child(FirebaseContract.SessionEntry.KEY_THIS).child(input.getText().toString());
 
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -258,7 +259,7 @@ public class GroupListFragment extends Fragment implements
                             for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
 
                                 if (childDataSnapshot.getKey().equals("status")) {
-                                    if (childDataSnapshot.getValue().equals("closed")) {
+                                    if (childDataSnapshot.getValue().equals(FirebaseContract.SessionEntry.AttendanceStatus.CLOSED)) {
                                         Toast.makeText(getContext(), " Session has been closed ",
                                                 Toast.LENGTH_LONG).show();
                                         return;

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+
 /**
  * Created by ramym on 3/15/2018.
  */
@@ -55,7 +57,7 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
     public void startSession() {
         final Integer newID = generateUniqueId();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase = mDatabase.child("sessions").child(newID.toString());
+        mDatabase = mDatabase.child(SessionEntry.KEY_THIS).child(newID.toString());
 
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -63,9 +65,9 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
                 if (!dataSnapshot.exists()) {
 
                     Map<String, String> map = new HashMap<String, String>();
-                    map.put("status", "open");
-                    map.put("group", GROUP_ID);
-                    map.put("attendance", "not-active");
+                    map.put(SessionEntry.KEY_SESSION_STATUS, SessionEntry.SessionStatus.OPEN.toString());
+                    map.put(SessionEntry.KEY_FOR_GROUP_ID, GROUP_ID);
+                    map.put(SessionEntry.KEY_ATTENDANCE_STATUS, SessionEntry.AttendanceStatus.NOT_ACTIVATED.toString());
                     mDatabase.setValue(map);   // id of the  that  ownes the session
 
 
@@ -74,7 +76,7 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
                     mView.sendSessioIdToActivity(newID);
 
                     DatabaseReference groupref = FirebaseDatabase.getInstance().getReference();
-                    groupref = groupref.child("groups").child(GROUP_ID).child("Sessions").child(newID.toString());
+                    groupref = groupref.child(GroupEntry.KEY_THIS).child(GROUP_ID).child(GroupEntry.KEY_SESSIONS).child(newID.toString());
                     groupref.setValue(true);
 
 
@@ -96,8 +98,8 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
     public void endSession() {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref = ref.child("sessions").child(Integer.toString(SessionId)).child("status");
-        ref.setValue("closed");
+        ref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SESSION_STATUS);
+        ref.setValue(SessionEntry.AttendanceStatus.CLOSED);
 
 
     }
