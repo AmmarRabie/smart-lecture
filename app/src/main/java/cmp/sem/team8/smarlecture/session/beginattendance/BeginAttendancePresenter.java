@@ -124,11 +124,6 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
 
 
-    @Override
-    public void refresh() {
-
-    }
-
     private int getSessionIDFromActivity() {
         return ((BeginAttendanceFragment) mView).getActivity().getIntent().getIntExtra("SessionId", 0);
     }

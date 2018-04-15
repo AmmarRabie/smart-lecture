@@ -168,7 +168,7 @@ public class WriteAttendanceFragment extends Fragment implements WriteAttendance
     @Override
     public String getStudentId() {
         //return (listView.getCheckedItemPosition());
-       UserAttendanceModel model=(UserAttendanceModel)( listView.getItemAtPosition(listView.getCheckedItemPosition()));
+       UserAttendanceModel model= students.get(listView.getCheckedItemPosition());
        return model.getKey();
     }
 
