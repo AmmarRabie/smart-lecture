@@ -4,5 +4,8 @@
     <string name="idKey" translatable="false">id</string>
     <string name="emailKey" translatable="false">name</string>
 
-    <string name="intentKey_forceLogin" translatable="false">force_login</string>
+    <string name="IKey_forceLogin" translatable="false">force_login</string>
+    <string name="IKey_sessionId" translatable="false">session_id</string>
+    <string name="IKey_groupId" translatable="false">group_id</string>
+    <string name="IKey_groupName" translatable="false">group_name</string>
 </resources>

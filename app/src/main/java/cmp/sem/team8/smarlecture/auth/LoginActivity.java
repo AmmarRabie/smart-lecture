@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         mForceLogin = getIntent().getBooleanExtra(
-                getResources().getString(R.string.intentKey_forceLogin),
+                getResources().getString(R.string.IKey_forceLogin),
                 false);
 
         LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager()
