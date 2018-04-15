@@ -11,6 +11,8 @@ import java.util.List;
 
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+
 /**
  * Created by ramym on 3/20/2018.
  */
@@ -49,20 +51,20 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         mGroupId = groupId;
 
         final DatabaseReference thisSessionRef = FirebaseDatabase.getInstance()
-                .getReference("sessions").child(sessionId);
+                .getReference(SessionEntry.KEY_THIS).child(sessionId);
 
         thisSessionRef.
-                child("attendance").addListenerForSingleValueEvent(new ValueEventListener() {
+                child(SessionEntry.KEY_ATTENDANCE_STATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String attendanceState = dataSnapshot.getValue(String.class);
-                    if (attendanceState.equals("open")) {
+                    if (attendanceState.equals(SessionEntry.AttendanceStatus.OPEN)) {
                         mView.showErrorMessage("you can't take the attendance while" +
                                 " session attendance is open");
                         return;
                     }
-                    if (attendanceState.equals("closed")) {
+                    if (attendanceState.equals(SessionEntry.AttendanceStatus.CLOSED)) {
                         // [TODO]: this could be removed after adding objectives and questions
                         mView.showErrorMessage("The attendance is already taken");
                         return;
@@ -78,12 +80,12 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
 
         thisSessionRef.
-                child("attendancesecrect").addValueEventListener(new ValueEventListener() {
+                child(SessionEntry.KEY_SECRET).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     mSecret = dataSnapshot.getValue(String.class);
-                    thisSessionRef.child("attendancesecrect").removeEventListener(this);
+                    thisSessionRef.child(SessionEntry.KEY_SECRET).removeEventListener(this);
                 }
             }
 
@@ -93,21 +95,21 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         });
 
         if (listener == null) {
-            listener = FirebaseDatabase.getInstance().getReference("sessions").child(mSessionId).
-                    child("attendance").addValueEventListener(new ValueEventListener() {
+            listener = FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS).child(mSessionId).
+                    child(SessionEntry.KEY_ATTENDANCE_STATUS).addValueEventListener(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         String state = dataSnapshot.getValue(String.class);
-                        if (state.equals("open") && mHasNamesList) {
+                        if (state.equals(SessionEntry.AttendanceStatus.OPEN) && mHasNamesList) {
                             // Not-Active -> open; begin of the attendance
 
                             mView.requestDisableConnection();
                             mView.startAttendanceTimer(1 * 60);
                             mView.startConnectionTimer(35);
-                            FirebaseDatabase.getInstance().getReference("sessions")
-                                    .child(mSessionId).child("attendance")
+                            FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS)
+                                    .child(mSessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS)
                                     .removeEventListener(this);
                             listener = null;
                         }
@@ -165,7 +167,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         students = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-        reference = reference.child("groups").child(mGroupId).child("namesList");
+        reference = reference.child(GroupEntry.KEY_THIS).child(mGroupId).child(GroupEntry.KEY_NAMES_LIST);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -189,7 +191,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
     private void writeAttendance() {
         DatabaseReference currSessionRef = FirebaseDatabase.getInstance().getReference();
-        currSessionRef = currSessionRef.child("sessions").child(mSessionId).child("namesList")
+        currSessionRef = currSessionRef.child(SessionEntry.KEY_THIS).child(mSessionId).child(SessionEntry.KEY_NAMES_LIST)
                 .child(mView.getStudentId());
         mView.showSuccessMessage("Your attendance saved locally.");
         mView.showInfoMessage("open your internet now so that lecturer find you");

@@ -14,11 +14,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.MapUtils;
 import cmp.sem.team8.smarlecture.model.GroupModel;
+
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
 
 /**
  * Created by Loai Ali on 3/19/2018.
@@ -43,7 +46,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
     @Override
     public void deleteGroup(final String groupID) {
         // remove sessions related to this group first and after this remove the group
-        getGroupRef(groupID).child("Sessions").addListenerForSingleValueEvent(new ValueEventListener() {
+        getGroupRef(groupID).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -92,7 +95,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
             mView.showErrorMessage("Group Must Have a Name");
             return;
         }
-        DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference("groups");
+        DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS);
         DatabaseReference newGroupRef = groupsRef.push();
 
         final String groupID = newGroupRef.getKey();
@@ -100,8 +103,8 @@ public class GroupListPresenter implements GroupListContract.Actions {
         final boolean isOffline = mView.getOfflineState();
         if (isOffline)
             mView.onAddSuccess(groupID, groupName);
-        newGroupRef.child("group_owner").setValue(userID);
-        newGroupRef.child("name").setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
+        newGroupRef.child(GroupEntry.KEY_OWNER_ID).setValue(userID);
+        newGroupRef.child(GroupEntry.KEY_NAME).setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -130,7 +133,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
         final boolean isOffline = mView.getOfflineState();
         if (isOffline)
             mView.onEditSuccess(groupID, newGroupName);
-        getGroupRef(groupID).child("name").setValue(newGroupName).addOnCompleteListener(new OnCompleteListener<Void>() {
+        getGroupRef(groupID).child(GroupEntry.KEY_NAME).setValue(newGroupName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -155,8 +158,8 @@ public class GroupListPresenter implements GroupListContract.Actions {
             return;
         }
         String id = mCurrentUser.getUid();
-        Query userGroups = FirebaseDatabase.getInstance().getReference("groups")
-                .orderByChild("group_owner")
+        Query userGroups = FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS)
+                .orderByChild(GroupEntry.KEY_OWNER_ID)
                 .equalTo(id);
         userGroups.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -185,10 +188,10 @@ public class GroupListPresenter implements GroupListContract.Actions {
 
 
     private DatabaseReference getGroupRef(String groupID) {
-        return FirebaseDatabase.getInstance().getReference("groups").child(groupID);
+        return FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS).child(groupID);
     }
 
     private DatabaseReference getSessionRef(String groupID) {
-        return FirebaseDatabase.getInstance().getReference("sessions").child(groupID);
+        return FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS).child(groupID);
     }
 }

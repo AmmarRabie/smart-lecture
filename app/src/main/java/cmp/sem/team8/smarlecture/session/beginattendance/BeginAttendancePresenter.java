@@ -10,6 +10,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+
 /**
  * Created by ramym on 3/17/2018.
  */
@@ -51,16 +53,16 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         mView.showProgressIndicator(3);
 
 
-        DatabaseReference nref = ref.child("sessions").child(Integer.toString(SessionId)).child("attendance");
+        DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_ATTENDANCE_STATUS);
 
-        nref.setValue("open");
+        nref.setValue(SessionEntry.AttendanceStatus.OPEN);
 
-        nref = ref.child("sessions").child(Integer.toString(SessionId)).child("attendancesecrect");
+        nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SECRET);
 
         nref.setValue(mView.getSecret());
 
         nref = FirebaseDatabase.getInstance().getReference();
-        nref = nref.child("sessions").child(Integer.toString(SessionId)).child("namesList");
+        nref = nref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_NAMES_LIST);
 
         adapter = mView.getStudnetNameAdapter(students);
 
@@ -71,7 +73,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 DatabaseReference mref = FirebaseDatabase.getInstance().getReference();
-                mref = mref.child("groups").child(GROUP_ID).child("namesList").child(dataSnapshot.getKey());
+                mref = mref.child(GroupEntry.KEY_THIS).child(GROUP_ID).child(GroupEntry.KEY_NAMES_LIST).child(dataSnapshot.getKey());
 
                 mref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -117,8 +119,8 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     @Override
     public void endAttendance() {
 
-        DatabaseReference nref = ref.child("sessions").child(Integer.toString(SessionId)).child("attendance");
-        nref.setValue("closed");
+        DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_ATTENDANCE_STATUS);
+        nref.setValue(SessionEntry.AttendanceStatus.CLOSED);
 
     }
 

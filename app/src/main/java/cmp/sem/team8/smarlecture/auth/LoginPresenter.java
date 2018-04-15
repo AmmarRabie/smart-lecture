@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
 /**
  * Created by AmmarRabie on 08/03/2018.
  */
@@ -114,8 +115,8 @@ class LoginPresenter implements LoginContract.Actions {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference userNameRef =
                 FirebaseDatabase.getInstance().
-                        getReference("user").child(currentUser.getUid())
-                        .child("name");
+                        getReference(UserEntry.KEY_THIS).child(currentUser.getUid())
+                        .child(UserEntry.KEY_NAME);
         userNameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

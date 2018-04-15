@@ -1,6 +1,41 @@
 <resources>
     <string name="app_name">Smart Lecture</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--FMT as a notation for formatted string-->
+    <string name="FMT_welcomeBackMes">Hello %s, welcome back</string>
+
+
+    <string name="mes_passwordChanged">password changed successfully</string>
+    <string name="mes_done">done!</string>
+    <string name="mes_sessionNotExists">Session has been closed</string>
+    <string name="mes_sessionClosed">Session not exists</string>
+    <string name="mes_nameChanged">name changed successfully</string>
+    <string name="mes_resetEmailSent">The reset email is send successfully</string>
+    <string name="mes_signedInSuccess">Signed in successfully</string>
+    <string name="mes_signingUp_indicator">Signing up</string>
+
+    <string name="newPass">new password</string>
+    <string name="confirmPass">confirm password</string>
+
+
+    <!--strings for dialogs, d stands for dialog-->
+    <string name="dTitle_changePass">Changing password</string>
+    <string name="dTitle_joinSession">Join Session</string>
+    <string name="dTitle_editName">Edit name</string>
+    <string name="dTitle_addGroup">Add Group</string>
+    <string name="dTitle_closeConnection">Close the connection</string>
+    <string name="dTitle_changeSecret">Save</string>
+    <string name="dTitle_deleteGroup">Delete Group</string>
+
+    <string name="dAction_join">join</string>
+    <string name="dAction_cancel">Cancel</string>
+    <string name="dAction_change">Change</string>
+    <string name="dAction_add">Add</string>
+    <string name="dAction_save">Save</string>
+    <string name="dAction_delete">Delete</string>
+
+    <!--dMes stands for dialog message-->
+    <string name="dMes_deleteGroup">This group and all its sessions will be permanently deleted</string>
+    <string name="dMes_connection">Turn of the internet connection + turn on airplane mode</string>
+
 </resources>
