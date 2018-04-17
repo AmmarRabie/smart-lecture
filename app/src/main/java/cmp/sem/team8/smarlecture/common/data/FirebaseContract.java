@@ -34,6 +34,7 @@ public final class FirebaseContract {
         public static final String KEY_NAMES_LIST = "names_list";
         public static final String KEY_SESSION_STATUS = "session_status";
         public static final String KEY_FOR_GROUP_ID = "for_group";
+        public static final String KEY_FOR_SESSION_NAME_ = "for_name";
 
         public enum AttendanceStatus {
             NOT_ACTIVATED("not-activated"), OPEN("open"), CLOSED("closed");
@@ -65,6 +66,8 @@ public final class FirebaseContract {
             public String toString() {
                 return value;
             }
+
+
         }
 
         private SessionEntry() {

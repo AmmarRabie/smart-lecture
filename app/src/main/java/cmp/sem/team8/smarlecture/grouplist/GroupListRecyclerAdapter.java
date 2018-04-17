@@ -69,7 +69,7 @@ class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAda
 
     interface OnItemClickListener {
 
-        void onStartSessionClick(View view, int position);
+       // void onStartSessionClick(View view, int position);
 
         void onDeleteGroupClick(View view, int position);
 
@@ -96,7 +96,7 @@ class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAda
         GroupListViewHolder(View itemView) {
             super(itemView);
             nameView = itemView.findViewById(R.id.groupList_groupName);
-            startSessionImageView = itemView.findViewById(R.id.grouplist_startSession);
+          //  startSessionImageView = itemView.findViewById(R.id.grouplist_startSession);
             deleteImageView = itemView.findViewById(R.id.grouplist_deleteGroup);
             editImageView = itemView.findViewById(R.id.grouplist_editGroup);
             containerView = itemView;
@@ -112,13 +112,13 @@ class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAda
                 return;
 
             // set listeners to the whole view, the startSession view and the deleteGroupView
-            startSessionImageView
+           /* startSessionImageView
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             mItemClickListener.onStartSessionClick(view, position);
                         }
-                    });
+                    });*/
             deleteImageView
                     .setOnClickListener(new View.OnClickListener() {
                         @Override

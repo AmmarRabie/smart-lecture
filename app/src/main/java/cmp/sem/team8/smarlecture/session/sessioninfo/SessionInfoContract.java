@@ -16,10 +16,13 @@ public class SessionInfoContract {
         // show session id as text in the view
         void showSessionId(String id);
 
+        void closedSessionView();
+        void openSessionView();
+        void notActiveSessionView();
 
         //********** SendSessionToActivity ****************
         // send session id generated to the session activity to be used in another fragment within the activity.
-        void sendSessioIdToActivity(int Id);
+        void sendSessioIdToActivity(String Id);
     }
 
 
@@ -34,6 +37,8 @@ public class SessionInfoContract {
         //2- add new session to database
         //3- send session id to SessionActivity.
         void startSession( );
+        void openSession();
+        String getSessionStatus();
 
         //********** End Session ****************
         //mark (session.flag=closed)in database;

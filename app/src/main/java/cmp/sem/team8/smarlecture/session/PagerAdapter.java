@@ -19,11 +19,12 @@ public class PagerAdapter extends FragmentPagerAdapter {
     private String mGroupId = null;
     SessionInfoFragment sessionInfoFragment;
     SessionInfoPresenter mSessionInfoPresenter;
+    private  String mSessionID=null;
 
     BeginAttendanceFragment beginAttendanceFragment;
     BeginAttendancePresenter mBeginAttendancePresenter;
 
-    public PagerAdapter(FragmentManager fm,int numOfTabs, String groupId) {
+    public PagerAdapter(FragmentManager fm,int numOfTabs, String groupId,String sessionID) {
         super(fm);
         this.numOfTabs = numOfTabs;
 
@@ -32,6 +33,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
         sessionInfoFragment =null;
         beginAttendanceFragment=null;
         mGroupId = groupId;
+        mSessionID=sessionID;
     }
 
     public SessionInfoPresenter getSessionPresenter(){
@@ -45,7 +47,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 sessionInfoFragment = sessionInfoFragment == null ?
                         SessionInfoFragment.newInstance()
                         : sessionInfoFragment;
-                mSessionInfoPresenter = new SessionInfoPresenter(sessionInfoFragment,mGroupId);
+                mSessionInfoPresenter = new SessionInfoPresenter(sessionInfoFragment,mGroupId,mSessionID);
                 return sessionInfoFragment;
 
             case 1:
@@ -61,6 +63,23 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
+
+    public SessionInfoPresenter getmSessionInfoPresenter() {
+        return mSessionInfoPresenter;
+    }
+    @Override
+    public CharSequence getPageTitle(int position) {
+
+        if(position==0)
+            return "Info";
+        else {
+            return "Attendance";
+        }
+
+
+    }
+
+
 
     @Override
     public int getCount() {

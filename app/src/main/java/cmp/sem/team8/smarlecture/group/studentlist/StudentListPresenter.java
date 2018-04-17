@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.group;
+package cmp.sem.team8.smarlecture.group.studentlist;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -20,23 +20,23 @@ import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
  * Created by Loai Ali on 3/16/2018.
  */
 
-public class GroupPresenter implements GroupContract.Actions {
-    private static final String TAG = "GroupPresenter";
+public class StudentListPresenter implements StudentListContract.Actions {
+    private static final String TAG = "StudentListPresenter";
 
     private final String GROUP_ID;
     private final String GROUP_NAME;
 
-    private GroupContract.Views mView;
+    private StudentListContract.Views mView;
 
     private DatabaseReference mGroupRef;
 
-    public GroupPresenter(GroupContract.Views view, final String groupId, final String groupName) {
+    public StudentListPresenter(StudentListContract.Views view, final String groupId, final String groupName) {
         mView = view;
         GROUP_ID = groupId;
         GROUP_NAME = groupName;
         mGroupRef = null;
         if (groupId == null) {
-            Log.e(TAG, "GroupPresenter: group passed as null");
+            Log.e(TAG, "StudentListPresenter: group passed as null");
             return;
         }
         mView.setPresenter(this);

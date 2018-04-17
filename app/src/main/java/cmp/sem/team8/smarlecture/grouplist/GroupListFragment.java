@@ -272,14 +272,14 @@ public class GroupListFragment extends Fragment implements
         internetConnectivityReceiver.end(getContext());
     }
 
-    @Override
+  /*  @Override
     public void onStartSessionClick(View view, int position) {
         HashMap<String, Object> groupSessionClicked = mGroupList.get(position);
         String groupId = groupSessionClicked.get("id").toString();
         Intent sessionActivity = new Intent(getContext(), SessionActivity.class);
         sessionActivity.putExtra("group_id", groupId);
         startActivity(sessionActivity);
-    }
+    }*/
 
     /**
      * called when the whole item is clicked

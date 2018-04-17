@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.group;
+package cmp.sem.team8.smarlecture.group.studentlist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import cmp.sem.team8.smarlecture.IBaseView;
  * Created by Loai Ali on 3/16/2018.
  */
 
-public interface GroupContract {
+public interface StudentListContract {
 
     interface Views extends IBaseView<Actions> {
 
