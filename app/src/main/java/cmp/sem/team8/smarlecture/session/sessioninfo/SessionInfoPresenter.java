@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
@@ -63,7 +64,10 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
                 mSession.setmGroupID(dataSnapshot.child(SessionEntry.KEY_FOR_GROUP_ID).getValue(String.class));
                 mSession.setmAttendanceStatus(dataSnapshot.child(SessionEntry.KEY_ATTENDANCE_STATUS).getValue(String.class));
                 mSession.setmSessionID(SessionId);
-                mSession.setmStudentsList(dataSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
+                HashMap<String,String> hashedList=(HashMap<String, String>)dataSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
+                ArrayList<String> students=new ArrayList<>(hashedList.values());
+                mSession.setmStudentsList(students);
+                // mSession.setmStudentsList(dataSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
                 mSession.setmSessionStatus(dataSnapshot.child(SessionEntry.KEY_SESSION_STATUS).getValue(String.class));
                 mView.showSessionId(SessionId);
                 mView.sendSessioIdToActivity(SessionId);

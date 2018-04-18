@@ -15,6 +15,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.grouplist.GroupListContract;
@@ -204,7 +206,11 @@ public class SessionListPresenter implements SessionListContract.Actions {
 
                     sessionModel.setmGroupID(GROUP_ID);
                     sessionModel.setmAttendanceStatus(sessionSnapshot.child(SessionEntry.KEY_ATTENDANCE_STATUS).getValue(String.class));
-                    sessionModel.setmStudentsList(sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
+
+                    HashMap<String,String>list= (HashMap<String,String>)sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
+                    ArrayList<String> students= new ArrayList<>(list.values());
+                    sessionModel.setmStudentsList(students);
+                    //sessionModel.setmStudentsList(sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
                     sessionsList.add(sessionModel);
                 }
                 mView.showSessionsList(sessionsList);
