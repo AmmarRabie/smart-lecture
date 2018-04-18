@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.session.beginattendance;
 
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -10,7 +11,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 
 /**
  * Created by ramym on 3/17/2018.
@@ -123,7 +125,6 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         nref.setValue(SessionEntry.AttendanceStatus.CLOSED);
 
     }
-
 
 
     private int getSessionIDFromActivity() {

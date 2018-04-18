@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.grouplist;
 
+
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -17,10 +18,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cmp.sem.team8.smarlecture.common.MapUtils;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.GroupEntry;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.SessionEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
+import cmp.sem.team8.smarlecture.common.util.MapUtils;
 import cmp.sem.team8.smarlecture.model.GroupModel;
 
 /**
@@ -177,6 +178,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 }
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }

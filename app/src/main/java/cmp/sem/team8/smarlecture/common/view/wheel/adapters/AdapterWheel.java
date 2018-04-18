@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package cmp.sem.team8.smarlecture.common.wheel.adapters;
+package cmp.sem.team8.smarlecture.common.view.wheel.adapters;
 
 
 import android.content.Context;
 
-import cmp.sem.team8.smarlecture.common.wheel.WheelAdapter;
+import cmp.sem.team8.smarlecture.common.view.wheel.WheelAdapter;
 
 
 /**

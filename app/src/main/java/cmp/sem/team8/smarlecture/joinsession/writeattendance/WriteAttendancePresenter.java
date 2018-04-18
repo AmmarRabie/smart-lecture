@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -9,9 +10,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
-
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
 
 /**
  * Created by ramym on 3/20/2018.
@@ -174,8 +175,8 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         String name = child.getValue(String.class);
-                        String key  = child.getKey();
-                        students.add(new UserAttendanceModel(name,key, false));
+                        String key = child.getKey();
+                        students.add(new UserAttendanceModel(name, key, false));
                     }
 
                     mView.showStudentsList(students);

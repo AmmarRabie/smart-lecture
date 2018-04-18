@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package cmp.sem.team8.smarlecture.common.wheel.adapters;
+package cmp.sem.team8.smarlecture.common.view.wheel.adapters;
 
 import android.database.DataSetObserver;
 import android.view.View;

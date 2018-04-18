@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.group;
 
+
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -14,7 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 
 /**
  * Created by Loai Ali on 3/16/2018.
