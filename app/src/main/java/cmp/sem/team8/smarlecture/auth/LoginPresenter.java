@@ -1,17 +1,11 @@
 package cmp.sem.team8.smarlecture.auth;
 
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import cmp.sem.team8.smarlecture.AppUseCases;
-import cmp.sem.team8.smarlecture.IAppUseCases;
+import cmp.sem.team8.smarlecture.common.auth.AuthService;
+import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
+import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.model.UserModel;
 
@@ -23,12 +17,14 @@ class LoginPresenter implements LoginContract.Actions {
 
     private static final String TAG = "LoginPresenter";
 
+    private AuthService mAuthService;
     private LoginContract.Views mView;
     private AppDataSource mDataSource;
     private boolean mForceLogin;
     private boolean mFoundUser;
 
-    public LoginPresenter(AppDataSource dataSource, LoginContract.Views view, boolean forceLogin) {
+    public LoginPresenter(AuthService authService, AppDataSource dataSource, LoginContract.Views view, boolean forceLogin) {
+        mAuthService = authService;
         mDataSource = dataSource;
         mView = view;
         mForceLogin = forceLogin;
@@ -43,7 +39,7 @@ class LoginPresenter implements LoginContract.Actions {
             return;
 
         // fetch the current user name if he is exist
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        AuthenticatedUser currentUser = mAuthService.getCurrentUser();
         if (currentUser != null) {
             mFoundUser = true;
             mView.showProgressIndicator("try finding a user");
@@ -69,21 +65,20 @@ class LoginPresenter implements LoginContract.Actions {
         }
 
         mView.showProgressIndicator("logging in...");
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,
-                password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuthService.signIn(email,
+                password, new AuthService.OnAuthActionComplete<String>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail: success");
-                            getUserNameAndCallViewSuccess();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure",
-                                    task.getException());
-                            mView.showErrorMessage(task.getException().getMessage());
-                        }
+                    public void onSuccess(String s) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signIn: success");
+                        getUserNameAndCallViewSuccess();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signIn:failure " + error);
+                        mView.showErrorMessage(error);
                     }
                 });
     }
@@ -96,15 +91,15 @@ class LoginPresenter implements LoginContract.Actions {
             return;
         }
         mView.showProgressIndicator("sending...");
-        AppUseCases.getInstance().forgetPassword(email, new IAppUseCases.OnResetEmailPasswordListener() {
+        mAuthService.sendPasswordResetEmail(email, new AuthService.OnAuthActionComplete<Void>() {
             @Override
-            public void OnResetEmailSent() {
+            public void onSuccess(Void aVoid) {
                 mView.showOnResetPasswordEmailSend();
             }
 
             @Override
-            public void onError() {
-                mView.showErrorMessage("no internet connection");
+            public void onError(String error) {
+                mView.showErrorMessage(error);
             }
         });
     }
@@ -112,9 +107,9 @@ class LoginPresenter implements LoginContract.Actions {
 
     private void getUserNameAndCallViewSuccess() {
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        AuthenticatedUser currentUser = FirebaseAuthService.getInstance().getCurrentUser();
 
-        mDataSource.getUser(currentUser.getUid(), new AppDataSource.Get<UserModel>() {
+        mDataSource.getUser(currentUser.getUserId(), new AppDataSource.Get<UserModel>() {
             @Override
             public void onDataFetched(UserModel data) {
                 mView.showOnSuccess(data.getName());
@@ -125,7 +120,13 @@ class LoginPresenter implements LoginContract.Actions {
                 Log.e(TAG,
                         "onDataNotAvailable: data of the user is not available," +
                                 " can't find the id or user doesn't have name");
-                mView.showOnSuccess(" "); // show empty user name
+                mView.showErrorMessage("There is a problem with your account");
+            }
+
+            @Override
+            public void onError(String cause) {
+                super.onError(cause);
+                mView.showErrorMessage(cause);
             }
         });
     }

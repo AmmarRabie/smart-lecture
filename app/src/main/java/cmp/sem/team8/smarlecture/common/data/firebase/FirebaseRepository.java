@@ -38,8 +38,28 @@ public class FirebaseRepository implements AppDataSource {
     }
 
     @Override
-    public void getUser(String userId, Get<UserModel> callback) {
+    public void getUser(final String userId, final Get<UserModel> callback) {
+        final DatabaseReference userRef =
+                FirebaseDatabase.getInstance().
+                        getReference(UserEntry.KEY_THIS).child(userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                String userName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
+                String userEmail = dataSnapshot.child(UserEntry.KEY_EMAIL).getValue(String.class);
+                UserModel user = new UserModel(userName,userEmail, userId);
+                callback.onDataFetched(user);
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
     }
 
     @Override
@@ -70,8 +90,25 @@ public class FirebaseRepository implements AppDataSource {
     }
 
     @Override
-    public void updateUserName(String userId, String newName, Update callback) {
+    public void updateUserName(String userId, String newName, final Update callback) {
+        final DatabaseReference thisUserRef = FirebaseDatabase.getInstance()
+                .getReference(UserEntry.KEY_THIS)
+                .child(userId);
 
+
+        thisUserRef.child(UserEntry.KEY_NAME).setValue(newName)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            callback.onUpdateSuccess();
+                        } else {
+                            if (task.getException() != null)
+                                callback.onError(task.getException().getMessage());
+                            else callback.onError("Can't update user name");
+                        }
+                    }
+                });
     }
 
     @Override

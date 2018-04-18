@@ -24,8 +24,8 @@ class SignUpPresenter implements SignUpContract.Actions {
 
 
     public SignUpPresenter(AuthService authService, AppDataSource dataSource, SignUpContract.Views view) {
-        mDataSource = dataSource;
         mAuthService = authService;
+        mDataSource = dataSource;
         mView = view;
         isInTask = false;
 

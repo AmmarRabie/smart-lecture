@@ -46,10 +46,12 @@ public class FirebaseAuthService implements AuthService {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             callback.onSuccess(getCurrentUser().getUserId());
+                            updateUser();
                             return;
                         }
                         if (task.getException() != null)
                             callback.onError(task.getException().getMessage());
+                        else callback.onError("Can't sign in");
                     }
                 });
     }
@@ -64,6 +66,7 @@ public class FirebaseAuthService implements AuthService {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             callback.onSuccess(getCurrentUser().getUserId());
+                            updateUser();
                             return;
                         }
                         if (task.getException() != null)
@@ -75,7 +78,6 @@ public class FirebaseAuthService implements AuthService {
     @Override
     public void signOut() {
         FirebaseAuth.getInstance().signOut();
-        updateUser();
     }
 
 
