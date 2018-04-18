@@ -48,7 +48,7 @@ public class StudentListPresenter implements StudentListContract.Actions {
         mView.handleOfflineStates();
         mView.showGroupName(GROUP_NAME);
 
-        FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS)
+         FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS)
                 .child(GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -18,17 +18,17 @@ import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
  * Created by ramym on 3/20/2018.
  */
 
-public class StudentsNamesAdapter  extends BaseAdapter {
+public class StudentsNamesAdapter extends BaseAdapter {
 
     private Activity activity;
     private int resource;
     private List<String> list;
     private LayoutInflater inflater;
 
-    public StudentsNamesAdapter(Activity activity, List<String>list) {
-        this.activity=activity;
-        this.list=list;
-        inflater=activity.getLayoutInflater();
+    public StudentsNamesAdapter(Activity activity, List<String> list) {
+        this.activity = activity;
+        this.list = list;
+        inflater = activity.getLayoutInflater();
     }
 
     @Override
@@ -48,19 +48,17 @@ public class StudentsNamesAdapter  extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder=null;
-        if(convertView==null)
-        {
-            convertView=inflater.inflate(R.layout.studnet_name_item,parent,false);
-            holder=new ViewHolder();
-            holder.StudentName=(TextView)convertView.findViewById(R.id.student_name_item_name);
+        ViewHolder holder = null;
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.studnet_name_item, parent, false);
+            holder = new ViewHolder();
+            holder.StudentName = (TextView) convertView.findViewById(R.id.student_name_item_name);
             convertView.setTag(holder);
-        }
-        else{
-            holder=(ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        String name =list.get(position);
+        String name = list.get(position);
         holder.StudentName.setText(name);
         return convertView;
     }
@@ -72,13 +70,12 @@ public class StudentsNamesAdapter  extends BaseAdapter {
         return new CharSequence[0];
     }
 
-    public void updateRecords(List<String> Students)
-    {
-        this.list=Students;
+    public void updateRecords(List<String> Students) {
+        this.list = Students;
         notifyDataSetChanged();
     }
 
-    class ViewHolder{
+    class ViewHolder {
 
         TextView StudentName;
     }

@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.grouplist.GroupListContract;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.*;
 import cmp.sem.team8.smarlecture.model.SessionModel;
 
 /**
@@ -208,8 +208,14 @@ public class SessionListPresenter implements SessionListContract.Actions {
                     sessionModel.setmAttendanceStatus(sessionSnapshot.child(SessionEntry.KEY_ATTENDANCE_STATUS).getValue(String.class));
 
                     HashMap<String,String>list= (HashMap<String,String>)sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
+                  //if students list is empty list will be equal to null
+                   if(list!=null){
                     ArrayList<String> students= new ArrayList<>(list.values());
-                    sessionModel.setmStudentsList(students);
+                    sessionModel.setmStudentsList(students);}
+                    else{
+                       sessionModel.setmStudentsList(new ArrayList<String>());
+
+                   }
                     //sessionModel.setmStudentsList(sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
                     sessionsList.add(sessionModel);
                 }

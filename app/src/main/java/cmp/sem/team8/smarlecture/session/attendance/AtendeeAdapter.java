@@ -18,7 +18,7 @@ import cmp.sem.team8.smarlecture.R;
  * Created by AmmarRabie on 12/03/2018.
  */
 
-public class AtendeeAdapter  extends ArrayAdapter<Map> {
+public class AtendeeAdapter extends ArrayAdapter<Map> {
 
     private static final String TAG = "AtendeeAdapter";
 
@@ -36,18 +36,18 @@ public class AtendeeAdapter  extends ArrayAdapter<Map> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Check if the existing view is being reused, otherwise inflate the view
         View listItemView = convertView;
-        if(listItemView == null) {
+        if (listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
                     R.layout.item_atendee, parent, false);
         }
 
-        Map<String,Object> currentAndroidFlavor = getItem(position);
+        Map<String, Object> currentAndroidFlavor = getItem(position);
 
         TextView nameTextView = listItemView.findViewById(R.id.atendee_name);
 
         nameTextView.setText(currentAndroidFlavor.get("name").toString());
 
-        CheckBox isAttend =  listItemView.findViewById(R.id.atendee_attend_flag);
+        CheckBox isAttend = listItemView.findViewById(R.id.atendee_attend_flag);
 
         boolean attendFlag = (boolean) currentAndroidFlavor.get("attend");
         isAttend.setChecked(attendFlag);

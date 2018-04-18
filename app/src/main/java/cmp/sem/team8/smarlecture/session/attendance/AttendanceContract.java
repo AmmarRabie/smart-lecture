@@ -38,7 +38,7 @@ public class AttendanceContract {
      */
     interface Actions extends IBasePresenter {
 
-         void setAttendance(int index, boolean isAttend);
+        void setAttendance(int index, boolean isAttend);
 
         void findAttendanceList(String secret);
 

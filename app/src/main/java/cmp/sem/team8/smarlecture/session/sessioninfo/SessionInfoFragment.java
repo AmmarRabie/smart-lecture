@@ -13,13 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
+import cmp.sem.team8.smarlecture.session.PagerAdapter;
 
 /**
  * Created by ramym on 3/15/2018.
  */
 
-public class SessionInfoFragment extends Fragment implements SessionInfoContract.Views {
+public class SessionInfoFragment extends Fragment implements SessionInfoContract.Views,
+        PagerAdapter.FragmentLifeCycle{
 
     private SessionInfoContract.Actions mPresenter;
     private TextView id;
@@ -118,5 +120,18 @@ public class SessionInfoFragment extends Fragment implements SessionInfoContract
     public void onResume() {
         super.onResume();
         mPresenter.start();
+    }
+
+    @Override
+    public void onPauseFragment() {
+        super.onPause();
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+        super.onResume();
+        mPresenter.start();
+
     }
 }
