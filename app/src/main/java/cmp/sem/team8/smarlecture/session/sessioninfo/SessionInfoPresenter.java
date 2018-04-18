@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.session.sessioninfo;
 
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,7 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 
 /**
  * Created by ramym on 3/15/2018.
@@ -18,10 +20,9 @@ import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
 
 public class SessionInfoPresenter implements SessionInfoContract.Actions {
 
-    private final String GROUP_ID;
-
     private static final int minId = 0;
     private static final int maxId = 10000000;
+    private final String GROUP_ID;
     SessionInfoContract.Views mView;
     private DatabaseReference mDatabase;
     private int SessionId;
@@ -94,7 +95,6 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
         ref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SESSION_STATUS);
         ref.setValue(SessionEntry.AttendanceStatus.CLOSED);
     }
-
 
 
 }

@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package cmp.sem.team8.smarlecture.common.wheel;
+package cmp.sem.team8.smarlecture.common.view.wheel;
 
 
 import android.content.Context;
@@ -32,12 +32,11 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
-
 import java.util.LinkedList;
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.wheel.adapters.WheelViewAdapter;
+import cmp.sem.team8.smarlecture.common.view.wheel.adapters.WheelViewAdapter;
 
 /**
  * Numeric wheel view.

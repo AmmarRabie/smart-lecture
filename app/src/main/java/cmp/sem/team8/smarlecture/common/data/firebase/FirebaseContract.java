@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.common.data;
+package cmp.sem.team8.smarlecture.common.data.firebase;
 
 /**
  * Created by AmmarRabie on 14/04/2018.

@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.common;
+package cmp.sem.team8.smarlecture.common.util;
 
 import java.util.HashMap;
 

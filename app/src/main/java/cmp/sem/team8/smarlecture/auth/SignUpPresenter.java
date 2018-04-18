@@ -1,18 +1,12 @@
 package cmp.sem.team8.smarlecture.auth;
 
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.firebase.ui.auth.data.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+import cmp.sem.team8.smarlecture.common.auth.AuthService;
+import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.model.UserModel;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -21,50 +15,37 @@ import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
 class SignUpPresenter implements SignUpContract.Actions {
 
 
+    private AuthService mAuthService;
+    private AppDataSource mDataSource;
     private SignUpContract.Views mView;
     private boolean isInTask;
 
-    private OnCompleteListener<Void> deleteTaskListener;
-
-    private OnCompleteListener loggingListener;
+    private AuthenticatedUser.DeleteCallback deleteTaskListener;
 
 
-    public SignUpPresenter(SignUpContract.Views view) {
+    public SignUpPresenter(AuthService authService, AppDataSource dataSource, SignUpContract.Views view) {
+        mAuthService = authService;
+        mDataSource = dataSource;
         mView = view;
         isInTask = false;
 
-        deleteTaskListener = new OnCompleteListener<Void>() {
+        deleteTaskListener = new AuthenticatedUser.DeleteCallback() {
             @Override
-            public void onComplete(@NonNull Task<Void> deleteUserTask) {
+            public void onDeleteSuccess() {
+                Log.e("SignUpPresenter: ", "the user can't write his data in the " +
+                        "database although he is authenticated");
+                mView.showErrorMessage("can't sign up right now");
+                endTask();
 
-                if (deleteUserTask.isSuccessful()) {
-                    Log.e("SignUpPresenter: ", "the user can't write his data in the " +
-                            "database although he is authenticated");
-                    mView.showErrorMessage("can't sign up right now");
-                    endTask();
-                } else {
-                    // else the user is signed in although we can't insert him at the database, throw exception
+            }
+
+            @Override
+            public void onError(String error) {
+                // else the user is signed in although we can't insert him at the database, throw exception
 //                    throw new RuntimeException("The user is authenticated and not inserted");
-                    Log.wtf("SignUpPresenter: ", "The user is authenticated and not inserted");
-                }
+                Log.wtf("SignUpPresenter: ", "The user is authenticated and not inserted");
             }
         };
-
-        loggingListener = new OnCompleteListener() {
-            @Override
-            public void onComplete(@NonNull final Task writeTask) {
-                if (writeTask.isSuccessful()) {
-                    mView.showOnSuccess();
-                    endTask();
-                } else {
-
-                    // [start try to delete the user from authenticated users]
-                    FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(deleteTaskListener);
-                    // [end try to delete the user from authenticated users]
-                }
-            }
-        };
-
         mView.setPresenter(this);
     }
 
@@ -108,38 +89,42 @@ class SignUpPresenter implements SignUpContract.Actions {
             endTask();
             return;
         }
-
         if (!password.equals(confirmPassword)) {
             mView.showErrorMessage("two passwords are different");
             endTask();
             return;
         }
 
+        mAuthService.signUp(email, password, new AuthService.OnAuthActionComplete<String>() {
+            @Override
+            public void onSuccess(String userId) {
+                Log.d("SignUpPresenter: ", "createUserWithEmailAndPassword:success");
+                insertUser(name, email, userId);
+            }
 
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,
-                password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("SignUpPresenter: ", "createUserWithEmailAndPassword:success");
-                            insertUser(name, email, task.getResult().getUser().getUid());
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("SignUpPresenter: ", "createUserWithEmailAndPassword:failure",
-                                    task.getException());
-                            mView.showErrorMessage(task.getException().getMessage());
-                            endTask();
-                        }
-                    }
-                });
+            @Override
+            public void onError(String error) {
+                // If sign in fails, display a message to the user.
+                Log.w("SignUpPresenter: ", "createUserWithEmailAndPassword:failure");
+                mView.showErrorMessage(error);
+                endTask();
+            }
+        });
     }
 
     private void insertUser(String name, String email, String id) {
-        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference(UserEntry.KEY_THIS);
-        DatabaseReference thisUserReference = usersReference.child(id);
-        thisUserReference.child(UserEntry.KEY_NAME).setValue(name).addOnCompleteListener(loggingListener);
-        thisUserReference.child(UserEntry.KEY_NAME).setValue(email).addOnCompleteListener(loggingListener);
+        UserModel newUserModel = new UserModel(name, email, id);
+        mDataSource.insertUser(newUserModel, new AppDataSource.Insert<String>() {
+            @Override
+            public void onDataInserted(String feedback) {
+                mView.showOnSuccess();
+                endTask();
+            }
+
+            @Override
+            public void onError(String cause) {
+                mAuthService.getCurrentUser().delete(deleteTaskListener);
+            }
+        });
     }
 }

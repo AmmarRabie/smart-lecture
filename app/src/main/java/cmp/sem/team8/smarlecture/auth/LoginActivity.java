@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 
 /**
@@ -41,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Create the presenter
-        mLoginPresenter = new LoginPresenter(loginFragment, mForceLogin);
+        mLoginPresenter = new LoginPresenter(FirebaseAuthService.getInstance(), FirebaseRepository.getInstance(), loginFragment, mForceLogin);
     }
 
 

@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.common;
+package cmp.sem.team8.smarlecture.common.view;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -8,10 +8,10 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.LinearLayout;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.wheel.OnWheelChangedListener;
-import cmp.sem.team8.smarlecture.common.wheel.OnWheelScrollListener;
-import cmp.sem.team8.smarlecture.common.wheel.WheelView;
-import cmp.sem.team8.smarlecture.common.wheel.adapters.NumericWheelAdapter;
+import cmp.sem.team8.smarlecture.common.view.wheel.OnWheelChangedListener;
+import cmp.sem.team8.smarlecture.common.view.wheel.OnWheelScrollListener;
+import cmp.sem.team8.smarlecture.common.view.wheel.WheelView;
+import cmp.sem.team8.smarlecture.common.view.wheel.adapters.NumericWheelAdapter;
 
 /**
  * Created by AmmarRabie on 06/04/2018.

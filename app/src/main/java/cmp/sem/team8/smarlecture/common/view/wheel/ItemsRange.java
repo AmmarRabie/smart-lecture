@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-package cmp.sem.team8.smarlecture.common.wheel;
+package cmp.sem.team8.smarlecture.common.view.wheel;
 
 /**
  * Range for visible items.

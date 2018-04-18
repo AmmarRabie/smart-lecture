@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.SecretWheels;
+import cmp.sem.team8.smarlecture.common.view.SecretWheels;
 import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 import es.dmoral.toasty.Toasty;
 
