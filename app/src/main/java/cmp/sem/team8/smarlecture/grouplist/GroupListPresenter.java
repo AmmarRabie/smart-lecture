@@ -109,7 +109,8 @@ public class GroupListPresenter implements GroupListContract.Actions {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    if (mView != null && !isOffline)
+
+                  if (mView != null && !isOffline)
                         mView.onAddSuccess(groupID, groupName);
                 } else {
                     if (mView != null)
@@ -138,7 +139,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    if (mView != null && !isOffline)
+                   if (mView != null && !isOffline)
                         mView.onEditSuccess(groupID, newGroupName);
                 } else {
                     if (mView != null)

@@ -25,8 +25,25 @@
             android:textAppearance="?android:textAppearanceMedium"
             tools:text="1785465648" />
     </LinearLayout>
-
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Status: "
+            android:textAppearance="?android:textAppearanceLarge"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/session_stauts"
+            android:textAppearance="?android:textAppearanceMedium"
+            tools:text="Not Activated" />
+
+    </LinearLayout>
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -34,18 +51,26 @@
         android:orientation="vertical">
 
         <ImageButton
-            android:id="@+id/start_sessio_fragment_end_session"
+            android:id="@+id/frag_sessioninfo_startendsession"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/exit_blue" />
 
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@id/start_sessio_fragment_end_session"
+            android:id="@+id/sessionAction"
+
+            android:layout_below="@+id/frag_sessioninfo_startendsession"
+
+            android:layout_centerHorizontal="true"
+
             android:text="End Session"
             android:textAppearance="?android:textAppearanceSmall" />
-    </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

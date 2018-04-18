@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.group;
+package cmp.sem.team8.smarlecture.group.studentlist;
 
 
 import android.content.DialogInterface;
@@ -25,30 +25,30 @@ import es.dmoral.toasty.Toasty;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GroupFragment extends android.support.v4.app.Fragment implements
-        GroupContract.Views,
-        GroupRecyclerAdapter.onItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
+public class StudentListFragment extends android.support.v4.app.Fragment implements
+        StudentListContract.Views,
+        StudentListRecyclerAdapter.onItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
 
-    private GroupContract.Actions mPresenter;
+    private StudentListContract.Actions mPresenter;
 
-    private RecyclerView mGroupRecyclerView;
+    private RecyclerView mStudentListRecyclerView;
     private View mOfflineView;
 
-    private GroupRecyclerAdapter mGroupRecyclerAdapter;
+    private StudentListRecyclerAdapter mStudentListRecyclerAdapter;
 
     private ArrayList<HashMap<String, Object>> mNamesList;
     private InternetConnectivityReceiver internetConnectivityReceiver;
     private boolean mInternetState;
 
-    public GroupFragment() {
+    public StudentListFragment() {
     }
 
-    public static GroupFragment newInstance() {
-        return new GroupFragment();
+    public static StudentListFragment newInstance() {
+        return new StudentListFragment();
     }
 
     @Override
-    public void setPresenter(GroupContract.Actions presenter) {
+    public void setPresenter(StudentListContract.Actions presenter) {
         mPresenter = presenter;
     }
 
@@ -57,17 +57,17 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.frag_group, container, false);
+        View root = inflater.inflate(R.layout.frag_studentlist, container, false);
 
-        mGroupRecyclerView = root.findViewById(R.id.groupFrag_list);
+        mStudentListRecyclerView = root.findViewById(R.id.groupFrag_list);
         mOfflineView = root.findViewById(R.id.offlineView);
         mNamesList = new ArrayList<>();
 
-        mGroupRecyclerAdapter = new GroupRecyclerAdapter(getContext(),
+        mStudentListRecyclerAdapter = new StudentListRecyclerAdapter(getContext(),
                 mNamesList, this);
 
-        mGroupRecyclerView.setAdapter(mGroupRecyclerAdapter);
-        mGroupRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mStudentListRecyclerView.setAdapter(mStudentListRecyclerAdapter);
+        mStudentListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return root;
     }
@@ -78,7 +78,7 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
             return;
         mNamesList.clear();
         mNamesList.addAll(namesList);
-        mGroupRecyclerAdapter.notifyDataSetChanged(/*0,mNamesList.size()*/);
+        mStudentListRecyclerAdapter.notifyDataSetChanged(/*0,mNamesList.size()*/);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
             position++;
         }
         mNamesList.remove(position);
-        mGroupRecyclerAdapter.notifyDataSetChanged();
+        mStudentListRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
             position++;
         }
         mNamesList.get(position).put("name", newName);
-        mGroupRecyclerAdapter.notifyItemChanged(position, null);
+        mStudentListRecyclerAdapter.notifyItemChanged(position, null);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class GroupFragment extends android.support.v4.app.Fragment implements
         newStudent.put("key", UID);
         newStudent.put("name", newName);
         mNamesList.add(newStudent);
-        mGroupRecyclerAdapter.notifyItemInserted(mNamesList.size());
+        mStudentListRecyclerAdapter.notifyItemInserted(mNamesList.size());
     }
 
     @Override

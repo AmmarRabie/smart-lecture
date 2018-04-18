@@ -4,7 +4,6 @@
     <!--FMT as a notation for formatted string-->
     <string name="FMT_welcomeBackMes">Hello %s, welcome back</string>
 
-
     <string name="mes_passwordChanged">password changed successfully</string>
     <string name="mes_enterPin">Please enter PIN</string>
     <string name="mes_done">done!</string>
@@ -23,11 +22,12 @@
     <string name="dTitle_changePass">Changing password</string>
     <string name="dTitle_joinSession">Join Session</string>
     <string name="dTitle_editName">Edit name</string>
+    <string name="dTitle_editSession">Edit Session</string>
     <string name="dTitle_addGroup">Add Group</string>
     <string name="dTitle_closeConnection">Close the connection</string>
     <string name="dTitle_changeSecret">Save</string>
     <string name="dTitle_deleteGroup">Delete Group</string>
-
+<string name="dTitle_addSession">Add Session</string>
     <string name="dAction_join">join</string>
     <string name="dAction_cancel">Cancel</string>
     <string name="dAction_change">Change</string>

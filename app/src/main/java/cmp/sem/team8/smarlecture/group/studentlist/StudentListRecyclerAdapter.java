@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.group;
+package cmp.sem.team8.smarlecture.group.studentlist;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +18,7 @@ import cmp.sem.team8.smarlecture.R;
  * Created by Loai Ali on 3/17/2018.
  */
 
-public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdapter.GroupViewHolder> {
+public class StudentListRecyclerAdapter extends RecyclerView.Adapter<StudentListRecyclerAdapter.GroupViewHolder> {
 
     private final static int VIEW_TYPE_CELL = 0;
     private final static int VIEW_TYPE_FOOTER = 1;
@@ -26,14 +26,14 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
     private ArrayList<HashMap<String, Object>> mNamesList;
     private Context mContext;
 
-    public GroupRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> nameList,
-                                onItemClickListener onEditClickListener) {
+    public StudentListRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> nameList,
+                                      onItemClickListener onEditClickListener) {
 
         this(context, nameList);
         mItemClickListener = onEditClickListener;
     }
 
-    public GroupRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> namesList) {
+    public StudentListRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> namesList) {
         this.mContext = context;
         this.mNamesList = namesList;
     }

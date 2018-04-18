@@ -37,14 +37,7 @@
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_delete" />
 
-    <ImageView
-        android:id="@+id/grouplist_startSession"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_marginRight="18dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bell" />
+
 
 
 </LinearLayout>

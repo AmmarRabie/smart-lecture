@@ -25,6 +25,9 @@ public class BeginAttendanceContract {
         //to show message error message
         void showErrorMessage(String cause);
 
+        void showBeginAttendaceButton();
+
+        void hideBeginAttendaceButton();
         //********** show  progress indicator  ****************
         //to show the timer of the attendance in the fragment;
         void showProgressIndicator(int minutes);

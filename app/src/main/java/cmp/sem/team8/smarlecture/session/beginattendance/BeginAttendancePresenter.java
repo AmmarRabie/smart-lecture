@@ -52,10 +52,32 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
         taskIsRunning = true;
         SessionId = getSessionIDFromActivity();
+
         mView.showProgressIndicator(3);
 
 
         DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_ATTENDANCE_STATUS);
+        ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SESSION_STATUS.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String sessionStatus = dataSnapshot.getValue().toString();
+                if (sessionStatus.equals(SessionEntry.SessionStatus.OPEN.toString())) {
+                    mView.showBeginAttendaceButton();
+
+
+                } else {
+                    mView.hideBeginAttendaceButton();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         nref.setValue(SessionEntry.AttendanceStatus.OPEN.toString());
 

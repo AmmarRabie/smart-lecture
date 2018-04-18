@@ -69,6 +69,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
         });
 
 
+
         changeSecretView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,6 +115,16 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     @Override
     public void showErrorMessage(String cause) {
         Toasty.error(getContext(), cause, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showBeginAttendaceButton() {
+        
+    }
+
+    @Override
+    public void hideBeginAttendaceButton() {
+
     }
 
     @Override
