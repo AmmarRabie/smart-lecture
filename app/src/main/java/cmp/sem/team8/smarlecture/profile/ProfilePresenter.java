@@ -1,19 +1,11 @@
 package cmp.sem.team8.smarlecture.profile;
 
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.common.auth.AuthService;
+import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
+import cmp.sem.team8.smarlecture.model.UserModel;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -22,11 +14,15 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry
 class ProfilePresenter implements ProfileContract.Actions {
 
     private static final String TAG = "ProfilePresenter";
+    private AppDataSource mDataSource;
 
+    private AuthService mAuthService;
     private ProfileContract.Views mView;
-    private FirebaseUser mCurrentUser;
+    private AuthenticatedUser mCurrentUser;
 
-    public ProfilePresenter(ProfileContract.Views view) {
+    public ProfilePresenter(AuthService authService, AppDataSource dataSource, ProfileContract.Views view) {
+        this.mAuthService = authService;
+        mDataSource = dataSource;
         mView = view;
         mView.setPresenter(this);
     }
@@ -34,15 +30,12 @@ class ProfilePresenter implements ProfileContract.Actions {
     @Override
     public void start() {
         // try to find the current user
-
-        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        mCurrentUser = mAuthService.getCurrentUser();
         if (mCurrentUser == null) {
             mView.showErrorMessage("can't find the current user, try to re-login");
             return;
         }
-
         getUserInfoAndUpdateView();
-//        mView.showUserInfo(mCurrentUser.getDisplayName(), mCurrentUser.getEmail());
     }
 
 
@@ -61,15 +54,15 @@ class ProfilePresenter implements ProfileContract.Actions {
             mView.showErrorMessage("two password are different");
             return;
         }
-
-        mCurrentUser.updatePassword(pass).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mCurrentUser.changePass(pass, new AuthenticatedUser.UpdatePassCallback() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    mView.showOnChangePassSuccess();
-                } else {
-                    mView.showErrorMessage(task.getException().getMessage());
-                }
+            public void onSuccess() {
+                mView.showOnChangePassSuccess();
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showErrorMessage(cause);
             }
         });
     }
@@ -86,24 +79,17 @@ class ProfilePresenter implements ProfileContract.Actions {
             return;
         }
 
+        mDataSource.updateUserName(mCurrentUser.getUserId(), newName, new AppDataSource.Update() {
+            @Override
+            public void onUpdateSuccess() {
+                mView.showOnChangeNameSuccess();
+            }
 
-        final DatabaseReference thisUserRef = FirebaseDatabase.getInstance().getReference()
-                .child(UserEntry.KEY_THIS).child(mCurrentUser.getUid());
-
-
-        thisUserRef.child(UserEntry.KEY_NAME).setValue(newName)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            mView.showOnChangeNameSuccess();
-                        } else {
-                            if (task.getException() != null)
-                                mView.showErrorMessage(task.getException().getMessage());
-                        }
-                    }
-                });
-
+            @Override
+            public void onError(String cause) {
+                mView.showErrorMessage(cause);
+            }
+        });
     }
 
     @Override
@@ -112,35 +98,17 @@ class ProfilePresenter implements ProfileContract.Actions {
             mView.showErrorMessage("You are not logged in, try to re-login");
             return;
         }
-        FirebaseAuth.getInstance().signOut();
+        mAuthService.signOut();
         mView.showOnSignOutSuccess();
     }
 
-
     private void getUserInfoAndUpdateView() {
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        final DatabaseReference userRef =
-                FirebaseDatabase.getInstance().getReference(UserEntry.KEY_THIS).child(currentUser.getUid());
-
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String userName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
-                String userEmail = dataSnapshot.child(UserEntry.KEY_EMAIL).getValue(String.class);
-                mView.showUserInfo(userName, userEmail);
-
-                // remove the value after updating the view
-                // this because if i change the name it will trigger the same time edittext view
-                // is trying to change its value
-                userRef.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                mView.showErrorMessage(databaseError.getMessage());
-                userRef.removeEventListener(this);
-            }
-        });
+        FirebaseRepository.getInstance()
+                .getUser(mCurrentUser.getUserId(), new AppDataSource.Get<UserModel>() {
+                    @Override
+                    public void onDataFetched(UserModel data) {
+                        mView.showUserInfo(data.getName(), data.getEmail());
+                    }
+                });
     }
 }

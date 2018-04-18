@@ -9,13 +9,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.AppUseCases;
+import cmp.sem.team8.smarlecture.IAppUseCases;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.model.UserModel;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -25,11 +23,13 @@ class LoginPresenter implements LoginContract.Actions {
 
     private static final String TAG = "LoginPresenter";
 
-    LoginContract.Views mView;
+    private LoginContract.Views mView;
+    private AppDataSource mDataSource;
     private boolean mForceLogin;
     private boolean mFoundUser;
 
-    public LoginPresenter(LoginContract.Views view, boolean forceLogin) {
+    public LoginPresenter(AppDataSource dataSource, LoginContract.Views view, boolean forceLogin) {
+        mDataSource = dataSource;
         mView = view;
         mForceLogin = forceLogin;
         mFoundUser = false;
@@ -96,43 +96,37 @@ class LoginPresenter implements LoginContract.Actions {
             return;
         }
         mView.showProgressIndicator("sending...");
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            mView.showOnResetPasswordEmailSend();
-                        } else {
-                            mView.showErrorMessage(task.getException().getMessage());
-                        }
-                    }
-                });
+        AppUseCases.getInstance().forgetPassword(email, new IAppUseCases.OnResetEmailPasswordListener() {
+            @Override
+            public void OnResetEmailSent() {
+                mView.showOnResetPasswordEmailSend();
+            }
 
+            @Override
+            public void onError() {
+                mView.showErrorMessage("no internet connection");
+            }
+        });
     }
 
 
     private void getUserNameAndCallViewSuccess() {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        final DatabaseReference userNameRef =
-                FirebaseDatabase.getInstance().
-                        getReference(UserEntry.KEY_THIS).child(currentUser.getUid())
-                        .child(UserEntry.KEY_NAME);
-        userNameRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String userName = dataSnapshot.getValue(String.class);
-                mView.showOnSuccess(userName);
 
-                userNameRef.removeEventListener(this);
+        mDataSource.getUser(currentUser.getUid(), new AppDataSource.Get<UserModel>() {
+            @Override
+            public void onDataFetched(UserModel data) {
+                mView.showOnSuccess(data.getName());
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                mView.showErrorMessage(databaseError.getMessage());
+            public void onDataNotAvailable() {
+                Log.e(TAG,
+                        "onDataNotAvailable: data of the user is not available," +
+                                " can't find the id or user doesn't have name");
+                mView.showOnSuccess(" "); // show empty user name
             }
         });
     }
-
-
 }

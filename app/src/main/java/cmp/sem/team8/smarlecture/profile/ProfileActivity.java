@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 
 /**
@@ -33,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         // Create the presenter
-        mProfilePresenter = new ProfilePresenter(profileFragment);
+        mProfilePresenter = new ProfilePresenter(FirebaseAuthService.getInstance(),
+                FirebaseRepository.getInstance(), profileFragment);
     }
 }

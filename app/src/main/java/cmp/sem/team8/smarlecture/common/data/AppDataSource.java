@@ -14,7 +14,7 @@ import cmp.sem.team8.smarlecture.model.UserModel;
  * implemented with stored procedures. This interface is like stored procedures to our data.
  * <p>
  * Methods parameters in this class follow that they receive required data to do the operation,
- * then response with one of four callbacks (
+ * then response with one of five callbacks (
  * {@link Insert}, <p>
  * {@link Update}, <p>
  * {@link Delete}, <p>
