@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 
 /**
  * Created by ramym on 3/15/2018.

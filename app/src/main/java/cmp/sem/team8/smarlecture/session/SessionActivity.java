@@ -8,12 +8,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract;
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class SessionActivity extends AppCompatActivity {

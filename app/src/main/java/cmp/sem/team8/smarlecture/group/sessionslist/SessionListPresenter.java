@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.grouplist.GroupListContract;
-import cmp.sem.team8.smarlecture.common.data.FirebaseContract.*;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.*;
 import cmp.sem.team8.smarlecture.model.SessionModel;
 
 /**
