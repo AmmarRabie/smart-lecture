@@ -9,10 +9,13 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
  * Created by AmmarRabie on 21/04/2018.
@@ -72,6 +75,32 @@ public class FirebaseSerializer {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
 
         return new InvitedUserModel(invitedUserRoot.getKey(), ((boolean) invitedUserRoot.getValue()));
+    }
+
+    public static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
+        GroupModel groupModel = serializeGroup(groupRoot);
+        SessionModel sessionModel = serializeSession(sessionRoot);
+        UserModel userModel = serializeUser(userRoot);
+        return new SessionForUserModel(
+                sessionModel.getId()
+                , sessionModel.getSessionStatus()
+                , sessionModel.getAttendanceStatus()
+                , sessionModel.getName()
+                , groupModel.getId()
+                , groupModel.getName()
+                , userModel.getId()
+                , userModel.getName());
+    }
+
+
+    public static UserModel serializeUser(DataSnapshot userRoot) {
+        String[] requiredChildes = UserEntry.requiredChildes;
+        if (!checkRequiredChildes(requiredChildes, userRoot)) return null;
+
+        String name = userRoot.child(UserEntry.KEY_NAME).getValue(String.class);
+        String email = userRoot.child(UserEntry.KEY_EMAIL).getValue(String.class);
+        ArrayList<String> groupsInvitations = getKeys(userRoot.child(UserEntry.KEY_INVITATIONS));
+        return new UserModel(userRoot.getKey(), email, userRoot.getKey(), groupsInvitations);
     }
 
 

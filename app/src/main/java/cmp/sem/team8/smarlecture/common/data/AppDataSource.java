@@ -1,5 +1,9 @@
 package cmp.sem.team8.smarlecture.common.data;
 
+import java.util.ArrayList;
+
+import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
@@ -21,12 +25,46 @@ public interface AppDataSource {
 
     void getUser(String userId, Get<UserModel> callback);
 
-    void insertUser(UserModel userModel, Insert<String> callback);
+    void insertUser(UserModel userModel, Insert<Void> callback);
 
     void updateUserName(String userId, String newName, Update callback);
 
     void listenUser(String userId, Listen<UserModel> callback);
 
+
+
+    /**
+     * return all sessions that passed user is a member in their groups filtered by flags
+     *
+     * @param userId        the user id you want to get sessions he is a member in
+     * @param callback      return the data on this callback
+     * @param withClosed    if false, the sessions returned will exclude closed ones
+     * @param withOpened    if false, the sessions returned will exclude opened ones
+     * @param withNotActive if false, the sessions returned will exclude not active ones
+     */
+    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
+            , boolean withClosed
+            , boolean withOpened
+            , boolean withNotActive);
+
+
+    /**
+     * return all sessions that passed user is a member in their groups
+     *
+     * @param userId   the user id you want to get sessions he is a member in
+     * @param callback return the data on this callback
+     */
+    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback); // for student
+
+    void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
+
+    void inviteUserToGroup(String email, String groupId, Insert<UserModel> callback); // add a new student
+
+    void acceptFollowingGroup(String userId, String groupId, Update callback);
+
+    void refuseFollowingGroup(String userId, String groupId, Update callback);
+
+    void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback);
 
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
@@ -67,7 +105,6 @@ public interface AppDataSource {
     void updateSessionSecret(String sessionId, String secret, Update callback);*/
 
     /**
-     *
      * @param listener
      */
     void forget(Listen listener);
