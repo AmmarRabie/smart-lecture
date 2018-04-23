@@ -10,9 +10,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
-import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 
 /**
  * Created by ramym on 3/20/2018.
@@ -60,12 +61,12 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String attendanceState = dataSnapshot.getValue(String.class);
-                    if (attendanceState.equals(SessionEntry.AttendanceStatus.OPEN.toString())) {
+                    if (attendanceState.equals(AppDataSource.AttendanceStatus.OPEN.toString())) {
                         mView.showErrorMessage("you can't take the attendance while" +
                                 " session attendance is open");
                         return;
                     }
-                    if (attendanceState.equals(SessionEntry.AttendanceStatus.CLOSED.toString())) {
+                    if (attendanceState.equals(AppDataSource.AttendanceStatus.CLOSED.toString())) {
                         // [TODO]: this could be removed after adding objectives and questions
                         mView.showErrorMessage("The attendance is already taken");
                         return;
@@ -103,7 +104,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         String state = dataSnapshot.getValue(String.class);
-                        if (state.equals(SessionEntry.AttendanceStatus.OPEN.toString()) && mHasNamesList) {
+                        if (state.equals(AppDataSource.AttendanceStatus.OPEN.toString()) && mHasNamesList) {
                             // Not-Active -> open; begin of the attendance
 
                             mView.requestDisableConnection();

@@ -21,11 +21,9 @@ import com.willowtreeapps.spruce.animation.DefaultAnimations;
 import com.willowtreeapps.spruce.sort.CorneredSort;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
-import cmp.sem.team8.smarlecture.group.studentlist.StudentListContract;
 
 import cmp.sem.team8.smarlecture.model.SessionModel;
 import cmp.sem.team8.smarlecture.session.SessionActivity;

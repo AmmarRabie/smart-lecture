@@ -1,13 +1,9 @@
 package cmp.sem.team8.smarlecture.group.sessionslist;
 
-import android.service.textservice.SpellCheckerService;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
-import cmp.sem.team8.smarlecture.group.studentlist.StudentListContract;
 import cmp.sem.team8.smarlecture.model.SessionModel;
 
 /**

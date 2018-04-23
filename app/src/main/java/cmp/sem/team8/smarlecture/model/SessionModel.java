@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by AmmarRabie on 02/03/2018.
  */
-
+@Deprecated
 public class SessionModel {
     private String mSessionID;
     private String mName;

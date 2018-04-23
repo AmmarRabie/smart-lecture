@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.model.SessionModel;
 
@@ -75,13 +75,13 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
 
 
                 //session closed
-                if(mSession.getmSessionStatus().equals(SessionEntry.SessionStatus.CLOSED.toString())){
+                if(mSession.getmSessionStatus().equals(AppDataSource.SessionStatus.CLOSED.toString())){
                     mView.closedSessionView();
 
                 }
 
                 //session open
-                else if(mSession.getmSessionStatus().equals(SessionEntry.SessionStatus.OPEN.toString())){
+                else if(mSession.getmSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString())){
                     mView.openSessionView();
 
                 }
@@ -105,8 +105,8 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
 
     @Override
     public void openSession() {
-        mDatabase.child(SessionEntry.KEY_SESSION_STATUS).setValue(SessionEntry.SessionStatus.OPEN.toString());
-        mSession.setmSessionStatus(SessionEntry.SessionStatus.OPEN.toString());
+        mDatabase.child(SessionEntry.KEY_SESSION_STATUS).setValue(AppDataSource.SessionStatus.OPEN.toString());
+        mSession.setmSessionStatus(AppDataSource.SessionStatus.OPEN.toString());
         mView.openSessionView();
     }
 
@@ -120,8 +120,8 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
     public void endSession() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref = ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_SESSION_STATUS);
-        ref.setValue(SessionEntry.SessionStatus.CLOSED.toString());
-        mSession.setmSessionStatus(SessionEntry.SessionStatus.CLOSED.toString());
+        ref.setValue(AppDataSource.SessionStatus.CLOSED.toString());
+        mSession.setmSessionStatus(AppDataSource.SessionStatus.CLOSED.toString());
         mView.closedSessionView();
     }
 

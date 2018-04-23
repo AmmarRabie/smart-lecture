@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
@@ -161,7 +162,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
                     for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
 
                         if (childDataSnapshot.getKey().equals(SessionEntry.KEY_SESSION_STATUS)) {
-                            if (childDataSnapshot.getValue().equals(FirebaseContract.SessionEntry.AttendanceStatus.CLOSED.toString())) {
+                            if (childDataSnapshot.getValue().equals(AppDataSource.AttendanceStatus.CLOSED.toString())) {
                                 mView.showErrorMessage("Session has been closed");
                                 return;
                             }

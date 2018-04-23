@@ -1,11 +1,11 @@
-package cmp.sem.team8.smarlecture.model;
+package cmp.sem.team8.smarlecture.common.data.model;
 
 import java.io.Serializable;
 
 /**
  * Created by AmmarRabie on 02/03/2018.
  */
-@Deprecated
+
 public class UserModel implements Serializable{
 
     String name;
