@@ -1,7 +1,6 @@
 package cmp.sem.team8.smarlecture.group.sessionslist;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.group.studentlist.StudentListRecyclerAdapter;
 import cmp.sem.team8.smarlecture.model.SessionModel;
-import cmp.sem.team8.smarlecture.session.SessionActivity;
 
 
 /**

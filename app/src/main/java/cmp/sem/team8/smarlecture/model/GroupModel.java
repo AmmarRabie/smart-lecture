@@ -6,24 +6,19 @@ import java.util.ArrayList;
  * Created by AmmarRabie on 26/03/2018.
  */
 
+
+@Deprecated
 public class GroupModel {
 
-    private String name;
-    private String id;
-    private String ownerId;
-    private ArrayList<InvitedUserModel> usersList; // list of ids of the users
-    private ArrayList<String> sessionsIds;
+    String name;
+    String id;
+    ArrayList<String> studentsNames;
 
-    public GroupModel(String name, String id, String ownerId) {
-        this.name = name;
-        this.id = id;
-        this.ownerId = ownerId;
+    public GroupModel() {
     }
 
-    public GroupModel(String name, String id, String ownerId, ArrayList<InvitedUserModel> usersList, ArrayList<String> sessionsIds) {
-        this(name, id, ownerId);
-        this.usersList = usersList;
-        this.sessionsIds = sessionsIds;
+    public GroupModel(String name) {
+        this.name = name;
     }
 
     public String getName() {
@@ -34,28 +29,19 @@ public class GroupModel {
         this.name = name;
     }
 
+    public ArrayList<String> getStudentsNames() {
+        return studentsNames;
+    }
+
+    public void setStudentsNames(ArrayList<String> studentsNames) {
+        this.studentsNames = studentsNames;
+    }
+
     public String getId() {
         return id;
     }
 
-    public ArrayList<InvitedUserModel> getUsersList() {
-        return usersList;
-    }
-
-    public void setUsersList(ArrayList<InvitedUserModel> usersList) {
-        this.usersList = usersList;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-
-    public ArrayList<String> getSessionsIds() {
-        return sessionsIds;
-    }
-
-    public void setSessionsIds(ArrayList<String> sessionsIds) {
-        this.sessionsIds = sessionsIds;
+    public void setId(String id) {
+        this.id = id;
     }
 }

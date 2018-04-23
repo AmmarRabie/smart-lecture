@@ -2,86 +2,65 @@ package cmp.sem.team8.smarlecture.model;
 
 import java.util.ArrayList;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-
 /**
  * Created by AmmarRabie on 02/03/2018.
  */
-
+@Deprecated
 public class SessionModel {
-    private String id;
-    private String forGroup;
-    private String secret;
-    private AppDataSource.AttendanceStatus attendanceStatus;
-    private AppDataSource.SessionStatus sessionStatus;
-    private String name;
-    private ArrayList<AttendeeModel> attendanceList;
+    private String mSessionID;
+    private String mName;
+    private String mGroupID;
+    private String mSessionStatus;
+    private String mAttendanceStatus;
+    private ArrayList<String> mStudentsList;
 
-
-    public SessionModel(String id, String forGroup, AppDataSource.AttendanceStatus attendanceStatus, AppDataSource.SessionStatus sessionStatus, String name) {
-        this.id = id;
-        this.forGroup = forGroup;
-        this.attendanceStatus = attendanceStatus;
-        this.sessionStatus = sessionStatus;
-        this.name = name;
+    public String getmAttendanceStatus() {
+        return mAttendanceStatus;
     }
 
-    public SessionModel() {
+    public void setmAttendanceStatus(String mAttendanceStatus) {
+        this.mAttendanceStatus = mAttendanceStatus;
     }
 
-    public String getId() {
-        return id;
+    public ArrayList<String> getmStudentsList() {
+        return mStudentsList;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setmStudentsList(ArrayList<String> mStudentsList) {
+        this.mStudentsList = mStudentsList;
     }
 
-    public String getForGroup() {
-        return forGroup;
+    public String getmSessionID() {
+        return mSessionID;
     }
 
-    public void setForGroup(String forGroup) {
-        this.forGroup = forGroup;
+    public void setmSessionID(String mSessionID) {
+        this.mSessionID = mSessionID;
     }
 
-    public String getSecret() {
-        return secret;
+    public String getmName() {
+        return mName;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setmName(String mName) {
+        this.mName = mName;
     }
 
-    public AppDataSource.AttendanceStatus getAttendanceStatus() {
-        return attendanceStatus;
+    public String getmGroupID() {
+        return mGroupID;
     }
 
-    public void setAttendanceStatus(AppDataSource.AttendanceStatus attendanceStatus) {
-        this.attendanceStatus = attendanceStatus;
+    public void setmGroupID(String mGroupID) {
+        this.mGroupID = mGroupID;
     }
 
-    public AppDataSource.SessionStatus getSessionStatus() {
-        return sessionStatus;
+    public String getmSessionStatus() {
+        return mSessionStatus;
     }
 
-    public void setSessionStatus(AppDataSource.SessionStatus sessionStatus) {
-        this.sessionStatus = sessionStatus;
+    public void setmSessionStatus(String mSessionStatus) {
+        this.mSessionStatus = mSessionStatus;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ArrayList<AttendeeModel> getAttendanceList() {
-        return attendanceList;
-    }
-
-    public void setAttendanceList(ArrayList<AttendeeModel> attendanceList) {
-        this.attendanceList = attendanceList;
-    }
 }

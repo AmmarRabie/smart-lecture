@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 
@@ -61,7 +62,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String sessionStatus = dataSnapshot.getValue().toString();
-                if (sessionStatus.equals(SessionEntry.SessionStatus.OPEN.toString())) {
+                if (sessionStatus.equals(AppDataSource.SessionStatus.OPEN.toString())) {
                     mView.showBeginAttendaceButton();
 
 
@@ -79,7 +80,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         });
 
 
-        nref.setValue(SessionEntry.AttendanceStatus.OPEN.toString());
+        nref.setValue(AppDataSource.AttendanceStatus.OPEN.toString());
 
         nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SECRET);
 
@@ -144,7 +145,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     public void endAttendance() {
 
         DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_ATTENDANCE_STATUS);
-        nref.setValue(SessionEntry.AttendanceStatus.CLOSED);
+        nref.setValue(AppDataSource.AttendanceStatus.CLOSED);
 
     }
 

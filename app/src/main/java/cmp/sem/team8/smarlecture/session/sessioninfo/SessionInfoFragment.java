@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 
 /**
@@ -42,7 +43,7 @@ public class SessionInfoFragment extends Fragment implements SessionInfoContract
             public void onClick(View v) {
 
 
-                if(mPresenter.getSessionStatus().equals(FirebaseContract.SessionEntry.SessionStatus.OPEN.toString()))
+                if(mPresenter.getSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString()))
                 getActivity().onBackPressed();
                 else{
                     mPresenter.openSession();

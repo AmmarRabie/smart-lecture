@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
-import cmp.sem.team8.smarlecture.model.AttendeeModel;
-import cmp.sem.team8.smarlecture.model.GroupModel;
-import cmp.sem.team8.smarlecture.model.InvitedUserModel;
-import cmp.sem.team8.smarlecture.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
+import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 
 /**
  * Created by AmmarRabie on 21/04/2018.

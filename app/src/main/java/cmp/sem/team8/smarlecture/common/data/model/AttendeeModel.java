@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.model;
+package cmp.sem.team8.smarlecture.common.data.model;
 
 /**
  * Created by AmmarRabie on 21/04/2018.
