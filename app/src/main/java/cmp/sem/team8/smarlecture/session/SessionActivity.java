@@ -44,6 +44,7 @@ public class SessionActivity extends AppCompatActivity {
 
         viewPager.setAdapter(pageAdapter);
 
+
       viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       int currposition=0;
           @Override
@@ -53,10 +54,9 @@ public class SessionActivity extends AppCompatActivity {
 
           @Override
           public void onPageSelected(int position) {
-              PagerAdapter.FragmentLifeCycle fragmentToShow=(PagerAdapter.FragmentLifeCycle)pageAdapter.getItem(position);
-              fragmentToShow.onResumeFragment();
-              PagerAdapter.FragmentLifeCycle fragmentToHide=(PagerAdapter.FragmentLifeCycle)pageAdapter.getItem(position);
-              fragmentToHide.onResumeFragment();
+
+              pageAdapter.getItem(position).onResume();
+              pageAdapter.getItem(currposition).onResume();
               currposition=position;
 
           }

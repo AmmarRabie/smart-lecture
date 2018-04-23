@@ -20,8 +20,7 @@ import cmp.sem.team8.smarlecture.session.PagerAdapter;
  * Created by ramym on 3/15/2018.
  */
 
-public class SessionInfoFragment extends Fragment implements SessionInfoContract.Views,
-        PagerAdapter.FragmentLifeCycle{
+public class SessionInfoFragment extends Fragment implements SessionInfoContract.Views{
 
     private SessionInfoContract.Actions mPresenter;
     private TextView id;
@@ -122,16 +121,7 @@ public class SessionInfoFragment extends Fragment implements SessionInfoContract
         mPresenter.start();
     }
 
-    @Override
-    public void onPauseFragment() {
-        super.onPause();
 
-    }
 
-    @Override
-    public void onResumeFragment() {
-        super.onResume();
-        mPresenter.start();
 
-    }
 }

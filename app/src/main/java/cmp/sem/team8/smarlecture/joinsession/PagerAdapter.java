@@ -16,13 +16,17 @@ public class PagerAdapter extends FragmentPagerAdapter {
     WriteAttendanceFragment writeAttendanceFragment;
     WriteAttendancePresenter mwriteAttendancePresenter;
     private int numOfTabs;
+    String mSessionID;
+    String mGroupID;
 
-    public PagerAdapter(FragmentManager fm, int numOfTabs) {
+    public PagerAdapter(FragmentManager fm, int numOfTabs,String sessionID) {
         super(fm);
         this.numOfTabs = numOfTabs;
 
         writeAttendanceFragment = null;
         mwriteAttendancePresenter = null;
+        mSessionID=sessionID;
+
 
     }
 

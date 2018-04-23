@@ -29,7 +29,7 @@ import es.dmoral.toasty.Toasty;
  */
 
 public class BeginAttendanceFragment extends Fragment implements BeginAttendanceContract.Views
-,PagerAdapter.FragmentLifeCycle{
+{
 
     private BeginAttendanceContract.Actions mPresenter;
     private TextView AttendanceTimer;
@@ -173,17 +173,5 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
         return secretView.getText().toString();
     }
 
-    @Override
-    public void onPauseFragment() {
-        super.onPause();
 
-
-    }
-
-    @Override
-    public void onResumeFragment() {
-        super.onResume();
-        mPresenter.start();
-
-    }
 }

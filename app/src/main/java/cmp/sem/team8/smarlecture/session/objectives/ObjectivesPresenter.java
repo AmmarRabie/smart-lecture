@@ -112,11 +112,19 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
                     String name = child.getValue(String.class);
 
+                    float averageRating=child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(float.class);
+
+                    int numberUsersRated=child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(int.class);
+
                     ObjectiveModel thisObjective = new ObjectiveModel();
 
                     thisObjective.setmObjectiveDescription(name);
 
                     thisObjective.setmObjectiveID(key);
+
+                    thisObjective.setmNumberofUsersRatedThisObjective(numberUsersRated);
+
+                    thisObjective.setmObjectivesAverageRating(averageRating);
 
                     thisObjective.setmSessionID(SESSION_ID);
 
@@ -170,8 +178,15 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
             addedObjective.setmObjectiveDescription(objectiveDescription);
 
+            addedObjective.setmObjectivesAverageRating(0);
+
+            addedObjective.setmNumberofUsersRatedThisObjective(0);
+
             mView.onAddSuccess(addedObjective);
         }
+        newObjective.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).setValue(0);
+
+        newObjective.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).setValue(0);
 
         newObjective.setValue(objectiveDescription).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -188,6 +203,11 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
                         addedObjective.setmObjectiveID(key);
 
                         addedObjective.setmObjectiveDescription(objectiveDescription);
+
+                        addedObjective.setmNumberofUsersRatedThisObjective(0);
+
+                        addedObjective.setmObjectivesAverageRating(0);
+
 
                         mView.onAddSuccess(addedObjective);
 

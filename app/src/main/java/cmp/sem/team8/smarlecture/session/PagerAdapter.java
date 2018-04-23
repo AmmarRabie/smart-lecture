@@ -135,9 +135,9 @@ public class PagerAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
-    public interface FragmentLifeCycle {
+    /*public interface FragmentLifeCycle {
         void onPauseFragment();
 
         void onResumeFragment();
-    }
+    }*/
 }

@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.joinsession;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
@@ -8,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.rateobjectives.RateObjectivesActivity;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
@@ -17,7 +19,8 @@ import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class JoinedSession extends AppCompatActivity {
 
-    int SessionId;
+    String GroupID;
+    String SessionId;
     ViewPager viewPager;
     TabLayout tabLayout;
     TabItem WriteAttendanceTab;
@@ -28,18 +31,28 @@ public class JoinedSession extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_joined__session);
 
         context = this;
+
         mAttendancePresenter = null;
+
         mSessionInfoPresenter = null;
 
+        SessionId=getIntent().getStringExtra(getString(R.string.IKey_sessionId));
+
+        GroupID = getIntent().getStringExtra(getString(R.string.IKey_groupId));
+
         tabLayout = findViewById(R.id.joined_session_tablayout);
+
         WriteAttendanceTab = findViewById(R.id.joined_session_attendance);
+
         viewPager = findViewById(R.id.joined_session_viewPager);
 
-        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),SessionId);
 
         viewPager.setAdapter(pageAdapter);
 
@@ -139,5 +152,13 @@ public class JoinedSession extends AppCompatActivity {
             ///////////
 
         }
+    }*/
+
+    /*@Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent i =new Intent(context, RateObjectivesActivity.class);
+        i.putExtra("session_id",SessionId);
+        startActivity(i);
     }*/
 }

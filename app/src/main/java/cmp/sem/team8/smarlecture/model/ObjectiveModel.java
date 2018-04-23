@@ -8,6 +8,25 @@ public class ObjectiveModel {
     private String mSessionID;
     private  String mObjectiveID;
     private String mObjectiveDescription;
+    private float mObjectivesAverageRating;
+    private int mNumberofUsersRatedThisObjective;
+
+
+    public float getmObjectivesAverageRating() {
+        return mObjectivesAverageRating;
+    }
+
+    public void setmObjectivesAverageRating(float mObjectivesRating) {
+        this.mObjectivesAverageRating = mObjectivesRating;
+    }
+
+    public int getmNumberofUsersRatedThisObjective() {
+        return mNumberofUsersRatedThisObjective;
+    }
+
+    public void setmNumberofUsersRatedThisObjective(int mNumberofUsersRatedThisObjective) {
+        this.mNumberofUsersRatedThisObjective = mNumberofUsersRatedThisObjective;
+    }
 
     public String getmSessionID() {
         return mSessionID;
