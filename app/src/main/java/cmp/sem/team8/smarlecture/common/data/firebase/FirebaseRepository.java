@@ -11,12 +11,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
-import cmp.sem.team8.smarlecture.model.GroupModel;
-import cmp.sem.team8.smarlecture.model.SessionModel;
-import cmp.sem.team8.smarlecture.model.UserModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
  * This is the implementation of the AppDataSource using firebase database
@@ -108,86 +104,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         }
                     }
                 });
-    }
-
-    @Override
-    public void getGroupById(String groupId, Get<GroupModel> callback) {
-
-    }
-
-    @Override
-    public void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback) {
-
-    }
-
-    @Override
-    public void deleteGroupById(String groupId, Delete callback) {
-
-    }
-
-    @Override
-    public void updateGroup(GroupModel updatingValues, Update callback) {
-
-    }
-
-    @Override
-    public void updateGroupById(String groupId, String newGroupName, Update callback) {
-
-    }
-
-    @Override
-    public void deleteNamesList(String groupId, Delete callback) {
-
-    }
-
-    @Override
-    public void deleteNameOfNamesList(String groupId, String nameId, Delete callback) {
-
-    }
-
-    @Override
-    public void updateNameOfNamesList(String groupId, String nameId, String newName, Update callback) {
-
-    }
-
-    @Override
-    public void insertNameInNamesList(String groupId, String userId, Insert<String> callback) {
-
-    }
-
-    @Override
-    public void getSessionById(String sessionId, Get<SessionModel> callback) {
-
-    }
-
-    @Override
-    public void getSessionStatus(String sessionId, Get<SessionStatus> callback) {
-
-    }
-
-    @Override
-    public void getAttendanceStatus(String sessionId, Get<AttendanceStatus> callback) {
-
-    }
-
-    @Override
-    public void updateSession(SessionModel sessionModel, Update callback) {
-
-    }
-
-    @Override
-    public void updateSessionStatus(String sessionId, SessionStatus status, Update callback) {
-
-    }
-
-    @Override
-    public void updateAttendanceStatus(String sessionId, AttendanceStatus status, Update callback) {
-
-    }
-
-    @Override
-    public void updateSessionSecret(String sessionId, String secret, Update callback) {
-
     }
 
 

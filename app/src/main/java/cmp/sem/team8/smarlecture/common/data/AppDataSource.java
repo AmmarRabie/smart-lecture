@@ -1,13 +1,9 @@
 package cmp.sem.team8.smarlecture.common.data;
 
-import java.util.ArrayList;
-
-import cmp.sem.team8.smarlecture.model.GroupModel;
-import cmp.sem.team8.smarlecture.model.SessionModel;
-import cmp.sem.team8.smarlecture.model.UserModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
- * Main entry point for accessing tasks data.
+ * Main entry point for accessing app data.
  * <p>
  * This interface defines the interaction with our data and data models.
  * For example this interface can be implemented with firebase model (in our case) or later
@@ -25,14 +21,14 @@ public interface AppDataSource {
 
     void getUser(String userId, Get<UserModel> callback);
 
-    void listenUser(String userId, Listen<UserModel> callback);
-
     void insertUser(UserModel userModel, Insert<String> callback);
 
     void updateUserName(String userId, String newName, Update callback);
 
+    void listenUser(String userId, Listen<UserModel> callback);
 
-    //
+
+/*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 
     void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback);
@@ -68,7 +64,7 @@ public interface AppDataSource {
 
     void updateAttendanceStatus(String sessionId, AttendanceStatus status, Update callback);
 
-    void updateSessionSecret(String sessionId, String secret, Update callback);
+    void updateSessionSecret(String sessionId, String secret, Update callback);*/
 
     /**
      *
