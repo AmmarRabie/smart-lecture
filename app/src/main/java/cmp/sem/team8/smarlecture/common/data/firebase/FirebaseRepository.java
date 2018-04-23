@@ -13,7 +13,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.model.GroupModel;
 import cmp.sem.team8.smarlecture.model.SessionModel;
@@ -23,7 +22,7 @@ import cmp.sem.team8.smarlecture.model.UserModel;
  * This is the implementation of the AppDataSource using firebase database
  * <p>
  */
-public class FirebaseRepository implements AppDataSource {
+public class FirebaseRepository extends FirebaseRepoHelper {
 
     private static FirebaseRepository INSTANCE = null;
     private ListenersList listeners;
@@ -51,7 +50,7 @@ public class FirebaseRepository implements AppDataSource {
                 }
                 String userName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
                 String userEmail = dataSnapshot.child(UserEntry.KEY_EMAIL).getValue(String.class);
-                UserModel user = new UserModel(userName,userEmail, userId);
+                UserModel user = new UserModel(userName, userEmail, userId);
                 callback.onDataFetched(user);
             }
 
@@ -191,14 +190,6 @@ public class FirebaseRepository implements AppDataSource {
 
     }
 
-    @Override
-    public void forget(Listen listener) {
-        for (int i = 0; i < listeners.size(); i++) {
-            if (listeners.get(i).listener.equals(listener)) {
-                listeners.get(i).forget();
-            }
-        }
-    }
 
     @Override
     public void listenUser(String userId, final Listen<UserModel> callback) {
@@ -228,57 +219,4 @@ public class FirebaseRepository implements AppDataSource {
         listeners.add(listenUserEvent);
     }
 
-
-    // helper nested classes
-    private static final class ListenersList extends ArrayList<ValueEventWithRef> {
-        @Override
-        public ValueEventWithRef remove(int index) {
-            this.get(index).forget();
-            return super.remove(index);
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            ((ValueEventWithRef) o).forget();
-            return super.remove(o);
-        }
-    }
-
-    private static final class ValueEventWithRef {
-        private ValueEventListener listener;
-        private DatabaseReference reference;
-
-        public ValueEventWithRef(ValueEventListener listener, DatabaseReference reference) {
-            this.listener = listener;
-            this.reference = reference;
-        }
-
-        public ValueEventWithRef(DatabaseReference reference) {
-            this.reference = reference;
-        }
-
-        public void forget() {
-            if (reference == null || listener == null)
-                return;
-            reference.removeEventListener(listener);
-            reference = null;
-            listener = null;
-        }
-
-        public ValueEventListener getListener() {
-            return listener;
-        }
-
-        public void setListener(ValueEventListener listener) {
-            this.listener = listener;
-        }
-
-        public DatabaseReference getReference() {
-            return reference;
-        }
-
-        public void setReference(DatabaseReference reference) {
-            this.reference = reference;
-        }
-    }
 }
