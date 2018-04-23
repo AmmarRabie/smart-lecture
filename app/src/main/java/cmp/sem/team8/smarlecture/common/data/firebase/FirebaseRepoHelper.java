@@ -25,15 +25,15 @@ public abstract class FirebaseRepoHelper implements AppDataSource{
     }
 
 
-    protected DatabaseReference getReference(String ref) {
+    public static DatabaseReference getReference(String ref) {
         return FirebaseDatabase.getInstance().getReference(ref);
     }
 
-    public DatabaseReference getGroupRef(String groupId) {
+    public static DatabaseReference getGroupRef(String groupId) {
         return getReference(GroupEntry.KEY_THIS).child(groupId);
     }
 
-    public DatabaseReference getSessionRef(String sessionId) {
+    public static DatabaseReference getSessionRef(String sessionId) {
         return getReference(SessionEntry.KEY_THIS).child(sessionId);
     }
 

@@ -193,17 +193,12 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
     @Override
     public void listenUser(String userId, final Listen<UserModel> callback) {
-        if (listeners == null)
-            listeners = new ListenersList();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(userId);
         final ValueEventWithRef listenUserEvent = new ValueEventWithRef(userRef);
         final ValueEventListener valueEventListener = userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!callback.shouldListen()) {
-                    listeners.remove(listenUserEvent);
-                    return;
-                }
+                if (isDead(callback)) return;
                 if (true /*validate your conditions that data received success fully*/) {
                     callback.onDataReceived(new UserModel("", "", ""));
                     callback.increment();
@@ -212,7 +207,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                listeners.remove(listenUserEvent);
+                forget(callback);
             }
         });
         listenUserEvent.setListener(valueEventListener);
