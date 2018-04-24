@@ -24,6 +24,7 @@
     <string name="dTitle_editName">Edit name</string>
     <string name="dTitle_editSession">Edit Session</string>
     <string name="dTitle_addGroup">Add Group</string>
+    <string name="dTitle_addObjective">Add Objective</string>
     <string name="dTitle_closeConnection">Close the connection</string>
     <string name="dTitle_changeSecret">Save</string>
     <string name="dTitle_deleteGroup">Delete Group</string>

@@ -11,16 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
+import cmp.sem.team8.smarlecture.session.PagerAdapter;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
+
 
 /**
  * Created by ramym on 3/15/2018.
  */
 
-public class SessionInfoFragment extends Fragment implements SessionInfoContract.Views {
+public class SessionInfoFragment extends Fragment implements SessionInfoContract.Views{
 
     private SessionInfoContract.Actions mPresenter;
     private TextView id;
@@ -120,4 +122,8 @@ public class SessionInfoFragment extends Fragment implements SessionInfoContract
         super.onResume();
         mPresenter.start();
     }
+
+
+
+
 }

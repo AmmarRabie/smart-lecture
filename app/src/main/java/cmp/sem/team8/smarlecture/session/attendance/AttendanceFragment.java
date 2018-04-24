@@ -63,7 +63,7 @@ public class AttendanceFragment extends Fragment implements AttendanceContract.V
         attendeeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mActions.setAttendance(i,true);
+                mActions.setAttendance(i, true);
             }
         });
 

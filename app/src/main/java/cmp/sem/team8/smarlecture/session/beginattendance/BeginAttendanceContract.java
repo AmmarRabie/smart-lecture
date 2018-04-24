@@ -28,6 +28,7 @@ public class BeginAttendanceContract {
         void showBeginAttendaceButton();
 
         void hideBeginAttendaceButton();
+
         //********** show  progress indicator  ****************
         //to show the timer of the attendance in the fragment;
         void showProgressIndicator(int minutes);
@@ -47,7 +48,6 @@ public class BeginAttendanceContract {
         //to return studentAdapter to the presenter from the fragment
         StudentsNamesAdapter getStudnetNameAdapter(List<String> students);
     }
-
 
 
     /**

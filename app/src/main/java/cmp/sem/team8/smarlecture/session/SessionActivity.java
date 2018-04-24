@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
@@ -19,31 +20,70 @@ public class SessionActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     TabItem SessionTab;
+    TabItem ObjectivesTab;
     TabItem AttendanceTab;
     PagerAdapter pageAdapter;
+    String mGroupID;
+    String mSessionID;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mGroupID=getIntent().getStringExtra("group_id");
+        mSessionID=getIntent().getStringExtra("session_id");
         setContentView(R.layout.activity_session);
 
-/*        mQuestionButton = findViewById(R.id.sessionActivity_question);
-        mAttendanceButton = findViewById(R.id.sessionActivity_attendance);
-        mObjectivesButton = findViewById(R.id.sessionActivity_objectives);*/
-
-
         tabLayout = findViewById(R.id.tablayout);
-        SessionTab = findViewById(R.id.start_end_session_tab);
-        AttendanceTab = findViewById(R.id.begin_attandence_tab);
         viewPager = findViewById(R.id.viewPager);
 
-        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),
-                getIntent().getStringExtra("group_id"), getIntent().getStringExtra("session_id"));
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),mGroupID
+                , mSessionID);
 
         viewPager.setAdapter(pageAdapter);
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+      viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+      int currposition=0;
+          @Override
+          public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+          }
+
+          @Override
+          public void onPageSelected(int position) {
+
+              pageAdapter.getItem(position).onResume();
+              pageAdapter.getItem(currposition).onResume();
+              currposition=position;
+
+          }
+
+          @Override
+          public void onPageScrollStateChanged(int state) {
+
+          }
+      });
+
+     /*   private ViewPager.OnPageChangeListener pageChangeListner=new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                PagerAdapter.FragmentLifeCycle fragmentToShow=(PagerAdapter.FragmentLifeCycle)pageAdapter.getItem(position);
+                fragmentToShow.onResumeFragment();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };*/
+
         tabLayout.setupWithViewPager(viewPager);
 
 
@@ -73,8 +113,7 @@ public class SessionActivity extends AppCompatActivity {
                     }
                 });
                 mAlertBuilder.show();
-            }
-            else SessionActivity.super.onBackPressed();
+            } else SessionActivity.super.onBackPressed();
 
         }
     }

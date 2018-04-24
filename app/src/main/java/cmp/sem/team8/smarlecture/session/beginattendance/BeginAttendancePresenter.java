@@ -24,16 +24,17 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     BeginAttendanceContract.Views mView;
     DatabaseReference ref;
     boolean taskIsRunning;
-    int SessionId;
+    String SessionId;
     List<String> students;
     int maxId = 9999;
     int minId = 0;
     private StudentsNamesAdapter adapter;
 
-    public BeginAttendancePresenter(BeginAttendanceContract.Views view, String groupId) {
+    public BeginAttendancePresenter(BeginAttendanceContract.Views view, String groupId, String sessionid) {
         GROUP_ID = groupId;
         taskIsRunning = false;
         mView = view;
+        SessionId = sessionid;
         mView.setPresenter(this);
 
         ref = FirebaseDatabase.getInstance().getReference();
@@ -45,20 +46,46 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
 
     @Override
     public void start() {
-        mView.showSecrect(generateRandomSecret());
+        //SessionId = getSessionIDFromActivity();
+        ref = FirebaseDatabase.getInstance().getReference();
+        ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_SESSION_STATUS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String sessionStatus = dataSnapshot.getValue().toString();
+                if (sessionStatus.equals(SessionEntry.SessionStatus.OPEN.toString())) {
+                    mView.showBeginAttendaceButton();
+                    mView.showSecrect(generateRandomSecret());
+                    mView.setPresenter(BeginAttendancePresenter.this);
+
+
+                } else {
+                    mView.hideBeginAttendaceButton();
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override
     public void BeginAttendance() {
 
         taskIsRunning = true;
-        SessionId = getSessionIDFromActivity();
+
 
         mView.showProgressIndicator(3);
+        //   SessionId = getSessionIDFromActivity();
 
-
-        DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_ATTENDANCE_STATUS);
-        ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SESSION_STATUS.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS);
+      /*  ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_SESSION_STATUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String sessionStatus = dataSnapshot.getValue().toString();
@@ -77,17 +104,17 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
 
         nref.setValue(AppDataSource.AttendanceStatus.OPEN.toString());
 
-        nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_SECRET);
+        nref = ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_SECRET);
 
         nref.setValue(mView.getSecret());
 
         nref = FirebaseDatabase.getInstance().getReference();
-        nref = nref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_NAMES_LIST);
+        nref = nref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_NAMES_LIST);
 
         adapter = mView.getStudnetNameAdapter(students);
 
@@ -144,14 +171,14 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
     @Override
     public void endAttendance() {
 
-        DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(Integer.toString(SessionId)).child(SessionEntry.KEY_ATTENDANCE_STATUS);
+        DatabaseReference nref = ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS);
         nref.setValue(AppDataSource.AttendanceStatus.CLOSED);
 
     }
 
 
-    private int getSessionIDFromActivity() {
-        return ((BeginAttendanceFragment) mView).getActivity().getIntent().getIntExtra("SessionId", 0);
+    private String getSessionIDFromActivity() {
+        return ((BeginAttendanceFragment) mView).getActivity().getIntent().getStringExtra("SessionId");
     }
 
     public boolean isTaskIsRunning() {
