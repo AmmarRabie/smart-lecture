@@ -115,7 +115,7 @@ public interface AppDataSource {
     enum AttendanceStatus {
         NOT_ACTIVATED("not-activated"), OPEN("open"), CLOSED("closed");
 
-        String value;
+        private String value;
 
         AttendanceStatus(String val) {
             value = val;
@@ -125,6 +125,14 @@ public interface AppDataSource {
         @Override
         public String toString() {
             return value;
+        }
+        public static AttendanceStatus fromString(String value) {
+            for (AttendanceStatus status : AttendanceStatus.values()) {
+                if (status.value.equalsIgnoreCase(value)) {
+                    return status;
+                }
+            }
+            return null;
         }
     }
 
@@ -140,6 +148,15 @@ public interface AppDataSource {
             value = val;
         }
 
+
+        public static SessionStatus fromString(String value) {
+            for (SessionStatus status : SessionStatus.values()) {
+                if (status.value.equalsIgnoreCase(value)) {
+                    return status;
+                }
+            }
+            return null;
+        }
 
         @Override
         public String toString() {

@@ -53,8 +53,8 @@ public class FirebaseSerializer {
 
 
         SessionModel sessionModel = new SessionModel(sessionId, forGroupId,
-                AppDataSource.AttendanceStatus.valueOf(attendanceStatus),
-                AppDataSource.SessionStatus.valueOf(status),
+                AppDataSource.AttendanceStatus.fromString(attendanceStatus),
+                AppDataSource.SessionStatus.fromString(status),
                 name);
         if (sessionSnapshot.hasChild(SessionEntry.KEY_SECRET))
             sessionModel.setSecret(sessionSnapshot.child(SessionEntry.KEY_SECRET).getValue(String.class));
@@ -100,7 +100,7 @@ public class FirebaseSerializer {
         String name = userRoot.child(UserEntry.KEY_NAME).getValue(String.class);
         String email = userRoot.child(UserEntry.KEY_EMAIL).getValue(String.class);
         ArrayList<String> groupsInvitations = getKeys(userRoot.child(UserEntry.KEY_INVITATIONS));
-        return new UserModel(userRoot.getKey(), email, userRoot.getKey(), groupsInvitations);
+        return new UserModel(name, email, userRoot.getKey(), groupsInvitations);
     }
 
 
@@ -135,7 +135,7 @@ public class FirebaseSerializer {
     }
 
 
-    private static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
+    public static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
             keys.add(child.getKey());

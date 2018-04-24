@@ -242,7 +242,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
     @Override
     public void getSessionsForUser(String userId, final Get<ArrayList<SessionForUserModel>> callback, final boolean withClosed, final boolean withOpened, final boolean withNotActive) {
-        final ArrayList<SessionForUserModel> resultList = new ArrayList<>();
+        getSessionsForUser2(userId, callback, withClosed, withOpened, withNotActive);
+        /*final ArrayList<SessionForUserModel> resultList = new ArrayList<>();
 
         // search on only groups he is actually following (exclude invitation)
         Query followedGroups = getReference(UserEntry.KEY_THIS).child(userId)
@@ -305,8 +306,90 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 callback.onError(databaseError.getMessage());
             }
 
+        });*/
+    }
+
+
+    public void getSessionsForUser2(String userId, final Get<ArrayList<SessionForUserModel>> callback, final boolean withClosed, final boolean withOpened, final boolean withNotActive) {
+        final ArrayList<SessionForUserModel> resultList = new ArrayList<>();
+
+        // search on only groups he is actually following (exclude invitation)
+        Query followedGroups = getReference(UserEntry.KEY_THIS).child(userId)
+                .child(UserEntry.KEY_INVITATIONS).orderByValue().equalTo(true);
+
+        // loop over followed groups and for each group id loop over its sessions
+        followedGroups.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot groupsKeysSnapshot) {
+                if (!groupsKeysSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                ArrayList<String> groupsKeys = FirebaseSerializer.getKeys(groupsKeysSnapshot);
+                for (final String oneGroupKey : groupsKeys) {
+
+                    getGroupRef(oneGroupKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(final DataSnapshot oneGroupSnapshot) {
+                            getUserRef(oneGroupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(final DataSnapshot userSnapshot) {
+                                    final ArrayList<String> sessionsKeys = FirebaseSerializer.getKeys(oneGroupSnapshot.child(GroupEntry.KEY_SESSIONS));
+                                    for (final String oneSessionKey : sessionsKeys) {
+                                        getSessionRef(oneSessionKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot oneSessionSnapshot) {
+//                                                if (!isValid(SessionStatus.fromString(oneSessionSnapshot.child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS).getValue(String.class)))) return;
+                                                resultList.add(FirebaseSerializer
+                                                        .serializeSessionForUser
+                                                                (userSnapshot, oneSessionSnapshot, oneGroupSnapshot));
+                                                callback.onDataFetched(resultList);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                callback.onError(databaseError.getMessage());
+                                            }
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    callback.onError(databaseError.getMessage());
+                                }
+                            });
+                        }
+
+                        private boolean isValid(SessionStatus sessionStatus) {
+                            switch (sessionStatus) {
+                                case OPEN:
+                                    if (withOpened) return true;
+                                case CLOSED:
+                                    if (withClosed) return true;
+                                case NOT_ACTIVATED:
+                                    if (withNotActive) return true;
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            callback.onError(databaseError.getMessage());
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+
         });
     }
+
 
     @Override
     public void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback) {
