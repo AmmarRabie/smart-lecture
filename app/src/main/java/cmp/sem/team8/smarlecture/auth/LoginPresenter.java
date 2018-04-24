@@ -7,7 +7,7 @@ import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
 import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.model.UserModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
  * Created by AmmarRabie on 08/03/2018.

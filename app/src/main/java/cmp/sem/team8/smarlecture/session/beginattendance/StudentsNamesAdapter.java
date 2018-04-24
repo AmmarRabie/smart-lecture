@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
 
 /**
  * Created by ramym on 3/20/2018.

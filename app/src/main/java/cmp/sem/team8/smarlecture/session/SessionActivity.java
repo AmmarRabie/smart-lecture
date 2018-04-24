@@ -8,12 +8,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class SessionActivity extends AppCompatActivity {
@@ -100,7 +99,7 @@ public class SessionActivity extends AppCompatActivity {
     public void onBackPressed() {
         SessionInfoPresenter sessionInfoPresenter = pageAdapter.getmSessionInfoPresenter();
         if (sessionInfoPresenter != null) {
-            if (sessionInfoPresenter.getSessionStatus().equals(FirebaseContract.SessionEntry.SessionStatus.OPEN.toString())) {
+            if(sessionInfoPresenter.getSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString())) {
 
                 AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
                 mAlertBuilder.setTitle("Confirmation");

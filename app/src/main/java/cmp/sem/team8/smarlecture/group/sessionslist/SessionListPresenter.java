@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,11 +14,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.grouplist.GroupListContract;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.*;
 import cmp.sem.team8.smarlecture.model.SessionModel;
 
@@ -104,10 +102,10 @@ public class SessionListPresenter implements SessionListContract.Actions {
         DatabaseReference newsessionRef=sessionsRef.child(sessionID);
         //final String sessionID=newsessionRef.getKey();
         final SessionModel addedSession=new SessionModel();
-        addedSession.setmSessionStatus(SessionEntry.SessionStatus.NOT_ACTIVATED.toString());
+        addedSession.setmSessionStatus(AppDataSource.SessionStatus.NOT_ACTIVATED.toString());
         addedSession.setmStudentsList(new ArrayList<String>());
         addedSession.setmSessionID(sessionID);
-        addedSession.setmAttendanceStatus(SessionEntry.AttendanceStatus.NOT_ACTIVATED.toString());
+        addedSession.setmAttendanceStatus(AppDataSource.AttendanceStatus.NOT_ACTIVATED.toString());
         addedSession.setmGroupID(GROUP_ID);
         addedSession.setmName(sessionName);
 

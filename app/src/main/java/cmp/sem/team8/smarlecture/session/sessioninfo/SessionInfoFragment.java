@@ -11,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.session.PagerAdapter;
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
+
 
 /**
  * Created by ramym on 3/15/2018.
@@ -43,7 +45,7 @@ public class SessionInfoFragment extends Fragment implements SessionInfoContract
             public void onClick(View v) {
 
 
-                if(mPresenter.getSessionStatus().equals(FirebaseContract.SessionEntry.SessionStatus.OPEN.toString()))
+                if(mPresenter.getSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString()))
                 getActivity().onBackPressed();
                 else{
                     mPresenter.openSession();

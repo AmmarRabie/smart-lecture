@@ -6,6 +6,8 @@ import java.util.ArrayList;
  * Created by AmmarRabie on 26/03/2018.
  */
 
+
+@Deprecated
 public class GroupModel {
 
     String name;

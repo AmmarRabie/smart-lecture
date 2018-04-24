@@ -25,7 +25,7 @@ import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.view.SecretWheels;
-import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import es.dmoral.toasty.Toasty;
 
 public class WriteAttendanceFragment extends Fragment implements WriteAttendanceContract.Views

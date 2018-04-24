@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 
 /**
  * Created by ramym on 3/20/2018.

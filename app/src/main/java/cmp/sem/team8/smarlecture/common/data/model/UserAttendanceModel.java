@@ -1,9 +1,9 @@
-package cmp.sem.team8.smarlecture.model;
+package cmp.sem.team8.smarlecture.common.data.model;
 
 /**
  * Created by ramym on 3/20/2018.
  */
-@Deprecated
+
 public class UserAttendanceModel {
     public String Name;
     public boolean checked;
