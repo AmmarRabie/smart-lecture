@@ -241,77 +241,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void getSessionsForUser(String userId, final Get<ArrayList<SessionForUserModel>> callback, final boolean withClosed, final boolean withOpened, final boolean withNotActive) {
-        getSessionsForUser2(userId, callback, withClosed, withOpened, withNotActive);
-        /*final ArrayList<SessionForUserModel> resultList = new ArrayList<>();
-
-        // search on only groups he is actually following (exclude invitation)
-        Query followedGroups = getReference(UserEntry.KEY_THIS).child(userId)
-                .child(UserEntry.KEY_INVITATIONS).orderByValue().equalTo(true);
-
-        // loop over followed groups and for each group id loop over its sessions
-        followedGroups.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot groupsSnapshot) {
-                for (final DataSnapshot oneGroupSnapshot : groupsSnapshot.getChildren()) {
-                    final String groupId = oneGroupSnapshot.getKey();
-                    getGroupRef(groupId).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot sessionsSnapshot) {
-                            for (final DataSnapshot oneSessionSnapshot : sessionsSnapshot.getChildren()) {
-                                SessionModel sessionModel = FirebaseSerializer.serializeSession(oneSessionSnapshot);
-                                if (sessionModel == null) {
-                                    callback.onDataNotAvailable();
-                                    return;
-                                }
-                                if (!isvalid(sessionModel.getSessionStatus())) continue;
-                                String groupOwnerId = oneGroupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
-                                getUserRef(groupOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot userSnapshot) {
-                                        resultList.add(FirebaseSerializer.serializeSessionForUser(userSnapshot, oneSessionSnapshot, oneGroupSnapshot));
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        callback.onError(databaseError.getMessage());
-                                    }
-                                });
-                            }
-                        }
-
-                        private boolean isvalid(SessionStatus sessionStatus) {
-                            switch (sessionStatus) {
-                                case OPEN:
-                                    if (withOpened) return true;
-                                case CLOSED:
-                                    if (withClosed) return true;
-                                case NOT_ACTIVATED:
-                                    if (withNotActive) return true;
-                            }
-                            return false;
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            callback.onError(databaseError.getMessage());
-                        }
-                    });
-                }
-                callback.onDataFetched(resultList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                callback.onError(databaseError.getMessage());
-            }
-
-        });*/
-    }
-
-
-    public void getSessionsForUser2(String userId, final Get<ArrayList<SessionForUserModel>> callback, final boolean withClosed, final boolean withOpened, final boolean withNotActive) {
-        final ArrayList<SessionForUserModel> resultList = new ArrayList<>();
+    public void getSessionsForUser(String userId, final Get<SessionForUserModel> callback, final boolean withClosed, final boolean withOpened, final boolean withNotActive) {
+//        final ArrayList<SessionForUserModel> resultList = new ArrayList<>();
 
         // search on only groups he is actually following (exclude invitation)
         Query followedGroups = getReference(UserEntry.KEY_THIS).child(userId)
@@ -339,11 +270,12 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                         getSessionRef(oneSessionKey).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot oneSessionSnapshot) {
-//                                                if (!isValid(SessionStatus.fromString(oneSessionSnapshot.child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS).getValue(String.class)))) return;
-                                                resultList.add(FirebaseSerializer
+                                                if (!isValid(SessionStatus.fromString(oneSessionSnapshot.child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS).getValue(String.class)))) return;
+                                                SessionForUserModel sessionForUserModel = FirebaseSerializer
                                                         .serializeSessionForUser
-                                                                (userSnapshot, oneSessionSnapshot, oneGroupSnapshot));
-                                                callback.onDataFetched(resultList);
+                                                                (userSnapshot, oneSessionSnapshot, oneGroupSnapshot);
+//                                                resultList.add(sessionForUserModel);
+                                                callback.onDataFetched(sessionForUserModel);
                                             }
 
                                             @Override
@@ -392,7 +324,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
 
     @Override
-    public void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback) {
+    public void getSessionsForUser(String userId, Get<SessionForUserModel> callback) {
         getSessionsForUser(userId, callback, true, true, true);
     }
 

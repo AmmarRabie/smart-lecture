@@ -32,10 +32,10 @@ public class NewsFeedPresenter implements NewsFeedContract.Actions {
         mDataSource.getSessionsForUser(USER_ID,new GetSessionsCallback());
     }
 
-    private class GetSessionsCallback extends AppDataSource.Get<ArrayList<SessionForUserModel>> {
+    private class GetSessionsCallback extends AppDataSource.Get<SessionForUserModel> {
         @Override
-        public void onDataFetched(ArrayList<SessionForUserModel> data) {
-            mView.showSessions(data);
+        public void onDataFetched(SessionForUserModel data) {
+            mView.addSession(data);
         }
 
 

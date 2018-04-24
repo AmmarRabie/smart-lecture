@@ -42,10 +42,10 @@ public interface AppDataSource {
      * @param withOpened    if false, the sessions returned will exclude opened ones
      * @param withNotActive if false, the sessions returned will exclude not active ones
      */
-    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
+/*    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
             , boolean withClosed
             , boolean withOpened
-            , boolean withNotActive);
+            , boolean withNotActive);*/
 
 
     /**
@@ -54,7 +54,30 @@ public interface AppDataSource {
      * @param userId   the user id you want to get sessions he is a member in
      * @param callback return the data on this callback
      */
-    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback); // for student
+//    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback); // for student
+
+
+    /**
+     * return all sessions that passed user is a member in their groups filtered by flags <B>one by one</B>
+     *
+     * @param userId        the user id you want to get sessions he is a member in
+     * @param callback      return the data on this callback
+     * @param withClosed    if false, the sessions returned will exclude closed ones
+     * @param withOpened    if false, the sessions returned will exclude opened ones
+     * @param withNotActive if false, the sessions returned will exclude not active ones
+     */
+    void getSessionsForUser(String userId, Get<SessionForUserModel> callback
+            , boolean withClosed
+            , boolean withOpened
+            , boolean withNotActive);
+
+    /**
+     * return all sessions that passed user is a member in their groups <B>one by one</B>
+     *
+     * @param userId   the user id you want to get sessions he is a member in
+     * @param callback return the data on this callback
+     */
+    void getSessionsForUser(String userId, Get<SessionForUserModel> callback); // for student
 
     void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
 

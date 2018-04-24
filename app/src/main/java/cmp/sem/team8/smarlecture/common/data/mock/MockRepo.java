@@ -44,6 +44,16 @@ public class MockRepo implements AppDataSource {
 
     }
 
+    @Override
+    public void getSessionsForUser(String userId, Get<SessionForUserModel> callback, boolean withClosed, boolean withOpened, boolean withNotActive) {
+
+    }
+
+    @Override
+    public void getSessionsForUser(String userId, Get<SessionForUserModel> callback) {
+
+    }
+
 
     @Override
     public void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback) {
@@ -66,7 +76,7 @@ public class MockRepo implements AppDataSource {
 
     }
 
-    @Override
+/*    @Override
     public void getSessionsForUser(String userId, final Get<ArrayList<SessionForUserModel>> callback, final boolean withClosed, final boolean withOpened, final boolean withNotActive) {
         ArrayList<SessionForUserModel> mockResult = new ArrayList<>();
 
@@ -130,7 +140,7 @@ public class MockRepo implements AppDataSource {
     @Override
     public void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback) {
         getSessionsForUser(userId, callback, true, true, true);
-    }
+    }*/
 
 
     @Override

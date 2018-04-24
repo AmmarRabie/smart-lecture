@@ -16,6 +16,7 @@ public interface NewsFeedContract {
 
     interface Views extends IBaseView<Actions> {
         void showSessions(ArrayList<SessionForUserModel> sessions);
+        void addSession(SessionForUserModel session);
     }
 
     interface Actions extends IBasePresenter {
