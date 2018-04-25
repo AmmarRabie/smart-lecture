@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.willowtreeapps.spruce.Spruce;
 import com.willowtreeapps.spruce.animation.DefaultAnimations;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by AmmarRabie on 21/04/2018.
@@ -91,9 +93,29 @@ public class InvitationsFragment extends Fragment implements InvitationsContract
         invitationsRecyclerAdapter.notifyItemInserted(groupInvitations.size());
     }
 
+    @Override
+    public void removeGroup(String groupId) {
+        for (int i = 0; i < groupInvitations.size();i++)
+            if (groupInvitations.get(i).getGroupId().equals(groupId))
+            {
+                groupInvitations.remove(i);
+                invitationsRecyclerAdapter.notifyItemRemoved(i);
+                return;
+            }
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        Toasty.error(getContext(), message, Toast.LENGTH_LONG, true).show();
+    }
 
     @Override
     public void onAcceptClicked(View view, int position, String groupId) {
+        mAction.acceptGroup(groupId);
+    }
 
+    @Override
+    public void oRefuseClicked(View view, int position, String groupId) {
+        mAction.refuseGroup(groupId);
     }
 }

@@ -16,9 +16,13 @@ public interface InvitationsContract {
 
     interface Views extends IBaseView<Actions> {
         void addGroupInvitation(GroupInvitationModel session);
+        void removeGroup(String groupId);
+        void showErrorMessage(String message);
     }
 
     interface Actions extends IBasePresenter {
+        void acceptGroup(String groupId);
+        void refuseGroup(String groupId);
     }
 }
 

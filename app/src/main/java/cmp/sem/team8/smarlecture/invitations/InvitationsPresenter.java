@@ -29,6 +29,26 @@ public class InvitationsPresenter implements InvitationsContract.Actions {
         mDataSource.getGroupInvitationsForUser(USER_ID,new GetInvitationsCallback());
     }
 
+    @Override
+    public void acceptGroup(final String groupId) {
+        mDataSource.acceptFollowingGroup(USER_ID, groupId, new AppDataSource.Update() {
+            @Override
+            public void onUpdateSuccess() {
+                mView.removeGroup(groupId);
+            }
+        });
+    }
+
+    @Override
+    public void refuseGroup(final String groupId) {
+        mDataSource.refuseFollowingGroup(USER_ID, groupId, new AppDataSource.Update() {
+            @Override
+            public void onUpdateSuccess() {
+                mView.removeGroup(groupId);
+            }
+        });
+    }
+
     private class GetInvitationsCallback extends AppDataSource.Get<GroupInvitationModel> {
         @Override
         public void onDataFetched(GroupInvitationModel data) {

@@ -93,7 +93,8 @@ class InvitationsRecyclerAdapter extends RecyclerView.Adapter<InvitationsRecycle
             ownerNameView.setText(currGroup.getOwnerName());
             groupNameView.setText(currGroup.getGroupName());
 
-
+            if (mItemClickListener == null)
+                return;
             acceptView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

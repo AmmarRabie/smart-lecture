@@ -100,12 +100,12 @@ public class MockRepo implements AppDataSource {
 
     @Override
     public void acceptFollowingGroup(String userId, String groupId, Update callback) {
-
+        callback.onUpdateSuccess();
     }
 
     @Override
     public void refuseFollowingGroup(String userId, String groupId, final Update callback) {
-
+        callback.onUpdateSuccess();
     }
 
 /*    @Override
