@@ -1,5 +1,10 @@
 package cmp.sem.team8.smarlecture.common.data;
 
+import java.util.ArrayList;
+
+import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
@@ -21,12 +26,76 @@ public interface AppDataSource {
 
     void getUser(String userId, Get<UserModel> callback);
 
-    void insertUser(UserModel userModel, Insert<String> callback);
+    void insertUser(UserModel userModel, Insert<Void> callback);
 
     void updateUserName(String userId, String newName, Update callback);
 
     void listenUser(String userId, Listen<UserModel> callback);
 
+
+
+    /**
+     * return all sessions that passed user is a member in their groups filtered by flags
+     *
+     * @param userId        the user id you want to get sessions he is a member in
+     * @param callback      return the data on this callback
+     * @param withClosed    if false, the sessions returned will exclude closed ones
+     * @param withOpened    if false, the sessions returned will exclude opened ones
+     * @param withNotActive if false, the sessions returned will exclude not active ones
+     */
+/*    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
+            , boolean withClosed
+            , boolean withOpened
+            , boolean withNotActive);*/
+
+
+    /**
+     * return all sessions that passed user is a member in their groups
+     *
+     * @param userId   the user id you want to get sessions he is a member in
+     * @param callback return the data on this callback
+     */
+//    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback); // for student
+
+
+    /**
+     * return all sessions that passed user is a member in their groups filtered by flags <B><I>one by one</B>
+     *
+     * @param userId        the user id you want to get sessions he is a member in
+     * @param callback      return the data on this callback
+     * @param withClosed    if false, the sessions returned will exclude closed ones
+     * @param withOpened    if false, the sessions returned will exclude opened ones
+     * @param withNotActive if false, the sessions returned will exclude not active ones
+     */
+    void getSessionsForUser(String userId, Get<SessionForUserModel> callback
+            , boolean withClosed
+            , boolean withOpened
+            , boolean withNotActive);
+
+    /**
+     * return all sessions that passed user is a member in their groups <B><I>one by one</B>
+     *
+     * @param userId   the user id you want to get sessions he is a member in
+     * @param callback return the data on this callback
+     */
+    void getSessionsForUser(String userId, Get<SessionForUserModel> callback); // for student
+
+    /**
+     * return all group invitations sent userId, doesn't return the groups he is actually in.
+     * @param userId the user id you want to get invited groups.
+     * @param callback return the data on this callback.
+     */
+    void getGroupInvitationsForUser(String userId, Get<GroupInvitationModel> callback);
+
+    void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
+
+    void inviteUserToGroup(String email, String groupId, Insert<UserModel> callback); // add a new student
+
+    void acceptFollowingGroup(String userId, String groupId, Update callback);
+
+    void refuseFollowingGroup(String userId, String groupId, Update callback);
+
+    void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback);
 
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
@@ -67,7 +136,6 @@ public interface AppDataSource {
     void updateSessionSecret(String sessionId, String secret, Update callback);*/
 
     /**
-     *
      * @param listener
      */
     void forget(Listen listener);
@@ -78,7 +146,7 @@ public interface AppDataSource {
     enum AttendanceStatus {
         NOT_ACTIVATED("not-activated"), OPEN("open"), CLOSED("closed");
 
-        String value;
+        private String value;
 
         AttendanceStatus(String val) {
             value = val;
@@ -88,6 +156,14 @@ public interface AppDataSource {
         @Override
         public String toString() {
             return value;
+        }
+        public static AttendanceStatus fromString(String value) {
+            for (AttendanceStatus status : AttendanceStatus.values()) {
+                if (status.value.equalsIgnoreCase(value)) {
+                    return status;
+                }
+            }
+            return null;
         }
     }
 
@@ -103,6 +179,15 @@ public interface AppDataSource {
             value = val;
         }
 
+
+        public static SessionStatus fromString(String value) {
+            for (SessionStatus status : SessionStatus.values()) {
+                if (status.value.equalsIgnoreCase(value)) {
+                    return status;
+                }
+            }
+            return null;
+        }
 
         @Override
         public String toString() {

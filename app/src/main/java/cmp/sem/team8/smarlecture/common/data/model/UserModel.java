@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.common.data.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by AmmarRabie on 02/03/2018.
@@ -8,15 +9,23 @@ import java.io.Serializable;
 
 public class UserModel implements Serializable{
 
-    String name;
-    String email;
+    private String id;
+    private String name;
+    private String email;
+    private ArrayList<String> groupInvitations;
 
-    String identity;
-
-    public UserModel(String name, String email, String identity) {
+    public UserModel(String name, String email, String id) {
         this.name = name;
         this.email = email;
-        this.identity = identity;
+        this.id = id;
+        groupInvitations = new ArrayList<>();
+    }
+
+    public UserModel(String name, String email, String id, ArrayList<String> groupInvitations) {
+        this.name = name;
+        this.email = email;
+        this.id = id;
+        this.groupInvitations = groupInvitations;
     }
 
     public String getName() {
@@ -35,11 +44,11 @@ public class UserModel implements Serializable{
         this.email = email;
     }
 
-    public String getIdentity() {
-        return identity;
+    public String getId() {
+        return id;
     }
 
-    public void setIdentity(String identity) {
-        this.identity = identity;
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -11,10 +11,10 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 public class SessionModel {
     private String id;
     private String forGroup;
-    private String secret;
     private AppDataSource.AttendanceStatus attendanceStatus;
     private AppDataSource.SessionStatus sessionStatus;
     private String name;
+    private String secret;
     private ArrayList<AttendeeModel> attendanceList;
 
 

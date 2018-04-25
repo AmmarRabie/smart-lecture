@@ -115,9 +115,9 @@ class SignUpPresenter implements SignUpContract.Actions {
 
     private void insertUser(String name, String email, String id) {
         UserModel newUserModel = new UserModel(name, email, id);
-        mDataSource.insertUser(newUserModel, new AppDataSource.Insert<String>() {
+        mDataSource.insertUser(newUserModel, new AppDataSource.Insert<Void>() {
             @Override
-            public void onDataInserted(String feedback) {
+            public void onDataInserted(Void feedback) {
                 mView.showOnSuccess();
                 endTask();
             }

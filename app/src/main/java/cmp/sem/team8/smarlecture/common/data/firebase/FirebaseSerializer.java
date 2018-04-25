@@ -9,10 +9,14 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
  * Created by AmmarRabie on 21/04/2018.
@@ -50,8 +54,8 @@ public class FirebaseSerializer {
 
 
         SessionModel sessionModel = new SessionModel(sessionId, forGroupId,
-                AppDataSource.AttendanceStatus.valueOf(attendanceStatus),
-                AppDataSource.SessionStatus.valueOf(status),
+                AppDataSource.AttendanceStatus.fromString(attendanceStatus),
+                AppDataSource.SessionStatus.fromString(status),
                 name);
         if (sessionSnapshot.hasChild(SessionEntry.KEY_SECRET))
             sessionModel.setSecret(sessionSnapshot.child(SessionEntry.KEY_SECRET).getValue(String.class));
@@ -72,6 +76,32 @@ public class FirebaseSerializer {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
 
         return new InvitedUserModel(invitedUserRoot.getKey(), ((boolean) invitedUserRoot.getValue()));
+    }
+
+    public static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
+        GroupModel groupModel = serializeGroup(groupRoot);
+        SessionModel sessionModel = serializeSession(sessionRoot);
+        UserModel userModel = serializeUser(userRoot);
+        return new SessionForUserModel(
+                sessionModel.getId()
+                , sessionModel.getSessionStatus()
+                , sessionModel.getAttendanceStatus()
+                , sessionModel.getName()
+                , groupModel.getId()
+                , groupModel.getName()
+                , userModel.getId()
+                , userModel.getName());
+    }
+
+
+    public static UserModel serializeUser(DataSnapshot userRoot) {
+        String[] requiredChildes = UserEntry.requiredChildes;
+        if (!checkRequiredChildes(requiredChildes, userRoot)) return null;
+
+        String name = userRoot.child(UserEntry.KEY_NAME).getValue(String.class);
+        String email = userRoot.child(UserEntry.KEY_EMAIL).getValue(String.class);
+        ArrayList<String> groupsInvitations = getKeys(userRoot.child(UserEntry.KEY_INVITATIONS));
+        return new UserModel(name, email, userRoot.getKey(), groupsInvitations);
     }
 
 
@@ -106,7 +136,7 @@ public class FirebaseSerializer {
     }
 
 
-    private static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
+    public static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
             keys.add(child.getKey());
@@ -130,5 +160,20 @@ public class FirebaseSerializer {
                 return false;
             }
         return true;
+    }
+
+    public static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
+        GroupModel groupModel = serializeGroup(groupSnapshot);
+        UserModel userModel = serializeUser(userSnapshot);
+        if (groupModel == null || userModel == null) {
+            Log.e(TAG, "serializeGroupInvitation: error while serializing group or user");
+            return null;
+        }
+        return new GroupInvitationModel(
+                groupModel.getId()
+                , userModel.getId()
+                , groupModel.getName()
+                , userModel.getName()
+        );
     }
 }
