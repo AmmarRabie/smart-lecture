@@ -52,7 +52,7 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String sessionStatus = dataSnapshot.getValue().toString();
-                if (sessionStatus.equals(SessionEntry.SessionStatus.OPEN.toString())) {
+                if (sessionStatus.equals(AppDataSource.SessionStatus.OPEN.toString())) {
                     mView.showBeginAttendaceButton();
                     mView.showSecrect(generateRandomSecret());
                     mView.setPresenter(BeginAttendancePresenter.this);

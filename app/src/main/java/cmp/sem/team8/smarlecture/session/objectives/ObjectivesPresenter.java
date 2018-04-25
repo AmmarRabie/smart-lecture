@@ -98,19 +98,18 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
         mObjectiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot objectivesSnapshot) {
 
                 ArrayList<ObjectiveModel> objectiveList = new ArrayList<>();
 
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                for (DataSnapshot child : objectivesSnapshot.getChildren()) {
 
-                    if (!dataSnapshot.exists())
-
+                    if (!objectivesSnapshot.exists())
                         continue;
 
                     String key = child.getKey();
 
-                    String name = child.getValue(String.class);
+                    String name = child.child(FirebaseContract.ObjectiveEntry.KEY_DESC).getValue(String.class);
 
                     float averageRating=child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(float.class);
 
@@ -188,7 +187,7 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
         newObjective.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).setValue(0);
 
-        newObjective.setValue(objectiveDescription).addOnCompleteListener(new OnCompleteListener<Void>() {
+        newObjective.child(FirebaseContract.ObjectiveEntry.KEY_DESC).setValue(objectiveDescription).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 

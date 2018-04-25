@@ -133,7 +133,7 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
     public void endSession() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref = ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_SESSION_STATUS);
-        ref.setValue(SessionEntry.SessionStatus.CLOSED.toString());
+        ref.setValue(AppDataSource.SessionStatus.CLOSED.toString());
         ref=FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionEntry.KEY_ATTENDANCE_STATUS);
         ref.setValue(AppDataSource.SessionStatus.CLOSED.toString());
         mSession.setmSessionStatus(AppDataSource.SessionStatus.CLOSED.toString());

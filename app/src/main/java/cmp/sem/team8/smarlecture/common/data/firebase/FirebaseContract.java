@@ -82,6 +82,7 @@ public final class FirebaseContract {
         private ObjectiveEntry(){}
         public static final String KEY_AVERAGERATING="rating;" ;
         public static final String KEY_NUM_OF_USER_RATED="number_user_rated";
+        public static final String KEY_DESC="desc";
     }
 
 
