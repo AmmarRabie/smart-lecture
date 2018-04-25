@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -58,7 +59,7 @@ public interface AppDataSource {
 
 
     /**
-     * return all sessions that passed user is a member in their groups filtered by flags <B>one by one</B>
+     * return all sessions that passed user is a member in their groups filtered by flags <B><I>one by one</B>
      *
      * @param userId        the user id you want to get sessions he is a member in
      * @param callback      return the data on this callback
@@ -72,12 +73,19 @@ public interface AppDataSource {
             , boolean withNotActive);
 
     /**
-     * return all sessions that passed user is a member in their groups <B>one by one</B>
+     * return all sessions that passed user is a member in their groups <B><I>one by one</B>
      *
      * @param userId   the user id you want to get sessions he is a member in
      * @param callback return the data on this callback
      */
     void getSessionsForUser(String userId, Get<SessionForUserModel> callback); // for student
+
+    /**
+     * return all group invitations sent userId, doesn't return the groups he is actually in.
+     * @param userId the user id you want to get invited groups.
+     * @param callback return the data on this callback.
+     */
+    void getGroupInvitationsForUser(String userId, Get<GroupInvitationModel> callback);
 
     void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
 

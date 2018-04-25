@@ -22,6 +22,7 @@
         <activity android:name=".joinsession.JoinedSession" />
         <activity android:name=".group.GroupActivity"  android:exported="true"/>
         <activity android:name=".newsfeed.NewsFeedActivity" android:exported="true"/>
+        <activity android:name=".invitations.InvitationsActivity" android:exported="true"/>
 
         <activity android:name=".grouplist.GroupListActivity"  android:exported="true">
             <intent-filter>

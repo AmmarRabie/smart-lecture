@@ -3,6 +3,7 @@ package cmp.sem.team8.smarlecture.common.data.mock;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -52,6 +53,37 @@ public class MockRepo implements AppDataSource {
     @Override
     public void getSessionsForUser(String userId, Get<SessionForUserModel> callback) {
 
+    }
+
+    @Override
+    public void getGroupInvitationsForUser(String userId, Get<GroupInvitationModel> callback) {
+        callback.onDataFetched(new GroupInvitationModel(
+                "1",
+                "1",
+                "CMP_SEM_Software-Engineering",
+                "Ahmed Hamdy"
+        ));
+
+        callback.onDataFetched(new GroupInvitationModel(
+                "2",
+                "1",
+                "CMP_SEM_Computer-Graphics",
+                "Ahmed Hamdy"
+        ));
+
+        callback.onDataFetched(new GroupInvitationModel(
+                "3",
+                "2",
+                "CMP_Team8-micro",
+                "Ammar Alsayed"
+        ));
+
+        callback.onDataFetched(new GroupInvitationModel(
+                "3",
+                "2",
+                "CMP_Team8-software-engineering",
+                "Ammar Alsayed"
+        ));
     }
 
 

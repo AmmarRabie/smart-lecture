@@ -11,6 +11,7 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntr
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
@@ -159,5 +160,20 @@ public class FirebaseSerializer {
                 return false;
             }
         return true;
+    }
+
+    public static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
+        GroupModel groupModel = serializeGroup(groupSnapshot);
+        UserModel userModel = serializeUser(userSnapshot);
+        if (groupModel == null || userModel == null) {
+            Log.e(TAG, "serializeGroupInvitation: error while serializing group or user");
+            return null;
+        }
+        return new GroupInvitationModel(
+                groupModel.getId()
+                , userModel.getId()
+                , groupModel.getName()
+                , userModel.getName()
+        );
     }
 }

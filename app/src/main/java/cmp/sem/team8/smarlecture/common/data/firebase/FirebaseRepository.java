@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
@@ -270,7 +271,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                         getSessionRef(oneSessionKey).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot oneSessionSnapshot) {
-                                                if (!isValid(SessionStatus.fromString(oneSessionSnapshot.child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS).getValue(String.class)))) return;
+                                                if (!isValid(SessionStatus.fromString(oneSessionSnapshot.child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS).getValue(String.class))))
+                                                    return;
                                                 SessionForUserModel sessionForUserModel = FirebaseSerializer
                                                         .serializeSessionForUser
                                                                 (userSnapshot, oneSessionSnapshot, oneGroupSnapshot);
@@ -326,6 +328,58 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     @Override
     public void getSessionsForUser(String userId, Get<SessionForUserModel> callback) {
         getSessionsForUser(userId, callback, true, true, true);
+    }
+
+    @Override
+    public void getGroupInvitationsForUser(final String userId, final Get<GroupInvitationModel> callback) {
+        Query groupInvitationsKeys =
+                getUserRef(userId).child(UserEntry.KEY_INVITATIONS).orderByValue().equalTo(false);
+
+        groupInvitationsKeys.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            synchronized public void onDataChange(DataSnapshot invitationsKeysSnapshot) {
+                if (!invitationsKeysSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                for (String groupKey : FirebaseSerializer.getKeys(invitationsKeysSnapshot)) {
+                    getGroupRef(groupKey).addListenerForSingleValueEvent(new GroupValueEvent());
+                }
+            }
+
+            class GroupValueEvent implements ValueEventListener {
+                @Override
+                synchronized public void onDataChange(DataSnapshot groupSnapshot) {
+                    String ownerId = groupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
+                    getUserRef(ownerId).addListenerForSingleValueEvent(new UserValueEvent(groupSnapshot));
+                }
+
+                @Override
+                synchronized public void onCancelled(DatabaseError databaseError) {
+                    callback.onError(databaseError.getMessage());
+                }
+            }
+
+            class UserValueEvent implements ValueEventListener {
+                private DataSnapshot groupSnapshot;
+                UserValueEvent(DataSnapshot groupSnapshot){this.groupSnapshot = groupSnapshot;}
+                @Override
+                synchronized public void onDataChange(DataSnapshot userSnapshot) {
+                    callback.onDataFetched(
+                            FirebaseSerializer.serializeGroupInvitation(groupSnapshot,userSnapshot));
+                }
+
+                @Override
+                synchronized public void onCancelled(DatabaseError databaseError) {
+                    callback.onError(databaseError.getMessage());
+                }
+            }
+
+            @Override
+            synchronized public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
     }
 
     @Override
