@@ -1,7 +1,5 @@
 package cmp.sem.team8.smarlecture.common.data.model;
 
-import java.util.ArrayList;
-
 /**
  * Created by AmmarRabie on 26/03/2018.
  */

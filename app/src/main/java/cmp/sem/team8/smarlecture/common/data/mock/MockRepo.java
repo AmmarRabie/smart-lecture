@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
@@ -16,6 +17,18 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 public class MockRepo implements AppDataSource {
 
     private static MockRepo INSTANCE = null;
+    private ArrayList<UserModel> users;
+    private ArrayList<SessionModel> sessions;
+    private ArrayList<GroupModel> groups;
+
+    private MockRepo() {
+        users = new ArrayList<>();
+        sessions = new ArrayList<>();
+        groups = new ArrayList<>();
+        insertDummyUsers();
+        insertDummyGroups();
+        insertDummySessions();
+    }
 
     public static MockRepo getInstance() {
         if (INSTANCE == null) {
@@ -23,7 +36,170 @@ public class MockRepo implements AppDataSource {
         }
         return INSTANCE;
     }
-    private MockRepo(){}
+
+    private void insertDummySessions() {
+        sessions.add(new SessionModel(
+                "L4-1",
+                "L4",
+                AttendanceStatus.OPEN,
+                SessionStatus.OPEN,
+                "Abdomen"
+        ));
+        sessions.add(new SessionModel(
+                "L4-2",
+                "L4",
+                AttendanceStatus.CLOSED,
+                SessionStatus.OPEN,
+                "NueroAnatomy"
+        ));
+        sessions.add(new SessionModel(
+                "L4-3",
+                "L4",
+                AttendanceStatus.CLOSED,
+                SessionStatus.CLOSED,
+                "Thorax"
+        ));
+    }
+
+    private void insertDummyGroups() {
+        // Ahmed Hamdy
+        groups.add(new GroupModel(
+                "CMP2.1-SEM-Computer Graphics",
+                "L1",
+                "11" // Ahmed hamdy
+        ));
+        groups.add(new GroupModel(
+                "CMP2.2-SEM-software engineering",
+                "L2",
+                "11" // Ahmed hamdy
+        ));
+        groups.add(new GroupModel(
+                "CMP4.1-CD-software engineering",
+                "L3",
+                "11" // Ahmed hamdy
+        ));
+        // medhat
+        groups.add(new GroupModel(
+                "Kasr Alainy - second",
+                "L4",
+                "15" // medhat
+        ));
+
+        // Teams and out of education groups
+        // [TODO]: Insert here dummy data of groups, delete your name after your additions {Ramy - Loai - Youssry}
+        groups.add(new GroupModel(
+                "CMP2.2-Team8 micro",
+                "S1",
+                "1" // Ammar Alsayed
+        ));
+        groups.add(new GroupModel(
+                "CMP2.2-Team8 software engineering",
+                "S2",
+                "1" // Ammar Alsayed
+        ));
+        groups.add(new GroupModel(
+                "CMP2.2-Team8 Signals",
+                "S3",
+                "1" // Ammar Alsayed
+        ));
+        groups.add(new GroupModel(
+                "Family-gom3h Dars Tafsir",
+                "S4",
+                "1" // Ammar Alsayed
+        ));
+    }
+
+    private void insertDummyUsers() {
+        users.add(new UserModel(
+                "Ammar Alsayed",
+                "ammaralsayed55@gmail.com",
+                "1"
+        ));
+
+        users.add(new UserModel(
+                "Loai Ali",
+                "loaiali@gmail.com",
+                "2"
+        ));
+
+        users.add(new UserModel(
+                "Ramy Mohammed Saied",
+                "ramy.m.saied@gmail.com",
+                "3"
+        ));
+
+        users.add(new UserModel(
+                "Mahmoud Youssry",
+                "mahmoudyoussry@gmail.com",
+                "4"
+        ));
+
+        users.add(new UserModel(
+                "Omar Samir Galal",
+                "omarsamir@gmail.com",
+                "5"
+        ));
+
+        users.add(new UserModel(
+                "Abdo Kaseb",
+                "abdokaseb@gmail.com",
+                "6"
+        ));
+
+        users.add(new UserModel(
+                "karim Omar",
+                "karimomar@gmail.com",
+                "7"
+        ));
+
+        users.add(new UserModel(
+                "Ahmed Maher",
+                "ahmedmaher@gmail.com",
+                "8"
+        ));
+
+        users.add(new UserModel(
+                "Ahmed Ibrahim",
+                "ahmedibrahim@gmail.com",
+                "9"
+        ));
+
+        users.add(new UserModel(
+                "Ibrahim Akrab",
+                "ibrahimakrab@gmail.com",
+                "10"
+        ));
+
+        users.add(new UserModel(
+                "Ahmed Hamdy",
+                "ahmedhamdy@gmail.com",
+                "11"
+        ));
+
+        users.add(new UserModel(
+                "Magda Fayek",
+                "magdafayek@gmail.com",
+                "12"
+        ));
+
+        users.add(new UserModel(
+                "Hesham Ibrahim",
+                "heshamibrahim@gmail.com",
+                "13"
+        ));
+
+        users.add(new UserModel(
+                "Ahmed Gomaa",
+                "ahmedgomma@gmail.com",
+                "14"
+        ));
+
+        users.add(new UserModel(
+                "medhat morssy",
+                "medhatmorssy@gmail.com",
+                "15"
+        ));
+    }
 
     @Override
     public void getUser(final String userId, final Get<UserModel> callback) {
