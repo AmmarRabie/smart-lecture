@@ -3,6 +3,7 @@ package cmp.sem.team8.smarlecture.common.data;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -95,7 +96,7 @@ public interface AppDataSource {
 
     void refuseFollowingGroup(String userId, String groupId, Update callback);
 
-    void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback);
+    void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);

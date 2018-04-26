@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 
 /**
  * Created by Loai Ali on 3/17/2018.
@@ -23,17 +24,17 @@ public class StudentListRecyclerAdapter extends RecyclerView.Adapter<StudentList
     private final static int VIEW_TYPE_CELL = 0;
     private final static int VIEW_TYPE_FOOTER = 1;
     private onItemClickListener mItemClickListener = null;
-    private ArrayList<HashMap<String, Object>> mNamesList;
+    private ArrayList<InvitedUserModel> mNamesList;
     private Context mContext;
 
-    public StudentListRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> nameList,
+    public StudentListRecyclerAdapter(Context context, ArrayList<InvitedUserModel> nameList,
                                       onItemClickListener onEditClickListener) {
 
         this(context, nameList);
         mItemClickListener = onEditClickListener;
     }
 
-    public StudentListRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> namesList) {
+    public StudentListRecyclerAdapter(Context context, ArrayList<InvitedUserModel> namesList) {
         this.mContext = context;
         this.mNamesList = namesList;
     }
@@ -107,9 +108,9 @@ public class StudentListRecyclerAdapter extends RecyclerView.Adapter<StudentList
 
         void bind(final int position) {
 
-            HashMap<String, Object> currName = mNamesList.get(position);
+            InvitedUserModel currName = mNamesList.get(position);
 
-            nameTextView.setText(currName.get("name").toString());
+            nameTextView.setText(currName.getUser().getName());
 
             if (mItemClickListener == null)
                 return;

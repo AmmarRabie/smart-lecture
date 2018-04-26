@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 
 import java.util.ArrayList;
 
@@ -172,16 +173,13 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                     callback.onError("This group doesn't exist");
                                     return;
                                 }
-                                GroupModel groupModel = FirebaseSerializer.serializeGroup(groupSnapshot);
-                                if (groupModel.getOwnerId().equals(userId)) {
+                                if (groupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class).equals(userId)) {
                                     callback.onError("You can't add yourself");
                                     return;
                                 }
-                                for (InvitedUserModel invitedUserModel : groupModel.getUsersList()) {
-                                    if (invitedUserModel.getUserId().equals(userId)) {
-                                        callback.onError("This user is already exists");
-                                        return;
-                                    }
+                                if (groupSnapshot.child(GroupEntry.KEY_NAMES_LIST).child(userId).exists()) {
+                                    callback.onError("This user is already exists");
+                                    return;
                                 }
                                 continueWithUserSnapshot(userSnapshot);
                             }
@@ -347,6 +345,11 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 }
             }
 
+            @Override
+            synchronized public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+
             class GroupValueEvent implements ValueEventListener {
                 @Override
                 synchronized public void onDataChange(DataSnapshot groupSnapshot) {
@@ -362,11 +365,15 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
             class UserValueEvent implements ValueEventListener {
                 private DataSnapshot groupSnapshot;
-                UserValueEvent(DataSnapshot groupSnapshot){this.groupSnapshot = groupSnapshot;}
+
+                UserValueEvent(DataSnapshot groupSnapshot) {
+                    this.groupSnapshot = groupSnapshot;
+                }
+
                 @Override
                 synchronized public void onDataChange(DataSnapshot userSnapshot) {
                     callback.onDataFetched(
-                            FirebaseSerializer.serializeGroupInvitation(groupSnapshot,userSnapshot));
+                            FirebaseSerializer.serializeGroupInvitation(groupSnapshot, userSnapshot));
                 }
 
                 @Override
@@ -374,17 +381,39 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onError(databaseError.getMessage());
                 }
             }
-
-            @Override
-            synchronized public void onCancelled(DatabaseError databaseError) {
-                callback.onError(databaseError.getMessage());
-            }
         });
     }
 
+
     @Override
-    public void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback) {
+    public void getUsersListOfGroup(String groupId, final Get<ArrayList<InvitedUserModel>> callback) {
+        final ArrayList<InvitedUserModel> result = new ArrayList<>();
+        getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot groupUsersKeysSnapshot) {
+                for (final DataSnapshot oneGroupUserKey : groupUsersKeysSnapshot.getChildren()) {
+                    String userId = oneGroupUserKey.getKey();
+                    getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot userSnapshot) {
+                            InvitedUserModel newInvitedUser = FirebaseSerializer.serializeInvitedUser(oneGroupUserKey, userSnapshot);
+                            result.add(newInvitedUser);
+                            if(groupUsersKeysSnapshot.getChildrenCount() == result.size())
+                                callback.onDataFetched(result);
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            callback.onError(databaseError.getMessage());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
-
 }

@@ -1,11 +1,10 @@
 package cmp.sem.team8.smarlecture.group;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.group.sessionslist.SessionListFragment;
 import cmp.sem.team8.smarlecture.group.sessionslist.SessionListPresenter;
 import cmp.sem.team8.smarlecture.group.studentlist.StudentListFragment;
@@ -16,54 +15,50 @@ import cmp.sem.team8.smarlecture.group.studentlist.StudentListPresenter;
  */
 
 public class GroupPagerAdapter extends FragmentPagerAdapter {
-    private String mGroupID;
-    private String mGroupName;
-    StudentListFragment studentListFragment ;
+    private final String GROUP_ID;
+    private final String GROUP_NAME;
+    StudentListFragment studentListFragment;
     StudentListPresenter studentListPresenter;
     SessionListFragment sessionListFragment;
     SessionListPresenter sessionListPresenter;
 
-    public GroupPagerAdapter(FragmentManager fm,String groupID,String groupName) {
+    public GroupPagerAdapter(FragmentManager fm, String groupID, String groupName) {
         super(fm);
 
-        mGroupID=groupID;
-        mGroupName=groupName;
-        studentListFragment=null;
-        sessionListFragment=null;
+        GROUP_ID = groupID;
+        GROUP_NAME = groupName;
+        studentListFragment = null;
+        sessionListFragment = null;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                if(studentListFragment==null)
-                    studentListFragment=StudentListFragment.newInstance();
-                studentListPresenter=new StudentListPresenter(studentListFragment,mGroupID,mGroupName);
+                if (studentListFragment == null)
+                    studentListFragment = StudentListFragment.newInstance();
+                studentListPresenter = new StudentListPresenter(FirebaseRepository.getInstance(), studentListFragment, GROUP_ID, GROUP_NAME);
                 return studentListFragment;
 
             case 1:
-                if(sessionListFragment==null){
-                    sessionListFragment=SessionListFragment.newInstance();
-                    sessionListPresenter=new SessionListPresenter(sessionListFragment,mGroupID);
+                if (sessionListFragment == null) {
+                    sessionListFragment = SessionListFragment.newInstance();
+                    sessionListPresenter = new SessionListPresenter(sessionListFragment, GROUP_ID);
                     return sessionListFragment;
                 }
-
-
             default:
-              return null;
-
+                return null;
         }
     }
+
     @Override
     public CharSequence getPageTitle(int position) {
 
-        if(position==0)
+        if (position == 0)
             return "Students";
         else {
             return "Sessions";
         }
-
-
     }
 
     @Override

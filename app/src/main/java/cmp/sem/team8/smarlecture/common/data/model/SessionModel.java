@@ -15,8 +15,6 @@ public class SessionModel {
     private AppDataSource.SessionStatus sessionStatus;
     private String name;
     private String secret;
-    private ArrayList<AttendeeModel> attendanceList;
-
 
     public SessionModel(String id, String forGroup, AppDataSource.AttendanceStatus attendanceStatus, AppDataSource.SessionStatus sessionStatus, String name) {
         this.id = id;
@@ -77,11 +75,4 @@ public class SessionModel {
         this.name = name;
     }
 
-    public ArrayList<AttendeeModel> getAttendanceList() {
-        return attendanceList;
-    }
-
-    public void setAttendanceList(ArrayList<AttendeeModel> attendanceList) {
-        this.attendanceList = attendanceList;
-    }
 }

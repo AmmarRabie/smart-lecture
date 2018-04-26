@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -176,7 +177,7 @@ public class MockRepo implements AppDataSource {
 
 
     @Override
-    public void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback) {
+    public void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback) {
 
     }
 
