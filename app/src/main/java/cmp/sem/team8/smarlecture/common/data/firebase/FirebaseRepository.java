@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
@@ -362,11 +363,15 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
             class UserValueEvent implements ValueEventListener {
                 private DataSnapshot groupSnapshot;
-                UserValueEvent(DataSnapshot groupSnapshot){this.groupSnapshot = groupSnapshot;}
+
+                UserValueEvent(DataSnapshot groupSnapshot) {
+                    this.groupSnapshot = groupSnapshot;
+                }
+
                 @Override
                 synchronized public void onDataChange(DataSnapshot userSnapshot) {
                     callback.onDataFetched(
-                            FirebaseSerializer.serializeGroupInvitation(groupSnapshot,userSnapshot));
+                            FirebaseSerializer.serializeGroupInvitation(groupSnapshot, userSnapshot));
                 }
 
                 @Override
@@ -386,5 +391,116 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     public void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback) {
 
     }
+
+    @Override
+    public void getJoinedSessionInfo(final String sessionID, final String groupID, final Get<SessionForUserModel> callback) {
+            final   DatabaseReference mRef=FirebaseDatabase.getInstance().getReference();
+
+        DatabaseReference mSessionRef=mRef.child(FirebaseContract.SessionEntry.KEY_THIS).child(sessionID);
+        mSessionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                final String sessionName=dataSnapshot.child(FirebaseContract.SessionEntry.KEY_FOR_SESSION_NAME_).getValue(String.class);
+                DatabaseReference mGroupRef=mRef.child(GroupEntry.KEY_THIS).child(groupID);
+                mGroupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.exists()){
+                            callback.onDataNotAvailable();
+                            return;
+                        }
+                      final  String groupName=dataSnapshot.child(GroupEntry.KEY_NAME).getValue(String.class);
+                      final String ownerID=dataSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
+                      DatabaseReference mUserRef=mRef.child(UserEntry.KEY_THIS).child(ownerID);
+                      mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                          @Override
+                          public void onDataChange(DataSnapshot dataSnapshot) {
+                              if(!dataSnapshot.exists()){
+                                  callback.onDataNotAvailable();
+                                  return;
+                              }
+                              String OwnerName=dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
+                              SessionForUserModel sessionInfo=new SessionForUserModel(sessionID, SessionStatus.OPEN, AttendanceStatus.CLOSED    ,sessionName,groupID,groupName,ownerID,OwnerName);
+                              callback.onDataFetched(sessionInfo);
+
+
+                          }
+
+                          @Override
+                          public void onCancelled(DatabaseError databaseError) {
+                              callback.onError(databaseError.getMessage());
+
+                          }
+                      });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        callback.onError(databaseError.getMessage());
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+
+            }
+        });
+        mRef.child(FirebaseContract.SessionEntry.KEY_THIS).child(sessionID).child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue(String.class).equals(SessionStatus.CLOSED.toString())){
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+    }
+
+    @Override
+    public void listenForsessionStatus(String sessionID, final Listen<String> callback) {
+
+
+
+
+        DatabaseReference mRef=FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS)
+                .child(sessionID).child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS);
+
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) return;
+                String sessionStatus=dataSnapshot.getValue(String.class);
+                callback.onDataReceived(sessionStatus);
+                callback.increment();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
 }

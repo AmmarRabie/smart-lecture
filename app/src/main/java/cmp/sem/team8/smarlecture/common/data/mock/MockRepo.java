@@ -181,6 +181,16 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
+    public void getJoinedSessionInfo(String sessionID, String groupID, Get<SessionForUserModel> callback) {
+
+    }
+
+    @Override
+    public void listenForsessionStatus(String sessionID, Listen<String> callback) {
+
+    }
+
+    @Override
     public void forget(Listen listener) {
 
     }

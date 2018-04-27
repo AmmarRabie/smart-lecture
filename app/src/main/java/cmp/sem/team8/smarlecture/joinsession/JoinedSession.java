@@ -24,6 +24,7 @@ public class JoinedSession extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     TabItem WriteAttendanceTab;
+    TabItem sessionInfoTab;
     PagerAdapter pageAdapter;
     private BeginAttendancePresenter mAttendancePresenter;
     private SessionInfoPresenter mSessionInfoPresenter;
@@ -50,13 +51,17 @@ public class JoinedSession extends AppCompatActivity {
 
         WriteAttendanceTab = findViewById(R.id.joined_session_attendance);
 
+        sessionInfoTab=findViewById(R.id.joined_session_info);
+
         viewPager = findViewById(R.id.joined_session_viewPager);
 
-        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),SessionId);
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),SessionId,GroupID);
 
         viewPager.setAdapter(pageAdapter);
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setupWithViewPager(viewPager);
+
+        //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         /////
 

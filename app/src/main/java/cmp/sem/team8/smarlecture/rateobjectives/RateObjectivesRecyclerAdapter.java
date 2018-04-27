@@ -88,6 +88,7 @@ public class RateObjectivesRecyclerAdapter extends RecyclerView.Adapter<RateObje
         void bind(final int position){
             ObjectiveModel mCurrentObjective=mObjectiveList.get(position);
             mObjectiveDescription.setText(mCurrentObjective.getmObjectiveDescription());
+
             if(mItemClickListener==null)
                 return;
             mRateView.setMax(3);

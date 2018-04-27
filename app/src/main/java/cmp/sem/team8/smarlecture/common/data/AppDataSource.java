@@ -97,6 +97,11 @@ public interface AppDataSource {
 
     void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback);
 
+    //get session name and group owner for the session id to be viewed for the student when he joins a session
+    void getJoinedSessionInfo(String sessionID,String groupID,Get<SessionForUserModel> callback);
+
+    void listenForsessionStatus(String sessionID,Listen<String> callback);
+
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 
