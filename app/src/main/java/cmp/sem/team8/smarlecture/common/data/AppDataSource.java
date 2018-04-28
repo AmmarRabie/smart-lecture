@@ -1,11 +1,11 @@
 package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -106,9 +106,13 @@ public interface AppDataSource {
 
     void setSessionSecret(String sessionId, String secret, Update callback);
 
-    Listen ListenAttendanceList(String sessionId, Listen<AttendeeModel> callback);
+    Listen ListenSessionMembers(String sessionId, Listen<MemberModel> callback);
 
-    void setAttendance(String sessionId, String memberId, boolean isAttend, Update callback);
+    void setMemberAttendance(String sessionId, String memberId, boolean isAttend, Update callback);
+
+    void addNote(String sessionId, String memberId, String noteText, Insert<NoteModel> callback);
+
+    void deleteNote(String sessionId, String memberId, String noteId, Delete callback);
 
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);

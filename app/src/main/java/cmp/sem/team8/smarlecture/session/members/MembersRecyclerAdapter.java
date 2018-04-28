@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.session.beginattendance;
+package cmp.sem.team8.smarlecture.session.members;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 
 /**
  * Created by AmmarRabie on 27/04/2018.
@@ -19,15 +19,15 @@ import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
 
 public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecyclerAdapter.MemberViewHolder> {
     private OnItemClickListener mItemClickListener = null;
-    private ArrayList<AttendeeModel> mMembers;
+    private ArrayList<MemberModel> mMembers;
 
-    public MembersRecyclerAdapter(ArrayList<AttendeeModel> members,
+    public MembersRecyclerAdapter(ArrayList<MemberModel> members,
                                   OnItemClickListener onEditClickListener) {
         this(members);
         mItemClickListener = onEditClickListener;
     }
 
-    public MembersRecyclerAdapter(ArrayList<AttendeeModel> members) {
+    public MembersRecyclerAdapter(ArrayList<MemberModel> members) {
         this.mMembers = members;
     }
 
@@ -84,7 +84,7 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
         }
 
         void bind(final int position) {
-            final AttendeeModel currMember = mMembers.get(position);
+            final MemberModel currMember = mMembers.get(position);
 
             nameView.setText(currMember.getName());
             emailView.setText(currMember.getEmail());

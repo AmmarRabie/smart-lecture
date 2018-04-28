@@ -1,16 +1,15 @@
-package cmp.sem.team8.smarlecture.session.beginattendance;
-
-import java.util.ArrayList;
+package cmp.sem.team8.smarlecture.session.members;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
-import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 
 /**
  * Created by ramym on 3/17/2018.
  */
 
-public class BeginAttendanceContract {
+public class MembersContract {
 
     /**
      * views methods implemented by fragment
@@ -22,9 +21,9 @@ public class BeginAttendanceContract {
          */
         void showErrorMessage(String cause);
 
-        void showBeginAttendaceButton();
+        void showBeginAttendanceButton();
 
-        void hideBeginAttendaceButton();
+        void hideBeginAttendanceButton();
 
         /**
          * to show the timer of the attendance in the fragment;
@@ -39,9 +38,13 @@ public class BeginAttendanceContract {
 
         String getSecret();
 
-        void addNewMember(AttendeeModel newAttendee);
+        void addNewMember(MemberModel newAttendee);
 
         void updateMemberAttendance(String id, boolean attend);
+
+        void onNoteAddedSuccess(String memberId, NoteModel note);
+
+        void onDeleteNoteSuccess(String memberId, NoteModel noteDeleted);
     }
 
 
@@ -61,10 +64,14 @@ public class BeginAttendanceContract {
 
         void onAttendanceMarkChanged(String memberId, boolean attend);
         /**
-         * mark attendance flage in the database as closed;
+         * mark attendance flag in the database as closed;
          */
         void onAttendanceTimerEnd();
 
         void onDestroy();
+
+        void addNote(String memberIdShowing, String noteText);
+
+        void deleteNote(String memberIdShowing, String noteId);
     }
 }

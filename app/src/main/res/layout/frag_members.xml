@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Secrect: "
+            android:text="Secret: "
             android:textAppearance="?android:textAppearanceLarge" />
 
         <TextView
@@ -64,15 +64,8 @@
             tools:text="20" />
     </LinearLayout>
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="none"
-        android:text="Student List: "
-        android:textAppearance="?android:textAppearanceLarge" />
-
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="8dp"
         android:id="@+id/membersFrag_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

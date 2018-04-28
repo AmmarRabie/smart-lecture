@@ -10,10 +10,11 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
-import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -117,6 +118,23 @@ class FirebaseSerializer {
         );
     }
 
+    static MemberModel serializeAttendee(DataSnapshot attendeeSnapshot, DataSnapshot userSnapshot) {
+        UserModel userModel = serializeUser(userSnapshot);
+        boolean isAttend = ((boolean) attendeeSnapshot.child(SessionEntry.KEY_ATTEND).getValue());
+        if (!attendeeSnapshot.child(SessionEntry.KEY_NOTES).exists())
+            return new MemberModel(userModel, isAttend);
+        ArrayList<NoteModel> notes = new ArrayList<>();
+        for (DataSnapshot oneNoteSnapshot : attendeeSnapshot.child(SessionEntry.KEY_NOTES).getChildren())
+            notes.add(serializeNote(oneNoteSnapshot));
+        return new MemberModel(userModel, isAttend, notes);
+    }
+
+    static NoteModel serializeNote(DataSnapshot noteSnapshot) {
+        String noteId = noteSnapshot.getKey();
+        String noteText = noteSnapshot.getValue(String.class);
+
+        return new NoteModel(noteId, noteText);
+    }
 
     static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
@@ -142,11 +160,5 @@ class FirebaseSerializer {
                 return false;
             }
         return true;
-    }
-
-    static AttendeeModel serializeAttendee(DataSnapshot attendeeSnapshot, DataSnapshot userSnapshot) {
-        UserModel userModel = serializeUser(userSnapshot);
-        boolean isAttend = ((boolean) attendeeSnapshot.getValue());
-        return new AttendeeModel(userModel, isAttend);
     }
 }

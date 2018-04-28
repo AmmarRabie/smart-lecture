@@ -1,4 +1,4 @@
-package cmp.sem.team8.smarlecture.session.beginattendance;
+package cmp.sem.team8.smarlecture.session.members;
 
 
 import android.content.DialogInterface;
@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +22,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.view.MemberNotesDialog;
 import cmp.sem.team8.smarlecture.common.view.SecretWheels;
 import es.dmoral.toasty.Toasty;
 
@@ -29,11 +32,10 @@ import es.dmoral.toasty.Toasty;
  * Created by ramym on 3/17/2018.
  */
 
-public class BeginAttendanceFragment extends Fragment implements BeginAttendanceContract.Views, MembersRecyclerAdapter.OnItemClickListener {
-
-    private BeginAttendanceContract.Actions mPresenter;
+public class MembersFragment extends Fragment implements MembersContract.Views, MembersRecyclerAdapter.OnItemClickListener, MemberNotesDialog.MemberNotesDialogListener {
 
     private boolean isStarted = false;
+    private MembersContract.Actions mPresenter;
 
     private TextView AttendanceTimerView;
     private TextView secretView;
@@ -42,12 +44,14 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     private LinearLayout attendanceTimerParentView;
     private View changeSecretView;
     private RecyclerView membersRecyclerView;
-
-    private ArrayList<AttendeeModel> membersList;
+    private ArrayList<MemberModel> membersList;
     private MembersRecyclerAdapter membersAdapter;
+    private MemberNotesDialog memberNotesDialogView;
 
-    public static BeginAttendanceFragment newInstance() {
-        return new BeginAttendanceFragment();
+    private String mCurrMemberIdShowing;
+
+    public static MembersFragment newInstance() {
+        return new MembersFragment();
     }
 
     @Override
@@ -61,7 +65,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.frag_begin_attendance, container, false);
+        View root = inflater.inflate(R.layout.frag_members, container, false);
 
         secretParentView = root.findViewById(R.id.membersFrag_secretParent);
         attendanceTimerParentView = root.findViewById(R.id.membersFrag_attendanceTimerParent);
@@ -125,7 +129,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     }
 
     @Override
-    public void setPresenter(BeginAttendanceContract.Actions presenter) {
+    public void setPresenter(MembersContract.Actions presenter) {
         mPresenter = presenter;
     }
 
@@ -136,19 +140,17 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     }
 
     @Override
-    public void showBeginAttendaceButton() {
+    public void showBeginAttendanceButton() {
         startAttendanceView.setVisibility(View.VISIBLE);
         secretParentView.setVisibility(View.VISIBLE);
         attendanceTimerParentView.setVisibility(View.VISIBLE);
-
     }
 
     @Override
-    public void hideBeginAttendaceButton() {
+    public void hideBeginAttendanceButton() {
         startAttendanceView.setVisibility(View.GONE);
         secretParentView.setVisibility(View.GONE);
         attendanceTimerParentView.setVisibility(View.GONE);
-
     }
 
     @Override
@@ -179,7 +181,7 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     }
 
     @Override
-    public void addNewMember(AttendeeModel newAttendee) {
+    public void addNewMember(MemberModel newAttendee) {
         membersList.add(newAttendee);
         membersAdapter.notifyItemInserted(membersList.size());
     }
@@ -192,7 +194,14 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
 
     @Override
     public void onAddNoteClicked(View v, int pos, String memberId) {
-
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        memberNotesDialogView = MemberNotesDialog.newInstance(
+                membersList.get(pos).getName(),
+                this,
+                membersList.get(pos).getNotes()
+        );
+        memberNotesDialogView.show(fm, "fragment_member_notes");
+        mCurrMemberIdShowing = memberId;
     }
 
     @Override
@@ -204,5 +213,28 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     public void onDestroy() {
         super.onDestroy();
         mPresenter.onDestroy();
+    }
+
+    @Override
+    public void onDeleteNoteClicked(NoteModel noteClicked) {
+        mPresenter.deleteNote(mCurrMemberIdShowing, noteClicked.getId());
+    }
+
+    @Override
+    public void onNewNoteAdded(String noteText) {
+        mPresenter.addNote(mCurrMemberIdShowing, noteText);
+    }
+
+    @Override
+    public void onNoteAddedSuccess(String memberId, NoteModel note) {
+        if (memberNotesDialogView.isAdded()) {
+            memberNotesDialogView.addNote(note);
+        }
+    }
+
+    @Override
+    public void onDeleteNoteSuccess(String memberId, NoteModel noteDeleted) {
+        if (memberNotesDialogView.isAdded())
+            memberNotesDialogView.deleteNote(noteDeleted.getId());
     }
 }

@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
-import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -336,7 +337,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
         groupInvitationsKeys.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            synchronized public void onDataChange(DataSnapshot invitationsKeysSnapshot) {
+            public void onDataChange(DataSnapshot invitationsKeysSnapshot) {
                 if (!invitationsKeysSnapshot.exists()) {
                     callback.onDataNotAvailable();
                     return;
@@ -347,19 +348,19 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
 
             @Override
-            synchronized public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
                 callback.onError(databaseError.getMessage());
             }
 
             class GroupValueEvent implements ValueEventListener {
                 @Override
-                synchronized public void onDataChange(DataSnapshot groupSnapshot) {
+                public void onDataChange(DataSnapshot groupSnapshot) {
                     String ownerId = groupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
                     getUserRef(ownerId).addListenerForSingleValueEvent(new UserValueEvent(groupSnapshot));
                 }
 
                 @Override
-                synchronized public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(DatabaseError databaseError) {
                     callback.onError(databaseError.getMessage());
                 }
             }
@@ -372,13 +373,13 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 }
 
                 @Override
-                synchronized public void onDataChange(DataSnapshot userSnapshot) {
+                public void onDataChange(DataSnapshot userSnapshot) {
                     callback.onDataFetched(
                             FirebaseSerializer.serializeGroupInvitation(groupSnapshot, userSnapshot));
                 }
 
                 @Override
-                synchronized public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(DatabaseError databaseError) {
                     callback.onError(databaseError.getMessage());
                 }
             }
@@ -474,7 +475,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public Listen ListenAttendanceList(String sessionId, final Listen<AttendeeModel> callback) {
+    public Listen ListenSessionMembers(String sessionId, final Listen<MemberModel> callback) {
         // expects the names list of this session to be inserted correctly under session snapshot
         // at insertion of the new session, session should get the currently accepted users
         // and put them under the names list of its session key. And all should be false as
@@ -484,13 +485,13 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         ChildEventListener listener = namesListRef.addChildEventListener(
                 new ChildEventListener() {
                     @Override
-                    public void onChildAdded(final DataSnapshot attendeeSnapshot, String s) {
-                        continueWithAttendee(attendeeSnapshot);
+                    public void onChildAdded(final DataSnapshot memberSnapshot, String s) {
+                        continueWithAttendee(memberSnapshot);
                     }
 
                     @Override
-                    public void onChildChanged(DataSnapshot userSnapshot, String s) {
-                        continueWithAttendee(userSnapshot);
+                    public void onChildChanged(DataSnapshot memberSnapshot, String s) {
+                        continueWithAttendee(memberSnapshot);
                     }
 
                     @Override
@@ -512,7 +513,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot userSnapshot) {
-                                AttendeeModel newAttendee = FirebaseSerializer.serializeAttendee(attendeeSnapshot, userSnapshot);
+                                MemberModel newAttendee = FirebaseSerializer.serializeAttendee(attendeeSnapshot, userSnapshot);
                                 callback.onDataReceived(newAttendee);
                             }
 
@@ -529,9 +530,9 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void setAttendance(String sessionId, String memberId, boolean isAttend, final Update callback) {
+    public void setMemberAttendance(String sessionId, String memberId, boolean isAttend, final Update callback) {
         getSessionRef(sessionId).child(SessionEntry.KEY_NAMES_LIST)
-                .child(memberId).setValue(isAttend).addOnCompleteListener(new OnCompleteListener<Void>() {
+                .child(memberId).child(SessionEntry.KEY_ATTEND).setValue(isAttend).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (callback == null)
@@ -542,6 +543,34 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onError(task.getException().getMessage());
             }
         });
+    }
+
+    @Override
+    public void deleteNote(String sessionId, String memberId, String noteId, final Delete callback) {
+        Task<Void> deleteTask = getSessionRef(sessionId).child(SessionEntry.KEY_NAMES_LIST)
+                .child(memberId).child(SessionEntry.KEY_NOTES).child(noteId).removeValue();
+        if (callback == null)
+            return;
+        deleteTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    callback.onDeleted();
+                else if (task.getException() != null)
+                    callback.onError(task.getException().getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void addNote(String sessionId, String memberId, final String noteText, final Insert<NoteModel> callback) {
+        DatabaseReference newNoteRef = getSessionRef(sessionId).child(SessionEntry.KEY_NAMES_LIST)
+                .child(memberId).child(SessionEntry.KEY_NOTES).push();
+        final String noteId = newNoteRef.getKey();
+        newNoteRef.setValue(noteText);
+        if (callback == null)
+            return;
+        callback.onDataInserted(new NoteModel(noteId, noteText));
     }
 }
 

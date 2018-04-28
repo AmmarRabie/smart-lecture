@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <EditText
+            android:id="@+id/memberNotesDialog_newNote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="New note" />
+
+        <Button
+            android:id="@+id/memberNotesDialog_saveNote"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="8dp"
+            android:background="@android:drawable/ic_menu_save" />
+    </LinearLayout>
+
+    <ListView
+        tools:listitem="@layout/item_member_note"
+        android:id="@+id/memberNotesDialog_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    android:background="@android:drawable/list_selector_background"
+</LinearLayout>
