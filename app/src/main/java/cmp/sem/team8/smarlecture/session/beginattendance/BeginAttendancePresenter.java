@@ -76,6 +76,10 @@ public class BeginAttendancePresenter implements BeginAttendanceContract.Actions
         return r1.toString() + r2.toString() + r3.toString() + r4.toString();
     }
 
+    @Override
+    public void onAttendanceMarkChanged(String memberId, boolean isAttend) {
+        mDataSource.setAttendance(SESSION_ID, memberId, isAttend, null);
+    }
 
     @Override
     public void onDestroy() {

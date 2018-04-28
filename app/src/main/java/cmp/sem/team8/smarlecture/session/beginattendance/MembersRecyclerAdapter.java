@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
 
     interface OnItemClickListener {
         void onAddNoteClicked(View v, int pos, String memberId);
+
+        void onAttendanceClicked(View view, int pos, boolean attend, String memberId);
     }
 
     class MemberViewHolder extends RecyclerView.ViewHolder {
@@ -94,6 +97,14 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
                 @Override
                 public void onClick(View view) {
                     mItemClickListener.onAddNoteClicked(view, position, mMembers.get(position).getId());
+                }
+            });
+
+            attendView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    mItemClickListener.onAttendanceClicked
+                            (compoundButton, position, b, mMembers.get(position).getId());
                 }
             });
         }

@@ -194,4 +194,15 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     public void onAddNoteClicked(View v, int pos, String memberId) {
 
     }
+
+    @Override
+    public void onAttendanceClicked(View view, int pos, boolean attend, String memberId) {
+        mPresenter.onAttendanceMarkChanged(memberId, attend);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
 }

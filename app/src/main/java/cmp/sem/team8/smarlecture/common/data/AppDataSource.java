@@ -108,6 +108,8 @@ public interface AppDataSource {
 
     Listen ListenAttendanceList(String sessionId, Listen<AttendeeModel> callback);
 
+    void setAttendance(String sessionId, String memberId, boolean isAttend, Update callback);
+
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 

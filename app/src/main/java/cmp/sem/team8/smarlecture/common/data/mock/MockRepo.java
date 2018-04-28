@@ -379,6 +379,11 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
+    public void setAttendance(String sessionId, String memberId, boolean isAttend, Update callback) {
+
+    }
+
+    @Override
     public void forget(Listen listener) {
 
     }

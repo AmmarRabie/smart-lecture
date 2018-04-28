@@ -527,6 +527,22 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 //        listeners.add(eventWithRef);
         return callback;
     }
+
+    @Override
+    public void setAttendance(String sessionId, String memberId, boolean isAttend, final Update callback) {
+        getSessionRef(sessionId).child(SessionEntry.KEY_NAMES_LIST)
+                .child(memberId).setValue(isAttend).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (callback == null)
+                    return;
+                if (task.isSuccessful())
+                    callback.onUpdateSuccess();
+                else if (task.getException() != null)
+                    callback.onError(task.getException().getMessage());
+            }
+        });
+    }
 }
 
 
