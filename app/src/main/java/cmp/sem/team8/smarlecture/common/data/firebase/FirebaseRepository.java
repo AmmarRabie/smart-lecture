@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,7 +17,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
@@ -396,7 +399,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         public void onDataChange(DataSnapshot userSnapshot) {
                             InvitedUserModel newInvitedUser = FirebaseSerializer.serializeInvitedUser(oneGroupUserKey, userSnapshot);
                             result.add(newInvitedUser);
-                            if(groupUsersKeysSnapshot.getChildrenCount() == result.size())
+                            if (groupUsersKeysSnapshot.getChildrenCount() == result.size())
                                 callback.onDataFetched(result);
                         }
 
@@ -414,4 +417,124 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
+
+
+    @Override
+    public void getSessionStatus(String sessionId, final Get<SessionStatus> callback) {
+        getSessionRef(sessionId).child(SessionEntry.KEY_SESSION_STATUS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                String sessionStatus = dataSnapshot.getValue().toString();
+                callback.onDataFetched(SessionStatus.fromString(sessionStatus));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void setAttendanceStatus(String sessionId, AttendanceStatus status, final Update callback) {
+        getSessionRef(sessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS)
+                .setValue(status.toString())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (callback == null)
+                            return;
+                        if (task.isSuccessful())
+                            callback.onUpdateSuccess();
+                        else if (task.getException() != null)
+                            callback.onError(task.getException().getMessage());
+                    }
+                });
+    }
+
+    @Override
+    public void setSessionSecret(String sessionId, String secret, final Update callback) {
+        getSessionRef(sessionId).child(SessionEntry.KEY_SECRET)
+                .setValue(secret)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (callback == null)
+                            return;
+                        if (task.isSuccessful())
+                            callback.onUpdateSuccess();
+                        else if (task.getException() != null)
+                            callback.onError(task.getException().getMessage());
+                    }
+                });
+    }
+
+    @Override
+    public Listen ListenAttendanceList(String sessionId, final Listen<AttendeeModel> callback) {
+        // expects the names list of this session to be inserted correctly under session snapshot
+        // at insertion of the new session, session should get the currently accepted users
+        // and put them under the names list of its session key. And all should be false as
+        // there is no one take attendance yet.
+        DatabaseReference namesListRef = getSessionRef(sessionId).child(SessionEntry.KEY_NAMES_LIST);
+//        ValueEventWithRef eventWithRef = new ValueEventWithRef(namesListRef);
+        ChildEventListener listener = namesListRef.addChildEventListener(
+                new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(final DataSnapshot attendeeSnapshot, String s) {
+                        continueWithAttendee(attendeeSnapshot);
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot userSnapshot, String s) {
+                        continueWithAttendee(userSnapshot);
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+
+                    private void continueWithAttendee(final DataSnapshot attendeeSnapshot) {
+                        final String userId = attendeeSnapshot.getKey();
+                        getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot userSnapshot) {
+                                AttendeeModel newAttendee = FirebaseSerializer.serializeAttendee(attendeeSnapshot, userSnapshot);
+                                callback.onDataReceived(newAttendee);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    }
+                }
+        );
+//        eventWithRef.setListener(listener);
+//        listeners.add(eventWithRef);
+        return callback;
+    }
 }
+
+
+
+
+
+
+
+
+
+

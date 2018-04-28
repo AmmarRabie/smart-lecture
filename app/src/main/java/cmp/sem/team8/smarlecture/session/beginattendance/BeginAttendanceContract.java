@@ -1,14 +1,10 @@
 package cmp.sem.team8.smarlecture.session.beginattendance;
 
-import android.support.v4.app.FragmentActivity;
-import android.text.format.Time;
-
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
-import cmp.sem.team8.smarlecture.session.SessionActivity;
+import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
 
 /**
  * Created by ramym on 3/17/2018.
@@ -21,32 +17,31 @@ public class BeginAttendanceContract {
      */
     interface Views extends IBaseView<Actions> {
 
-        //********** show error message  ****************
-        //to show message error message
+        /**
+         * to show message error message
+         */
         void showErrorMessage(String cause);
 
         void showBeginAttendaceButton();
 
         void hideBeginAttendaceButton();
 
-        //********** show  progress indicator  ****************
-        //to show the timer of the attendance in the fragment;
-        void showProgressIndicator(int minutes);
+        /**
+         * to show the timer of the attendance in the fragment;
+         */
+        void startAttendanceTimer(int minutes);
 
-        //********** show secrect  ****************
-        //to show attendance secrect code;
-        void showSecrect(String secret);
 
-        //********** list view set adapter   ****************
-        //set adapter of the list view
-        // adapter: to store the elements of the list view
-        void listViewSetAdapter(StudentsNamesAdapter adapter);
+        /**
+         * to show attendance secret code
+         */
+        void showSecret(String secret);
 
         String getSecret();
 
-        //********** get Student Name adapter   ****************
-        //to return studentAdapter to the presenter from the fragment
-        StudentsNamesAdapter getStudnetNameAdapter(List<String> students);
+        void addNewMember(AttendeeModel newAttendee);
+
+        void updateMemberAttendance(String id, boolean attend);
     }
 
 
@@ -55,22 +50,20 @@ public class BeginAttendanceContract {
      */
     interface Actions extends IBasePresenter {
 
-        //********** begin attendance ****************
-        //steps
-        // 1- make attendance secrect
-        // 2- put listener on session object in the database
-        //  if any new student mark himself as attendant
-        // thi listview in the fragment will show his name
+        /**
+         * steps
+         * 1- make attendance secrect
+         * 2- put listener on session object in the database
+         * if any new student mark himself as attendant
+         * thi listView in the fragment will show his name
+         */
         void BeginAttendance();
 
-        //********** end attendance ****************
-        // mark attendance flage in the database as closed;
-        void endAttendance();
+        /**
+         * mark attendance flage in the database as closed;
+         */
+        void onAttendanceTimerEnd();
 
-        //********** end attendance ****************
-        // mark attendance flage in the database as closed;
-        boolean isTaskIsRunning();
-
-
+        void onDestroy();
     }
 }

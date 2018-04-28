@@ -8,14 +8,14 @@
 
 
     <Button
-        android:id="@+id/begin_attendance_start_attendance"
+        android:id="@+id/membersFrag_startAttendance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Attendance" />
 
 
     <LinearLayout
-        android:id="@+id/begin_attendance_secretview"
+        android:id="@+id/membersFrag_secretParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -27,16 +27,16 @@
             android:textAppearance="?android:textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/begin_attendance_Secrect"
+            android:id="@+id/membersFrag_secret"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textAppearance="?android:textAppearanceMedium"
             tools:text="5489" />
 
 
         <ImageView
-            android:id="@+id/beginAttendanceFragment_changeSecret"
+            android:id="@+id/membersFrag_changeSecret"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:src="@drawable/change_black" />
@@ -45,7 +45,7 @@
 
 
     <LinearLayout
-        android:id="@+id/begin_attendance_remainingsecondsview"
+        android:id="@+id/membersFrag_attendanceTimerParent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -57,7 +57,7 @@
             android:textAppearance="?android:textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/attendance_timer"
+            android:id="@+id/membersFrag_attendanceTimer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:textAppearanceMedium"
@@ -72,11 +72,10 @@
         android:text="Student List: "
         android:textAppearance="?android:textAppearanceLarge" />
 
-    <ListView
-        android:id="@+id/begin_attandence_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/membersFrag_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ListView>
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_member"/>
 
 </LinearLayout>

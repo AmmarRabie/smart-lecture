@@ -10,6 +10,7 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
@@ -21,10 +22,10 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * Created by AmmarRabie on 21/04/2018.
  */
 
-public class FirebaseSerializer {
+class FirebaseSerializer {
     private static final String TAG = "FirebaseSerializer";
 
-    public static GroupModel serializeGroup(DataSnapshot groupSnapshot) {
+    static GroupModel serializeGroup(DataSnapshot groupSnapshot) {
         String[] requiredChildes = GroupEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, groupSnapshot)) return null;
 
@@ -35,7 +36,7 @@ public class FirebaseSerializer {
         return new GroupModel(name, groupId, ownerId);
     }
 
-    public static SessionModel serializeSession(DataSnapshot sessionSnapshot) {
+    static SessionModel serializeSession(DataSnapshot sessionSnapshot) {
         String[] requiredChildes = SessionEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, sessionSnapshot)) return null;
 
@@ -56,13 +57,13 @@ public class FirebaseSerializer {
         return sessionModel;
     }
 
-    public static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
+    static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
         UserModel userModel = serializeUser(userRoot);
         return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.getValue()));
     }
 
-    public static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
+    static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
         GroupModel groupModel = serializeGroup(groupRoot);
         SessionModel sessionModel = serializeSession(sessionRoot);
         UserModel userModel = serializeUser(userRoot);
@@ -77,7 +78,7 @@ public class FirebaseSerializer {
                 , userModel.getName());
     }
 
-    public static UserModel serializeUser(DataSnapshot userRoot) {
+    static UserModel serializeUser(DataSnapshot userRoot) {
         String[] requiredChildes = UserEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, userRoot)) return null;
 
@@ -101,7 +102,7 @@ public class FirebaseSerializer {
         return result;
     }*/
 
-    public static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
+    static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
         GroupModel groupModel = serializeGroup(groupSnapshot);
         UserModel userModel = serializeUser(userSnapshot);
         if (groupModel == null || userModel == null) {
@@ -117,7 +118,7 @@ public class FirebaseSerializer {
     }
 
 
-    public static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
+    static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
             keys.add(child.getKey());
@@ -141,5 +142,11 @@ public class FirebaseSerializer {
                 return false;
             }
         return true;
+    }
+
+    static AttendeeModel serializeAttendee(DataSnapshot attendeeSnapshot, DataSnapshot userSnapshot) {
+        UserModel userModel = serializeUser(userSnapshot);
+        boolean isAttend = ((boolean) attendeeSnapshot.getValue());
+        return new AttendeeModel(userModel, isAttend);
     }
 }

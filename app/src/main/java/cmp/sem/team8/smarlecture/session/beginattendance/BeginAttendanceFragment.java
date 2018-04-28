@@ -8,36 +8,43 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
 import cmp.sem.team8.smarlecture.common.view.SecretWheels;
-import cmp.sem.team8.smarlecture.session.PagerAdapter;
 import es.dmoral.toasty.Toasty;
 
 /**
  * Created by ramym on 3/17/2018.
  */
 
-public class BeginAttendanceFragment extends Fragment implements BeginAttendanceContract.Views
-{
+public class BeginAttendanceFragment extends Fragment implements BeginAttendanceContract.Views, MembersRecyclerAdapter.OnItemClickListener {
 
     private BeginAttendanceContract.Actions mPresenter;
-    private TextView AttendanceTimer;
+
+    private boolean isStarted = false;
+
+    private TextView AttendanceTimerView;
     private TextView secretView;
-    private ListView listView;
-    private Button startAttendance;
-    private LinearLayout begin_attendance_secretview;
-    private LinearLayout begin_attendance_remainingsecondsview;
+    private Button startAttendanceView;
+    private LinearLayout secretParentView;
+    private LinearLayout attendanceTimerParentView;
+    private View changeSecretView;
+    private RecyclerView membersRecyclerView;
+
+    private ArrayList<AttendeeModel> membersList;
+    private MembersRecyclerAdapter membersAdapter;
 
     public static BeginAttendanceFragment newInstance() {
         return new BeginAttendanceFragment();
@@ -46,36 +53,33 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
     @Override
     public void onResume() {
         super.onResume();
+        if (isStarted)
+            return;
         mPresenter.start();
-    }
-
-    @Override
-    public StudentsNamesAdapter getStudnetNameAdapter(List<String> students) {
-        return new StudentsNamesAdapter(getActivity(), students);
+        isStarted = true;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.begin_attendace_fragment, container, false);
+        View root = inflater.inflate(R.layout.frag_begin_attendance, container, false);
 
-        begin_attendance_secretview = root.findViewById(R.id.begin_attendance_secretview);
-        begin_attendance_remainingsecondsview = root.findViewById(R.id.begin_attendance_remainingsecondsview);
-        AttendanceTimer = root.findViewById(R.id.attendance_timer);
-        secretView = root.findViewById(R.id.begin_attendance_Secrect);
-        final View changeSecretView = root.findViewById(R.id.beginAttendanceFragment_changeSecret);
-        listView = root.findViewById(R.id.begin_attandence_list);
-        startAttendance = root.findViewById(R.id.begin_attendance_start_attendance);
-        startAttendance.setOnClickListener(new View.OnClickListener() {
+        secretParentView = root.findViewById(R.id.membersFrag_secretParent);
+        attendanceTimerParentView = root.findViewById(R.id.membersFrag_attendanceTimerParent);
+        AttendanceTimerView = root.findViewById(R.id.membersFrag_attendanceTimer);
+        secretView = root.findViewById(R.id.membersFrag_secret);
+        changeSecretView = root.findViewById(R.id.membersFrag_changeSecret);
+        membersRecyclerView = root.findViewById(R.id.membersFrag_list);
+        startAttendanceView = root.findViewById(R.id.membersFrag_startAttendance);
+
+
+        startAttendanceView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mPresenter.isTaskIsRunning()) {
-                    mPresenter.BeginAttendance();
-                    changeSecretView.setVisibility(View.GONE);
-                    startAttendance.setVisibility(View.GONE);
-                }
+                mPresenter.BeginAttendance();
+                changeSecretView.setVisibility(View.GONE);
+                startAttendanceView.setVisibility(View.GONE);
             }
         });
-
 
         changeSecretView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +114,13 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
             }
         });
 
+
+        membersList = new ArrayList<>();
+        membersAdapter = new MembersRecyclerAdapter(membersList, this);
+        membersRecyclerView.setAdapter(membersAdapter);
+        membersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        membersRecyclerView.setHasFixedSize(true);
+
         return root;
     }
 
@@ -126,52 +137,61 @@ public class BeginAttendanceFragment extends Fragment implements BeginAttendance
 
     @Override
     public void showBeginAttendaceButton() {
-        startAttendance.setVisibility(View.VISIBLE);
-        begin_attendance_secretview.setVisibility(View.VISIBLE);
-        begin_attendance_remainingsecondsview.setVisibility(View.VISIBLE);
+        startAttendanceView.setVisibility(View.VISIBLE);
+        secretParentView.setVisibility(View.VISIBLE);
+        attendanceTimerParentView.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void hideBeginAttendaceButton() {
-        startAttendance.setVisibility(View.GONE);
-        begin_attendance_secretview.setVisibility(View.GONE);
-        begin_attendance_remainingsecondsview.setVisibility(View.GONE);
+        startAttendanceView.setVisibility(View.GONE);
+        secretParentView.setVisibility(View.GONE);
+        attendanceTimerParentView.setVisibility(View.GONE);
 
     }
 
     @Override
-    public void showProgressIndicator(int minutes) {
+    public void startAttendanceTimer(int minutes) {
 
         new CountDownTimer(minutes * 60 * 1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                AttendanceTimer.setText("" + millisUntilFinished / 1000);
+                AttendanceTimerView.setText("" + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
-                AttendanceTimer.setText(getString(R.string.mes_done));
-                mPresenter.endAttendance();
+                AttendanceTimerView.setText(getString(R.string.mes_done));
+                mPresenter.onAttendanceTimerEnd();
             }
         }.start();
     }
 
     @Override
-    public void showSecrect(String secret) {
-
+    public void showSecret(String secret) {
         secretView.setText(secret);
     }
 
-    @Override
-    public void listViewSetAdapter(StudentsNamesAdapter adapter) {
-
-        listView.setAdapter(adapter);
-    }
 
     @Override
     public String getSecret() {
         return secretView.getText().toString();
     }
 
+    @Override
+    public void addNewMember(AttendeeModel newAttendee) {
+        membersList.add(newAttendee);
+        membersAdapter.notifyItemInserted(membersList.size());
+    }
 
+    @Override
+    public void updateMemberAttendance(String id, boolean attend) {
+        membersAdapter.updateChecked(id, attend);
+    }
+
+
+    @Override
+    public void onAddNoteClicked(View v, int pos, String memberId) {
+
+    }
 }

@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
 import cmp.sem.team8.smarlecture.session.objectives.ObjectivesFragment;
@@ -17,23 +18,15 @@ import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 
-    private int numOfTabs;
-
-    private String mGroupId = null;
-
     SessionInfoFragment sessionInfoFragment;
-
     SessionInfoPresenter mSessionInfoPresenter;
-
-    private String mSessionID = null;
-
     ObjectivesFragment mObjectivesFragment;
-
     ObjectivesPresenter mObjectivesPresenter;
-
     BeginAttendanceFragment beginAttendanceFragment;
-
     BeginAttendancePresenter mBeginAttendancePresenter;
+    private int numOfTabs;
+    private String mGroupId = null;
+    private String mSessionID = null;
 
     public PagerAdapter(FragmentManager fm, int numOfTabs, String groupId, String sessionID) {
 
@@ -86,7 +79,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
                         : beginAttendanceFragment;
 
-                mBeginAttendancePresenter = new BeginAttendancePresenter(beginAttendanceFragment, mGroupId, mSessionID);
+                mBeginAttendancePresenter = new BeginAttendancePresenter(FirebaseRepository.getInstance(), beginAttendanceFragment, mSessionID);
 
                 return beginAttendanceFragment;
             case 2:

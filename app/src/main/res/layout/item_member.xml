@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp">
+
+    <TextView
+        android:id="@+id/memberItem_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="325dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        tools:text="Ammar Alsayed" />
+
+    <TextView
+        android:id="@+id/memberItem_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/memberItem_name"
+        android:textAppearance="?android:textAppearanceSmall"
+        tools:text="ammaralsayed55@gmail.com" />
+
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/memberItem_attendFlag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="-8dp"
+        android:layout_marginTop="-8dp"
+        tools:checked="true" />
+
+    <ImageView
+        android:id="@+id/memberItem_addNote"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/memberItem_attendFlag"
+        android:src="@drawable/ic_note"
+        android:tint="@color/colorAccent"
+        android:contentDescription="Add note" />
+</RelativeLayout>
