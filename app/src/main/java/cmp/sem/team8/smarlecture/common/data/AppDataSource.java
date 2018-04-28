@@ -2,8 +2,10 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -98,6 +100,20 @@ public interface AppDataSource {
 
     void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
+    void getSessionStatus(String sessionId, Get<SessionStatus> callback);
+
+    void setAttendanceStatus(String sessionId, AttendanceStatus status, Update callback);
+
+    void setSessionSecret(String sessionId, String secret, Update callback);
+
+    Listen ListenSessionMembers(String sessionId, Listen<MemberModel> callback);
+
+    void setMemberAttendance(String sessionId, String memberId, boolean isAttend, Update callback);
+
+    void addNote(String sessionId, String memberId, String noteText, Insert<NoteModel> callback);
+
+    void deleteNote(String sessionId, String memberId, String noteId, Delete callback);
+
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 
@@ -122,7 +138,6 @@ public interface AppDataSource {
 
     void getSessionById(String sessionId, Get<SessionModel> callback);
 
-    void getSessionStatus(String sessionId, Get<SessionStatus> callback);
 
     void getAttendanceStatus(String sessionId, Get<AttendanceStatus> callback);
 

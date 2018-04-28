@@ -4,8 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
+import cmp.sem.team8.smarlecture.session.members.MembersFragment;
+import cmp.sem.team8.smarlecture.session.members.MembersPresenter;
 import cmp.sem.team8.smarlecture.session.objectives.ObjectivesFragment;
 import cmp.sem.team8.smarlecture.session.objectives.ObjectivesPresenter;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoFragment;
@@ -17,23 +18,15 @@ import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 
-    private int numOfTabs;
-
-    private String mGroupId = null;
-
     SessionInfoFragment sessionInfoFragment;
-
     SessionInfoPresenter mSessionInfoPresenter;
-
-    private String mSessionID = null;
-
     ObjectivesFragment mObjectivesFragment;
-
     ObjectivesPresenter mObjectivesPresenter;
-
-    BeginAttendanceFragment beginAttendanceFragment;
-
-    BeginAttendancePresenter mBeginAttendancePresenter;
+    MembersFragment membersFragment;
+    MembersPresenter mMembersPresenter;
+    private int numOfTabs;
+    private String mGroupId = null;
+    private String mSessionID = null;
 
     public PagerAdapter(FragmentManager fm, int numOfTabs, String groupId, String sessionID) {
 
@@ -41,13 +34,13 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
         this.numOfTabs = numOfTabs;
 
-        mBeginAttendancePresenter = null;
+        mMembersPresenter = null;
 
         mSessionInfoPresenter = null;
 
         sessionInfoFragment = null;
 
-        beginAttendanceFragment = null;
+        membersFragment = null;
 
         mObjectivesFragment = null;
 
@@ -67,28 +60,21 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-
                 sessionInfoFragment = sessionInfoFragment == null ?
-
-                        SessionInfoFragment.newInstance()
-
-                        : sessionInfoFragment;
-
-                mSessionInfoPresenter = new SessionInfoPresenter(sessionInfoFragment, mGroupId, mSessionID);
-
+                        SessionInfoFragment.newInstance() : sessionInfoFragment;
+                if (mSessionInfoPresenter == null)
+                    mSessionInfoPresenter = new SessionInfoPresenter(sessionInfoFragment, mGroupId, mSessionID);
                 return sessionInfoFragment;
 
             case 1:
 
-                beginAttendanceFragment = beginAttendanceFragment == null ?
+                membersFragment = membersFragment == null ?
+                        MembersFragment.newInstance() : membersFragment;
 
-                        BeginAttendanceFragment.newInstance()
+                if (mMembersPresenter == null)
+                    mMembersPresenter = new MembersPresenter(FirebaseRepository.getInstance(), membersFragment, mSessionID);
 
-                        : beginAttendanceFragment;
-
-                mBeginAttendancePresenter = new BeginAttendancePresenter(beginAttendanceFragment, mGroupId, mSessionID);
-
-                return beginAttendanceFragment;
+                return membersFragment;
             case 2:
 
                 if (mObjectivesFragment == null)
@@ -118,7 +104,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
         else if (position == 1) {
 
-            return "Attendance";
+            return "Members";
 
         } else {
 

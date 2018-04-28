@@ -10,9 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
 public class SessionActivity extends AppCompatActivity {

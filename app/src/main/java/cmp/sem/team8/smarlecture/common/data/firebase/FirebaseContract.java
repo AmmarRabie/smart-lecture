@@ -47,7 +47,9 @@ public final class FirebaseContract {
         public static final String KEY_SESSION_STATUS = "session_status";
         public static final String KEY_FOR_GROUP_ID = "for_group";
         public static final String KEY_FOR_SESSION_NAME_ = "for_name";
-        public static final String KEY_FOR_OBJECTIVES_LIST="objectives";
+        public static final String KEY_FOR_OBJECTIVES_LIST = "objectives";
+        public static final String KEY_ATTEND = "attend";
+        public static final String KEY_NOTES = "notes";
 
 
         public static String[] keySet;
@@ -78,11 +80,12 @@ public final class FirebaseContract {
 
     }
 
-    public static final class ObjectiveEntry{
-        private ObjectiveEntry(){}
-        public static final String KEY_AVERAGERATING="rating;" ;
-        public static final String KEY_NUM_OF_USER_RATED="number_user_rated";
-        public static final String KEY_DESC="desc";
+    public static final class ObjectiveEntry {
+        public static final String KEY_AVERAGERATING = "rating;";
+        public static final String KEY_NUM_OF_USER_RATED = "number_user_rated";
+        public static final String KEY_DESC = "desc";
+        private ObjectiveEntry() {
+        }
     }
 
 
