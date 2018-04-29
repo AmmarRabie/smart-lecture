@@ -118,6 +118,8 @@ public interface AppDataSource {
 
     void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
+    void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback);
+
     void getSessionStatus(String sessionId, Get<SessionStatus> callback);
 
     void setAttendanceStatus(String sessionId, AttendanceStatus status, Update callback);

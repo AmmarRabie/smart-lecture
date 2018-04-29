@@ -171,7 +171,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     private void fetchNamesListAndSendToView() {
 
 
-        mDataSource.getUsersListOfGroup(mGroupId, new AppDataSource.Get<ArrayList<UserAttendanceModel>>() {
+        mDataSource.getUsersListOfGroupTemp(mGroupId, new AppDataSource.Get<ArrayList<UserAttendanceModel>>() {
             @Override
             public void onDataFetched(ArrayList<UserAttendanceModel> data) {
                 mView.showStudentsList(data);

@@ -422,6 +422,11 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         });
     }
 
+    @Override
+    public void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {
+
+    }
+
 
     @Override
     public void getSessionStatus(String sessionId, final Get<SessionStatus> callback) {

@@ -356,12 +356,16 @@ public class MockRepo implements AppDataSource {
     }*/
 
 
-    @Override
-    public void getUsersListOfGroup(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {}
+
   
     @Override
     public void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback) {
 
+    }
+
+    @Override
+    public void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {
+        
     }
 
     @Override

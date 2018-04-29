@@ -36,7 +36,7 @@ public class JoinedSession extends AppCompatActivity {
         SessionId = getIntent().getStringExtra(getString(R.string.IKey_sessionId));
         GroupID = getIntent().getStringExtra(getString(R.string.IKey_groupId));
       
-        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), SessionId);
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), SessionId,GroupID);
         viewPager.setAdapter(pageAdapter);
 
 
