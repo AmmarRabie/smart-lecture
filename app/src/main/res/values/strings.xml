@@ -28,7 +28,7 @@
     <string name="dTitle_closeConnection">Close the connection</string>
     <string name="dTitle_changeSecret">Save</string>
     <string name="dTitle_deleteGroup">Delete Group</string>
-<string name="dTitle_addSession">Add Session</string>
+    <string name="dTitle_addSession">Add Session</string>
     <string name="dAction_join">join</string>
     <string name="dAction_cancel">Cancel</string>
     <string name="dAction_change">Change</string>
@@ -40,5 +40,6 @@
     <string name="dMes_deleteGroup">This group and all its sessions will be permanently deleted</string>
     <string name="dMes_connection">Turn of the internet connection + turn on airplane mode</string>
     <string name="dTitle_enterPin">Please enter PIN</string>
+    <string name="title_activity_group_statistics">GroupStatisticsActivity</string>
 
 </resources>
