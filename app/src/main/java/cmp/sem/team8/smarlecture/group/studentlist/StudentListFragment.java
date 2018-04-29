@@ -20,6 +20,8 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
+import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -36,7 +38,7 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
 
     private StudentListRecyclerAdapter mStudentListRecyclerAdapter;
 
-    private ArrayList<HashMap<String, Object>> mNamesList;
+    private ArrayList<InvitedUserModel> mNamesList;
     private InternetConnectivityReceiver internetConnectivityReceiver;
     private boolean mInternetState;
 
@@ -73,7 +75,7 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
     }
 
     @Override
-    public void showNamesList(ArrayList<HashMap<String, Object>> namesList) {
+    public void showNamesList(ArrayList<InvitedUserModel> namesList) {
         if (namesList.equals(mNamesList))
             return;
         mNamesList.clear();
@@ -105,28 +107,17 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
     @Override
     public void onDeleteSuccess(String UID) {
         int position = 0;
-        while (!(UID.equals(mNamesList.get(position).get("key").toString()))) {
+        while (!(UID.equals(mNamesList.get(position).getUser().getId()))) {
             position++;
         }
         mNamesList.remove(position);
         mStudentListRecyclerAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onEditSuccess(String UID, String newName) {
-        int position = 0;
-        while (!(UID.equals(mNamesList.get(position).get("key").toString()))) {
-            position++;
-        }
-        mNamesList.get(position).put("name", newName);
-        mStudentListRecyclerAdapter.notifyItemChanged(position, null);
-    }
 
     @Override
-    public void onAddSuccess(String UID, String newName) {
-        HashMap<String, Object> newStudent = new HashMap<>();
-        newStudent.put("key", UID);
-        newStudent.put("name", newName);
+    public void onAddSuccess(UserModel user) {
+        InvitedUserModel newStudent = new InvitedUserModel(user, false);
         mNamesList.add(newStudent);
         mStudentListRecyclerAdapter.notifyItemInserted(mNamesList.size());
     }
@@ -147,7 +138,7 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
 
     @Override
     public void onEditItemClick(View v, int position) {
-        HashMap<String, Object> studentClicked = mNamesList.get(position);
+        /*HashMap<String, Object> studentClicked = mNamesList.get(position);
         final String studentID = studentClicked.get("key").toString();
         final String studentName = studentClicked.get("name").toString();
 
@@ -169,12 +160,12 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
                 dialogInterface.dismiss();
             }
         });
-        mBuilder.show();
+        mBuilder.show();*/
     }
 
     @Override
     public void onDeleteItemClick(View v, int position) {
-        String key = mNamesList.get(position).get("key").toString();
+        String key = mNamesList.get(position).getUser().getId();
         mPresenter.deleteStudent(key);
     }
 

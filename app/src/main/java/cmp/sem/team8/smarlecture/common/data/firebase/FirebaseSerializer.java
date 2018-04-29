@@ -10,10 +10,11 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
-import cmp.sem.team8.smarlecture.common.data.model.AttendeeModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -22,10 +23,10 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * Created by AmmarRabie on 21/04/2018.
  */
 
-public class FirebaseSerializer {
+class FirebaseSerializer {
     private static final String TAG = "FirebaseSerializer";
 
-    public static GroupModel serializeGroup(DataSnapshot groupSnapshot) {
+    static GroupModel serializeGroup(DataSnapshot groupSnapshot) {
         String[] requiredChildes = GroupEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, groupSnapshot)) return null;
 
@@ -33,16 +34,10 @@ public class FirebaseSerializer {
         String name = groupSnapshot.child(GroupEntry.KEY_NAME).getValue(String.class);
         String ownerId = groupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
 
-        DataSnapshot sessionsSnapshot = groupSnapshot.child(GroupEntry.KEY_SESSIONS);
-        ArrayList<String> sessionsIds = getKeys(sessionsSnapshot);
-
-        DataSnapshot usersSnapshot = groupSnapshot.child(GroupEntry.KEY_NAMES_LIST);
-        ArrayList<InvitedUserModel> usersList = serializeInvitedUserList(usersSnapshot);
-
-        return new GroupModel(name, groupId, ownerId, usersList, sessionsIds);
+        return new GroupModel(name, groupId, ownerId);
     }
 
-    public static SessionModel serializeSession(DataSnapshot sessionSnapshot) {
+    static SessionModel serializeSession(DataSnapshot sessionSnapshot) {
         String[] requiredChildes = SessionEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, sessionSnapshot)) return null;
 
@@ -60,25 +55,16 @@ public class FirebaseSerializer {
         if (sessionSnapshot.hasChild(SessionEntry.KEY_SECRET))
             sessionModel.setSecret(sessionSnapshot.child(SessionEntry.KEY_SECRET).getValue(String.class));
 
-        if (sessionSnapshot.hasChild(SessionEntry.KEY_NAMES_LIST))
-            sessionModel.setAttendanceList(serializeAttendeeList(sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST)));
-
         return sessionModel;
     }
 
-    public static AttendeeModel serializeAttendee(DataSnapshot attendeeRoot) {
-        if (!checkRequiredChildes((String[]) null, attendeeRoot)) return null;
-
-        return new AttendeeModel(attendeeRoot.getKey(), ((boolean) attendeeRoot.getValue()));
-    }
-
-    public static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot) {
+    static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
-
-        return new InvitedUserModel(invitedUserRoot.getKey(), ((boolean) invitedUserRoot.getValue()));
+        UserModel userModel = serializeUser(userRoot);
+        return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.getValue()));
     }
 
-    public static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
+    static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
         GroupModel groupModel = serializeGroup(groupRoot);
         SessionModel sessionModel = serializeSession(sessionRoot);
         UserModel userModel = serializeUser(userRoot);
@@ -93,34 +79,16 @@ public class FirebaseSerializer {
                 , userModel.getName());
     }
 
-
-    public static UserModel serializeUser(DataSnapshot userRoot) {
+    static UserModel serializeUser(DataSnapshot userRoot) {
         String[] requiredChildes = UserEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, userRoot)) return null;
 
         String name = userRoot.child(UserEntry.KEY_NAME).getValue(String.class);
         String email = userRoot.child(UserEntry.KEY_EMAIL).getValue(String.class);
-        ArrayList<String> groupsInvitations = getKeys(userRoot.child(UserEntry.KEY_INVITATIONS));
-        return new UserModel(name, email, userRoot.getKey(), groupsInvitations);
+        return new UserModel(name, email, userRoot.getKey());
     }
 
-
-    public static ArrayList<AttendeeModel> serializeAttendeeList(DataSnapshot listRoot) {
-        if (listRoot == null || !listRoot.exists()) {
-            Log.w(TAG, "serializeAttendeeList: listRoot does not exists or null");
-            return null;
-        }
-        if (listRoot.getChildrenCount() == 0) {
-            Log.w(TAG, "serializeAttendeeList: listRoot does not have children");
-            return null;
-        }
-        ArrayList<AttendeeModel> result = new ArrayList<>();
-        for (DataSnapshot attendeeRoot : listRoot.getChildren())
-            result.add(serializeAttendee(attendeeRoot));
-        return result;
-    }
-
-    public static ArrayList<InvitedUserModel> serializeInvitedUserList(DataSnapshot listRoot) {
+/*    public static ArrayList<InvitedUserModel> serializeInvitedUserList(DataSnapshot listRoot) {
         if (listRoot == null || !listRoot.exists()) {
             Log.w(TAG, "serializeInvitedUserList: listRoot does not exists or null");
             return null;
@@ -133,10 +101,42 @@ public class FirebaseSerializer {
         for (DataSnapshot invitedUserRoot : listRoot.getChildren())
             result.add(serializeInvitedUser(invitedUserRoot));
         return result;
+    }*/
+
+    static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
+        GroupModel groupModel = serializeGroup(groupSnapshot);
+        UserModel userModel = serializeUser(userSnapshot);
+        if (groupModel == null || userModel == null) {
+            Log.e(TAG, "serializeGroupInvitation: error while serializing group or user");
+            return null;
+        }
+        return new GroupInvitationModel(
+                groupModel.getId()
+                , userModel.getId()
+                , groupModel.getName()
+                , userModel.getName()
+        );
     }
 
+    static MemberModel serializeAttendee(DataSnapshot attendeeSnapshot, DataSnapshot userSnapshot) {
+        UserModel userModel = serializeUser(userSnapshot);
+        boolean isAttend = ((boolean) attendeeSnapshot.child(SessionEntry.KEY_ATTEND).getValue());
+        if (!attendeeSnapshot.child(SessionEntry.KEY_NOTES).exists())
+            return new MemberModel(userModel, isAttend);
+        ArrayList<NoteModel> notes = new ArrayList<>();
+        for (DataSnapshot oneNoteSnapshot : attendeeSnapshot.child(SessionEntry.KEY_NOTES).getChildren())
+            notes.add(serializeNote(oneNoteSnapshot));
+        return new MemberModel(userModel, isAttend, notes);
+    }
 
-    public static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
+    static NoteModel serializeNote(DataSnapshot noteSnapshot) {
+        String noteId = noteSnapshot.getKey();
+        String noteText = noteSnapshot.getValue(String.class);
+
+        return new NoteModel(noteId, noteText);
+    }
+
+    static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
             keys.add(child.getKey());
@@ -160,20 +160,5 @@ public class FirebaseSerializer {
                 return false;
             }
         return true;
-    }
-
-    public static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
-        GroupModel groupModel = serializeGroup(groupSnapshot);
-        UserModel userModel = serializeUser(userSnapshot);
-        if (groupModel == null || userModel == null) {
-            Log.e(TAG, "serializeGroupInvitation: error while serializing group or user");
-            return null;
-        }
-        return new GroupInvitationModel(
-                groupModel.getId()
-                , userModel.getId()
-                , groupModel.getName()
-                , userModel.getName()
-        );
     }
 }

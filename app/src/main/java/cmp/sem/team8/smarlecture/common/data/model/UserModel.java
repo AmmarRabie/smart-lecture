@@ -12,20 +12,12 @@ public class UserModel implements Serializable{
     private String id;
     private String name;
     private String email;
-    private ArrayList<String> groupInvitations;
+
 
     public UserModel(String name, String email, String id) {
         this.name = name;
         this.email = email;
         this.id = id;
-        groupInvitations = new ArrayList<>();
-    }
-
-    public UserModel(String name, String email, String id, ArrayList<String> groupInvitations) {
-        this.name = name;
-        this.email = email;
-        this.id = id;
-        this.groupInvitations = groupInvitations;
     }
 
     public String getName() {

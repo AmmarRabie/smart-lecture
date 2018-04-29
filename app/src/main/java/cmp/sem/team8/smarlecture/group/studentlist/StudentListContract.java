@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 
 /**
@@ -19,11 +21,9 @@ public interface StudentListContract {
 
         void onDeleteSuccess(String UID);
 
-        void onEditSuccess(String UID, String newName);
+        void onAddSuccess(UserModel userAdded);
 
-        void onAddSuccess(String UID, String name);
-
-        void showNamesList(ArrayList<HashMap<String, Object>> namesList);
+        void showNamesList(ArrayList<InvitedUserModel> namesList);
 
         void showGroupName(String groupName);
 
@@ -33,9 +33,7 @@ public interface StudentListContract {
     }
 
     interface Actions extends IBasePresenter {
-        void addStudent(String name);
-
-        void editStudent(String studentKey, String newName);
+        void addStudent(String email);
 
         void deleteStudent(String name);
 

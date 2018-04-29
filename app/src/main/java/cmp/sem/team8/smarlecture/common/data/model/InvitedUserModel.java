@@ -5,24 +5,21 @@ package cmp.sem.team8.smarlecture.common.data.model;
  */
 
 public class InvitedUserModel {
-    private String userId;
+    private UserModel user;
     private boolean accept;
 
 
-    public InvitedUserModel(String userId, boolean accept) {
-        this.userId = userId;
+    public InvitedUserModel(UserModel user, boolean accept) {
+        this.user = user;
         this.accept = accept;
     }
 
-    public String getUserId() {
-        return userId;
+    public UserModel getUser() {
+        return user;
     }
 
     public boolean isAccept() {
         return accept;
     }
 
-    public void setAccept(boolean accept) {
-        this.accept = accept;
-    }
 }
