@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
@@ -208,6 +209,7 @@ public class MockRepo implements AppDataSource {
     @Override
     public void getUser(final String userId, final Get<UserModel> callback) {
 
+        callback.onDataFetched(new UserModel("name of "+userId,userId+".email.com",userId));
     }
 
     @Override
@@ -271,6 +273,32 @@ public class MockRepo implements AppDataSource {
     @Override
     public void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback) {
 
+    }
+
+    @Override
+    public void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback) {
+
+        ArrayList<String > groupMem=new ArrayList<>();
+
+        for (int i=0;i<15;i++)
+        {
+           groupMem.add(Integer.toString(i));
+        }
+
+        ArrayList<ArrayList<String>> SessionMem=new ArrayList<>();
+        for (int i=0;i<3;i++)
+        {
+            ArrayList<String>names_list=new ArrayList<>();
+            for (int j=0;j<8;j++)
+            {
+                names_list.add(Integer.toString(j));
+            }
+            SessionMem.add(names_list);
+        }
+
+
+
+        callback.onDataFetched(new GroupStatisticsModel(groupMem,SessionMem));
     }
 
     @Override

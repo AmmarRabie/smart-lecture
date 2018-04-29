@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cmp.sem.team8.smarlecture">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
-
 
     <application
         android:allowBackup="true"
@@ -14,10 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".auth.LoginActivity" />
-        <activity android:name=".auth.SignUpActivity" android:exported="true"/>
-        <activity android:name=".profile.ProfileActivity" android:exported="true"/>
+        <activity
+            android:name=".auth.SignUpActivity"
+            android:exported="true" />
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:exported="true" />
         <activity android:name=".session.SessionActivity" />
         <activity android:name=".joinsession.JoinedSession" />
         <activity android:name=".group.GroupActivity"  android:exported="true"/>
@@ -32,9 +33,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
+        <activity
+            android:name=".statistics.GroupStatisticsActivity"
+            android:label="@string/title_activity_group_statistics"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

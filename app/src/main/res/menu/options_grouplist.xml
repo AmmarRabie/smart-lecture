@@ -10,6 +10,11 @@
             android:title="Profile"
             app:showAsAction="never" />
         <item
+            android:id="@+id/optionGroupList_statistics"
+            android:orderInCategory="3"
+            android:title="statistics"
+            app:showAsAction="never" />
+        <item
             android:id="@+id/optionGroupList_joinSession"
             android:icon="@drawable/ic_join_colored"
             android:orderInCategory="2"

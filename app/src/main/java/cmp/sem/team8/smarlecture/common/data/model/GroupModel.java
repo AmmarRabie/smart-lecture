@@ -16,6 +16,7 @@ public class GroupModel {
         this.ownerId = ownerId;
     }
 
+
     public String getName() {
         return name;
     }

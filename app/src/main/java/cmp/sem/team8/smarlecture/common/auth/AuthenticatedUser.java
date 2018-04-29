@@ -15,6 +15,8 @@ public interface AuthenticatedUser {
      *
      * @return the id of this authenticated user
      */
+
+
     String getUserId();
 
     String getEmail();

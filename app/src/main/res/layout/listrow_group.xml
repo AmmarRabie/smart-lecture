@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView
+    android:textStyle="bold"
+    android:textAlignment="center"
+    android:textSize="14sp"
+    android:text="Test"
+    android:paddingTop="8dp"
+    android:paddingLeft="32dp"
+    android:gravity="left"
+    android:drawableRight="@mipmap/list"
+    android:layout_marginLeft="8dp"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_width="wrap_content"
+    android:id="@+id/textView1"
+    xmlns:android="http://schemas.android.com/apk/res/android"/>

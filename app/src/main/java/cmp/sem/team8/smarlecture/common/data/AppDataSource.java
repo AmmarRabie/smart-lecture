@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
@@ -93,6 +94,7 @@ public interface AppDataSource {
     void getGroupInvitationsForUser(String userId, Get<GroupInvitationModel> callback);
 
     void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
+    void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback); // for lecturer
 
     void inviteUserToGroup(String email, String groupId, Insert<UserModel> callback); // add a new student
 
