@@ -85,10 +85,7 @@ class FirebaseSerializer {
 
         String name = userRoot.child(UserEntry.KEY_NAME).getValue(String.class);
         String email = userRoot.child(UserEntry.KEY_EMAIL).getValue(String.class);
-        UserModel serializedUser = new UserModel(name, email, userRoot.getKey());
-        if (userRoot.child(UserEntry.KEY_PROFILE_IMAGE).exists())
-            serializedUser.setProfileImage(userRoot.child(UserEntry.KEY_PROFILE_IMAGE).getValue(String.class));
-        return serializedUser;
+        return new UserModel(name, email, userRoot.getKey());
     }
 
 /*    public static ArrayList<InvitedUserModel> serializeInvitedUserList(DataSnapshot listRoot) {

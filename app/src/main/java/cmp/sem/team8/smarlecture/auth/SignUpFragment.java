@@ -10,21 +10,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
@@ -50,7 +43,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     private ImageView profileImageView;
     private ProgressDialog progressDialog = null;
 
-    private String profileImageEncoded;
+    private byte[] currImageBytes;
 
     public static SignUpFragment newInstance() {
         return new SignUpFragment();
@@ -70,8 +63,8 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
         root.findViewById(R.id.signUp_signup).setOnClickListener(this);
 
-//        setRandomPicture();
-        setFromFirebase();
+//        setFromFirebase();
+        setRandomPicture();
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,27 +83,6 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
         });
 
         return root;
-    }
-
-    private void setFromFirebase() {
-        FirebaseStorage.getInstance().getReference("profile-images/gza2.jpg").getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                profileImageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                FirebaseStorage.getInstance().getReference("profile-images/newFileFromAndroidApp.jpg")
-                        .putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(getContext(), "successsssss", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     @Override
@@ -151,7 +123,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     @Override
     public void onClick(View view) {
         mAction.signUp(mName.getText().toString(), mEmail.getText().toString(),
-                mPassword.getText().toString(), mConfirmPassword.getText().toString(), profileImageEncoded);
+                mPassword.getText().toString(), mConfirmPassword.getText().toString(), currImageBytes);
     }
 
     @Override
@@ -166,15 +138,11 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
         final int foregroundColor = foregroundColors[randomIndex];
         Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.kaleidoscope_source);
         Bitmap bitmap = ProfileImageUtil.createProfileImage(original, foregroundColor, backgroundColor);
+        bitmap = Bitmap.createScaledBitmap(bitmap, 250, 250, true);
 
-        // set the view
+        // set the view and update curr bytes
         profileImageView.setImageBitmap(bitmap);
-
-        // get the encoded string of bitmap and save it in the variable
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        profileImageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        updateImageBytes(bitmap);
     }
 
     @Override
@@ -196,14 +164,23 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
                     Bitmap selectedProfileImg = BitmapFactory.decodeFile(filePath);
                     selectedProfileImg = Bitmap.createScaledBitmap(selectedProfileImg, 250, 250, true);
+
+                    // set the view and update curr bytes
                     profileImageView.setImageBitmap(selectedProfileImg);
-
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    selectedProfileImg.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                    byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-                    profileImageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    updateImageBytes(selectedProfileImg);
                 }
         }
+    }
+
+    /**
+     * update the bytes that will be send to the presenter as the profile image of the user
+     * so it should be called every time user change his profile image
+     *
+     * @param newBitmap new image in bitmap
+     */
+    private void updateImageBytes(Bitmap newBitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        newBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        currImageBytes = byteArrayOutputStream.toByteArray();
     }
 }

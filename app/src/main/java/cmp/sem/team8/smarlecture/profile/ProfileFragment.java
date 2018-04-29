@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,8 +153,9 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         mEmailView.setText(user.getEmail());
         if (user.getProfileImage() == null) // do nothing if the user is and old user with no image
             return;
-        byte[] imgByte = Base64.decode(user.getProfileImage(), Base64.DEFAULT);
+        byte[] imgByte = user.getProfileImage();
         Bitmap imgBitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
+        imgBitmap = Bitmap.createScaledBitmap(imgBitmap, 250, 250, true);
         mProfileImageView.setImageBitmap(imgBitmap);
     }
 

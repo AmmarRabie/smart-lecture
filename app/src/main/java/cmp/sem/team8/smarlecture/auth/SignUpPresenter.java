@@ -3,8 +3,6 @@ package cmp.sem.team8.smarlecture.auth;
 
 import android.util.Log;
 
-import java.io.InputStream;
-
 import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
@@ -76,7 +74,7 @@ class SignUpPresenter implements SignUpContract.Actions {
 
     @Override
     public void signUp(final String name, final String email,
-                       String password, String confirmPassword, final String profileImageEncoded) {
+                       String password, String confirmPassword, final byte[] profileImage) {
 
 
         if (!startTask())
@@ -102,7 +100,7 @@ class SignUpPresenter implements SignUpContract.Actions {
             @Override
             public void onSuccess(String userId) {
                 Log.d("SignUpPresenter: ", "createUserWithEmailAndPassword:success");
-                insertUser(userId, name, email, profileImageEncoded);
+                insertUser(userId, name, email, profileImage);
             }
 
             @Override
@@ -115,9 +113,9 @@ class SignUpPresenter implements SignUpContract.Actions {
         });
     }
 
-    private void insertUser(String id, String name, String email, String profileImageStream) {
+    private void insertUser(String id, String name, String email, byte[] profileImageBytes) {
         UserModel newUserModel = new UserModel(name, email, id);
-        newUserModel.setProfileImage(profileImageStream);
+        newUserModel.setProfileImage(profileImageBytes);
         mDataSource.insertUser(newUserModel, new AppDataSource.Insert<Void>() {
             @Override
             public void onDataInserted(Void feedback) {

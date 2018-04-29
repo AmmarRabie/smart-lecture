@@ -4,6 +4,7 @@ package cmp.sem.team8.smarlecture.common.data.firebase;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -13,7 +14,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +57,23 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     return;
                 }
                 UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
-                callback.onDataFetched(userModel);
+                setProfileImage(userModel);
+            }
+
+            private void setProfileImage(final UserModel userModel) {
+                getProfileImageRef(userModel.getId()).getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        userModel.setProfileImage(bytes);
+                        callback.onDataFetched(userModel);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                        callback.onDataFetched(userModel);
+                    }
+                });
             }
 
             @Override
@@ -72,9 +88,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         HashMap<String, String> values = new HashMap<>();
         values.put(UserEntry.KEY_EMAIL, userModel.getEmail());
         values.put(UserEntry.KEY_NAME, userModel.getName());
-        byte[] profileImage = userModel.getProfileImage();
-        if (profileImage != null)
-            values.put(UserEntry.KEY_PROFILE_IMAGE, profileImage);
+        final byte[] profileImage = userModel.getProfileImage();
 
         getUserRef(userModel.getId()).setValue(values).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -84,13 +98,16 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     return;
                 }
                 callback.onDataInserted(null);
-                insertProfileImage();
+                if (profileImage != null)
+                    insertProfileImage();
             }
+
             private void insertProfileImage() {
-                FirebaseStorage.getInstance().getReference("profile-images")
+                getProfileImageRef(userModel.getId()).putBytes(profileImage);
             }
         });
     }
+
 
     @Override
     public void updateUserName(String userId, String newName, final Update callback) {
