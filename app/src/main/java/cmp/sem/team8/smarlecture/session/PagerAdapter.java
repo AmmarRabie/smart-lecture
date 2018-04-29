@@ -81,7 +81,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
                     mObjectivesFragment = ObjectivesFragment.newInstance();
 
-                mObjectivesPresenter = new ObjectivesPresenter(mObjectivesFragment, mSessionID);
+                mObjectivesPresenter = new ObjectivesPresenter(mObjectivesFragment, mSessionID, FirebaseRepository.getInstance());
 
                 return mObjectivesFragment;
 

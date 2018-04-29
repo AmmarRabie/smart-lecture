@@ -22,12 +22,14 @@ import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 public class WriteAttendancePresenter implements WriteAttendanceContract.Actions {
 
     private WriteAttendanceContract.Views mView;
+    private AppDataSource mDataSource;
 
     private List<UserAttendanceModel> students;
     private ValueEventListener listener = null;
 
     private String mSessionId;
     private String mGroupId;
+
 
     private String mSecret = null;
 
@@ -36,9 +38,10 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     private boolean mIsAttendanceTimeOver = false;
     private boolean mHasNamesList = false;
 
-    public WriteAttendancePresenter(WriteAttendanceContract.Views view) {
+    public WriteAttendancePresenter(WriteAttendanceContract.Views view,AppDataSource dataSource) {
         this.mView = view;
         mView.setPresenter(this);
+        mDataSource=dataSource;
     }
 
     @Override
@@ -166,7 +169,20 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
 
     private void fetchNamesListAndSendToView() {
-        students = new ArrayList<>();
+
+
+        mDataSource.getUsersListOfGroup(mGroupId, new AppDataSource.Get<ArrayList<UserAttendanceModel>>() {
+            @Override
+            public void onDataFetched(ArrayList<UserAttendanceModel> data) {
+                mView.showStudentsList(data);
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showErrorMessage(cause);
+            }
+        });
+        /* students = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         reference = reference.child(GroupEntry.KEY_THIS).child(mGroupId).child(GroupEntry.KEY_NAMES_LIST);
@@ -187,8 +203,9 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                mView.showErrorMessage(databaseError.getMessage());
             }
-        });
+        });*/
     }
 
     private void writeAttendance() {

@@ -23,13 +23,15 @@ import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 public class RateObjectivesRecyclerAdapter extends RecyclerView.Adapter<RateObjectivesRecyclerAdapter.RateObjectiveHolder> {
     private OnItemClickListener mItemClickListener = null;
     private ArrayList<ObjectiveModel> mObjectiveList;
+    private ArrayList<Float> mUserRatings;
     private Context mContext;
 
-    public RateObjectivesRecyclerAdapter(Context mContext, ArrayList<ObjectiveModel> mObjectiveList,OnItemClickListener mItemClickListener) {
-        this(mObjectiveList,mContext);
+    public RateObjectivesRecyclerAdapter(Context mContext, ArrayList<ObjectiveModel> mObjectiveList, OnItemClickListener mItemClickListener, ArrayList<Float> userRating) {
+        this(mObjectiveList, mContext);
         this.mItemClickListener = mItemClickListener;
         this.mObjectiveList = mObjectiveList;
         this.mContext = mContext;
+        mUserRatings = userRating;
     }
 
     public RateObjectivesRecyclerAdapter(ArrayList<ObjectiveModel> mObjectiveList, Context mContext) {
@@ -48,6 +50,7 @@ public class RateObjectivesRecyclerAdapter extends RecyclerView.Adapter<RateObje
 
         return new RateObjectivesRecyclerAdapter.RateObjectiveHolder(view);
     }
+
     @Override
     public void onBindViewHolder(RateObjectivesRecyclerAdapter.RateObjectiveHolder holder, int position) {
         holder.bind(position);
@@ -67,34 +70,40 @@ public class RateObjectivesRecyclerAdapter extends RecyclerView.Adapter<RateObje
         mObjectiveList = new ArrayList<>(objectiveList);
         notifyDataSetChanged();
     }
+
     interface OnItemClickListener {
 
 
-       void onRateItemClick(View view, int position,float Rating);
-
+        void onRateItemClick(View view, int position, float Rating);
 
 
     }
+
     class RateObjectiveHolder extends RecyclerView.ViewHolder
 
     {
         private RatingBar mRateView;
         private TextView mObjectiveDescription;
-        RateObjectiveHolder(View itemView){
+
+        RateObjectiveHolder(View itemView) {
             super(itemView);
-            mRateView=itemView.findViewById(R.id.objectiverate);
-            mObjectiveDescription=itemView.findViewById(R.id.objectivedescription);
+            mRateView = itemView.findViewById(R.id.objectiverate);
+            mObjectiveDescription = itemView.findViewById(R.id.objectivedescription);
         }
-        void bind(final int position){
-            ObjectiveModel mCurrentObjective=mObjectiveList.get(position);
+
+        void bind(final int position) {
+            ObjectiveModel mCurrentObjective = mObjectiveList.get(position);
             mObjectiveDescription.setText(mCurrentObjective.getmObjectiveDescription());
-            if(mItemClickListener==null)
+
+            if (mItemClickListener == null)
                 return;
-            mRateView.setMax(3);
+            mRateView.setNumStars(3);
+            mRateView.setRating(mUserRatings.get(position));
             mRateView.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    mItemClickListener.onRateItemClick(ratingBar,position, rating);
+                    mItemClickListener.onRateItemClick(ratingBar, position, rating);
+                    mUserRatings.set(position, rating);
 
                 }
             });
@@ -102,7 +111,6 @@ public class RateObjectivesRecyclerAdapter extends RecyclerView.Adapter<RateObje
         }
 
     }
-
 
 
 }

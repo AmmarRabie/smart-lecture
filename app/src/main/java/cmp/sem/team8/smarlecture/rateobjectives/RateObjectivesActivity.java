@@ -14,7 +14,7 @@ import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
  * Created by Loai Ali on 4/20/2018.
  */
 
-public class RateObjectivesActivity extends AppCompatActivity{
+public class RateObjectivesActivity extends AppCompatActivity {
 
     private RateObjectivesPresenter mRateObjectivesPresenter;
 
@@ -27,16 +27,16 @@ public class RateObjectivesActivity extends AppCompatActivity{
 
         setTitle("Rate Objectives");
 
-        String sessionID= getIntent().getStringExtra("session_id");
+        String sessionID = getIntent().getStringExtra("session_id");
 
-        RateObjectivesFragment rateObjectivesFragment=(RateObjectivesFragment) getSupportFragmentManager()
+        RateObjectivesFragment rateObjectivesFragment = (RateObjectivesFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
-        if(rateObjectivesFragment==null){
-            rateObjectivesFragment=RateObjectivesFragment.newInstace();
+        if (rateObjectivesFragment == null) {
+            rateObjectivesFragment = RateObjectivesFragment.newInstace();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     rateObjectivesFragment, R.id.contentFrame);
         }
-        mRateObjectivesPresenter=new RateObjectivesPresenter(rateObjectivesFragment,sessionID);
+        mRateObjectivesPresenter = new RateObjectivesPresenter(rateObjectivesFragment, sessionID,FirebaseRepository.getInstance());
 
 
     }

@@ -19,6 +19,8 @@ public interface RateObjectivesContract {
 
         void showObjectivesList(ArrayList<ObjectiveModel> objectiveList);
 
+        void updateSuccess();
+
         void handleOfflineStates();
 
         boolean getOfflineState();
@@ -27,6 +29,6 @@ public interface RateObjectivesContract {
 
         void getObjectives();
 
-        void RateObjectives(HashMap<String,Object> newObjecivesInformation);
+        void RateObjectives(ArrayList<Float> mUserRatings);
     }
 }

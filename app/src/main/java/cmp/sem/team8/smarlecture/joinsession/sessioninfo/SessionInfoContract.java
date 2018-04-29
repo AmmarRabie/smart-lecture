@@ -10,22 +10,13 @@ import cmp.sem.team8.smarlecture.model.SessionModel;
 
 public interface SessionInfoContract {
     interface Views extends IBaseView<Actions> {
-        //********** showSessionID****************
-        // show session id as text in the view
-        void showSessionId(String id);
-
-        void closedSessionView();
-
-        void openSessionView();
-
-        void notActiveSessionView();
+        void showSessionInfo(String sesisonID,String groupOwner,String groupName,String sessionName);
+        void showErrorMessage(String Cause);
+        void closeSession(String sessionID);
     }
 
     interface Actions extends IBasePresenter {
 
-
-
-        SessionModel getSession();
 
 
 

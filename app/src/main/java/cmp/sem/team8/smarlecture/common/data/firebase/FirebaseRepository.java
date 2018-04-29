@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -25,7 +26,9 @@ import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
 /**
  * This is the implementation of the AppDataSource using firebase database
@@ -439,6 +442,194 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
+
+
+    @Override
+    public void getJoinedSessionInfo(final String sessionID, final String groupID, final Get<SessionForUserModel> callback) {
+        final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+
+        DatabaseReference mSessionRef = mRef.child(FirebaseContract.SessionEntry.KEY_THIS).child(sessionID);
+        mSessionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                final String sessionName = dataSnapshot.child(FirebaseContract.SessionEntry.KEY_FOR_SESSION_NAME_).getValue(String.class);
+                DatabaseReference mGroupRef = mRef.child(GroupEntry.KEY_THIS).child(groupID);
+                mGroupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.exists()) {
+                            callback.onDataNotAvailable();
+                            return;
+                        }
+                        final String groupName = dataSnapshot.child(GroupEntry.KEY_NAME).getValue(String.class);
+                        final String ownerID = dataSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
+                        DatabaseReference mUserRef = mRef.child(UserEntry.KEY_THIS).child(ownerID);
+                        mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (!dataSnapshot.exists()) {
+                                    callback.onDataNotAvailable();
+                                    return;
+                                }
+                                String OwnerName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
+                                SessionForUserModel sessionInfo = new SessionForUserModel(sessionID, SessionStatus.OPEN, AttendanceStatus.CLOSED, sessionName, groupID, groupName, ownerID, OwnerName);
+                                callback.onDataFetched(sessionInfo);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                callback.onError(databaseError.getMessage());
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        callback.onError(databaseError.getMessage());
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+
+            }
+        });
+    }
+
+    @Override
+    public void listenForsessionStatus(String sessionID, final Listen<String> callback) {
+
+
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS)
+                .child(sessionID).child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS);
+
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) return;
+                String sessionStatus = dataSnapshot.getValue(String.class);
+                callback.onDataReceived(sessionStatus);
+                callback.increment();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void getObjectives(final String sessionID, final Get<ArrayList<ObjectiveModel>> callback) {
+        //check that the session exist
+        FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS).child(sessionID).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            DatabaseReference mObjectivesRef = FirebaseDatabase.getInstance().getReference()
+                                    .child(FirebaseContract.SessionEntry.KEY_THIS)
+                                    .child(sessionID)
+                                    .child(FirebaseContract.SessionEntry.KEY_FOR_OBJECTIVES_LIST);
+                            mObjectivesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    ArrayList<ObjectiveModel> objectiveList = new ArrayList<>();
+                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                                        if (!dataSnapshot.exists())
+                                            continue;
+
+                                        String key = child.getKey();
+                                        String name = child.child(FirebaseContract.ObjectiveEntry.KEY_DESC).getValue(String.class);
+                                        Float averageRating = child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(Float.class);
+
+
+                                        Integer numberUsersRated = child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(Integer.class);
+                                        //Integer numberUsersRated=Integer.valueOf(child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(String.class));
+                                        //child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(Integer.class);
+
+                                        ObjectiveModel thisObjective = new ObjectiveModel();
+
+                                        thisObjective.setmObjectiveDescription(name);
+
+                                        thisObjective.setmObjectiveID(key);
+
+                                        thisObjective.setmNumberofUsersRatedThisObjective(numberUsersRated);
+
+                                        thisObjective.setmObjectivesAverageRating(averageRating);
+
+                                        thisObjective.setmSessionID(sessionID);
+
+                                        objectiveList.add(thisObjective);
+                                    }
+                                    callback.onDataFetched(objectiveList);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    callback.onError(databaseError.getMessage());
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        callback.onError(databaseError.getMessage());
+
+                    }
+                });
+    }
+
+    @Override
+    public void updateObjectivesRating(final String sessionID, final String objectiveID, final Float newObjectiveRating, final Integer newNumberUsersRated, final Update callback) {
+        //check that the session id is correct
+        FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS).child(sessionID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    FirebaseDatabase.getInstance().getReference().
+                            child(FirebaseContract.SessionEntry.KEY_THIS).
+                            child(sessionID).
+                            child(FirebaseContract.SessionEntry.KEY_FOR_OBJECTIVES_LIST).
+                            child(objectiveID)
+                            .child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).setValue(newObjectiveRating);
+
+                    FirebaseDatabase.getInstance().getReference().
+                            child(FirebaseContract.SessionEntry.KEY_THIS).
+                            child(sessionID).
+                            child(FirebaseContract.SessionEntry.KEY_FOR_OBJECTIVES_LIST).
+                            child(objectiveID)
+                            .child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).setValue(newNumberUsersRated);
+                    callback.onUpdateSuccess();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+
+            }
+        });
+    }
+
+    @Override
+    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {}
 
     @Override
     public void setAttendanceStatus(String sessionId, AttendanceStatus status, final Update callback) {
