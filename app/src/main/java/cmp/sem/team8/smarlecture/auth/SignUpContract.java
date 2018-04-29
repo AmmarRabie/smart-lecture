@@ -31,7 +31,7 @@ interface SignUpContract {
      */
     interface Actions extends IBasePresenter
     {
-        void signUp(String name, String email, String password, String confirmPassword);
+        void signUp(String name, String email, String password, String confirmPassword, String profileImageEncoded);
 
     }
 }

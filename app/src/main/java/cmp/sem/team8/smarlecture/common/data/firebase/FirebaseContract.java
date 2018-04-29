@@ -96,6 +96,7 @@ public final class FirebaseContract {
         public static final String KEY_NAME = "name";
         public static final String KEY_EMAIL = "email";
         public static final String KEY_INVITATIONS = "followed-groups";
+        public static final String KEY_PROFILE_IMAGE = "profile-image";
         public static String[] keySet;
         public static String[] requiredChildes;
 

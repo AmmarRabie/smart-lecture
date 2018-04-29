@@ -74,7 +74,7 @@ class SignUpPresenter implements SignUpContract.Actions {
 
     @Override
     public void signUp(final String name, final String email,
-                       String password, String confirmPassword) {
+                       String password, String confirmPassword, final String profileImageEncoded) {
 
 
         if (!startTask())
@@ -100,7 +100,7 @@ class SignUpPresenter implements SignUpContract.Actions {
             @Override
             public void onSuccess(String userId) {
                 Log.d("SignUpPresenter: ", "createUserWithEmailAndPassword:success");
-                insertUser(name, email, userId);
+                insertUser(userId, name, email, profileImageEncoded);
             }
 
             @Override
@@ -113,8 +113,9 @@ class SignUpPresenter implements SignUpContract.Actions {
         });
     }
 
-    private void insertUser(String name, String email, String id) {
+    private void insertUser(String id, String name, String email, String profileImage) {
         UserModel newUserModel = new UserModel(name, email, id);
+        newUserModel.setProfileImage(profileImage);
         mDataSource.insertUser(newUserModel, new AppDataSource.Insert<Void>() {
             @Override
             public void onDataInserted(Void feedback) {

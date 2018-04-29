@@ -15,6 +15,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
@@ -47,20 +48,15 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
     @Override
     public void getUser(final String userId, final Get<UserModel> callback) {
-        final DatabaseReference userRef =
-                FirebaseDatabase.getInstance().
-                        getReference(UserEntry.KEY_THIS).child(userId);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
+            public void onDataChange(DataSnapshot userSnapshot) {
+                if (!userSnapshot.exists()) {
                     callback.onDataNotAvailable();
                     return;
                 }
-                String userName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
-                String userEmail = dataSnapshot.child(UserEntry.KEY_EMAIL).getValue(String.class);
-                UserModel user = new UserModel(userName, userEmail, userId);
-                callback.onDataFetched(user);
+                UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                callback.onDataFetched(userModel);
             }
 
             @Override
@@ -72,31 +68,23 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
     @Override
     public void insertUser(final UserModel userModel, final Insert<Void> callback) {
-        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference(UserEntry.KEY_THIS);
-        final DatabaseReference thisUserReference = usersReference.child(userModel.getId());
-        thisUserReference.child(UserEntry.KEY_NAME).setValue(userModel.getName())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    private OnCompleteListener<Void> onEmailInserted = new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (!task.isSuccessful()) {
-                                callback.onError("Can't insert the user");
-                                return;
-                            }
-                            callback.onDataInserted(null);
-                        }
-                    };
+        HashMap<String, String> values = new HashMap<>();
+        values.put(UserEntry.KEY_EMAIL, userModel.getEmail());
+        values.put(UserEntry.KEY_NAME, userModel.getName());
+        String profileImage = userModel.getProfileImage();
+        if (profileImage != null)
+            values.put(UserEntry.KEY_PROFILE_IMAGE, profileImage);
 
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            callback.onError("Can't insert the user");
-                            return;
-                        }
-                        thisUserReference.child(UserEntry.KEY_EMAIL).setValue(userModel.getEmail())
-                                .addOnCompleteListener(onEmailInserted);
-                    }
-                });
+        getUserRef(userModel.getId()).setValue(values).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    callback.onError("Can't insert the user");
+                    return;
+                }
+                callback.onDataInserted(null);
+            }
+        });
     }
 
     @Override

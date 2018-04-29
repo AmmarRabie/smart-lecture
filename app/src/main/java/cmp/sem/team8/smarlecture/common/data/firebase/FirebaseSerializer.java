@@ -10,10 +10,10 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
-import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
@@ -85,7 +85,10 @@ class FirebaseSerializer {
 
         String name = userRoot.child(UserEntry.KEY_NAME).getValue(String.class);
         String email = userRoot.child(UserEntry.KEY_EMAIL).getValue(String.class);
-        return new UserModel(name, email, userRoot.getKey());
+        UserModel serializedUser = new UserModel(name, email, userRoot.getKey());
+        if (userRoot.child(UserEntry.KEY_PROFILE_IMAGE).exists())
+            serializedUser.setProfileImage(userRoot.child(UserEntry.KEY_PROFILE_IMAGE).getValue(String.class));
+        return serializedUser;
     }
 
 /*    public static ArrayList<InvitedUserModel> serializeInvitedUserList(DataSnapshot listRoot) {

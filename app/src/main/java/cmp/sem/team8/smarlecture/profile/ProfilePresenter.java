@@ -106,8 +106,8 @@ class ProfilePresenter implements ProfileContract.Actions {
         FirebaseRepository.getInstance()
                 .getUser(mCurrentUser.getUserId(), new AppDataSource.Get<UserModel>() {
                     @Override
-                    public void onDataFetched(UserModel data) {
-                        mView.showUserInfo(data.getName(), data.getEmail());
+                    public void onDataFetched(UserModel user) {
+                        mView.showUserInfo(user);
                     }
                 });
     }
