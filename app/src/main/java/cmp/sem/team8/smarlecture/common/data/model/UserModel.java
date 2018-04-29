@@ -12,7 +12,7 @@ public class UserModel implements Serializable{
     private String id;
     private String name;
     private String email;
-    private String profileImage;
+    private byte[] profileImage;
 
 
     public UserModel(String name, String email, String id) {
@@ -45,11 +45,11 @@ public class UserModel implements Serializable{
         this.id = id;
     }
 
-    public void setProfileImage(String profileImage) {
+    public void setProfileImage(byte[] profileImage) {
         this.profileImage = profileImage;
     }
 
-    public String getProfileImage() {
+    public byte[] getProfileImage() {
         return profileImage;
     }
 }

@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         HashMap<String, String> values = new HashMap<>();
         values.put(UserEntry.KEY_EMAIL, userModel.getEmail());
         values.put(UserEntry.KEY_NAME, userModel.getName());
-        String profileImage = userModel.getProfileImage();
+        byte[] profileImage = userModel.getProfileImage();
         if (profileImage != null)
             values.put(UserEntry.KEY_PROFILE_IMAGE, profileImage);
 
@@ -83,6 +84,10 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     return;
                 }
                 callback.onDataInserted(null);
+                insertProfileImage();
+            }
+            private void insertProfileImage() {
+                FirebaseStorage.getInstance().getReference("profile-images")
             }
         });
     }

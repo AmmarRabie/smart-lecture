@@ -3,6 +3,8 @@ package cmp.sem.team8.smarlecture.auth;
 
 import android.util.Log;
 
+import java.io.InputStream;
+
 import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
@@ -113,9 +115,9 @@ class SignUpPresenter implements SignUpContract.Actions {
         });
     }
 
-    private void insertUser(String id, String name, String email, String profileImage) {
+    private void insertUser(String id, String name, String email, String profileImageStream) {
         UserModel newUserModel = new UserModel(name, email, id);
-        newUserModel.setProfileImage(profileImage);
+        newUserModel.setProfileImage(profileImageStream);
         mDataSource.insertUser(newUserModel, new AppDataSource.Insert<Void>() {
             @Override
             public void onDataInserted(Void feedback) {

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
@@ -19,6 +20,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
@@ -64,7 +70,8 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
         root.findViewById(R.id.signUp_signup).setOnClickListener(this);
 
-        setRandomPicture();
+//        setRandomPicture();
+        setFromFirebase();
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +90,27 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
         });
 
         return root;
+    }
+
+    private void setFromFirebase() {
+        FirebaseStorage.getInstance().getReference("profile-images/gza2.jpg").getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                profileImageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                FirebaseStorage.getInstance().getReference("profile-images/newFileFromAndroidApp.jpg")
+                        .putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(getContext(), "successsssss", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -123,7 +151,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     @Override
     public void onClick(View view) {
         mAction.signUp(mName.getText().toString(), mEmail.getText().toString(),
-                mPassword.getText().toString(), mConfirmPassword.getText().toString(),profileImageEncoded);
+                mPassword.getText().toString(), mConfirmPassword.getText().toString(), profileImageEncoded);
     }
 
     @Override
@@ -167,7 +195,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
                     cursor.close();
 
                     Bitmap selectedProfileImg = BitmapFactory.decodeFile(filePath);
-                    selectedProfileImg = Bitmap.createScaledBitmap(selectedProfileImg,300,300,true);
+                    selectedProfileImg = Bitmap.createScaledBitmap(selectedProfileImg, 250, 250, true);
                     profileImageView.setImageBitmap(selectedProfileImg);
 
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

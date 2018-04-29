@@ -84,6 +84,7 @@ public final class FirebaseContract {
         public static final String KEY_AVERAGERATING = "rating;";
         public static final String KEY_NUM_OF_USER_RATED = "number_user_rated";
         public static final String KEY_DESC = "desc";
+
         private ObjectiveEntry() {
         }
     }
@@ -113,6 +114,13 @@ public final class FirebaseContract {
 
         private UserEntry() {
         }
+    }
+
+    static final class StorageEntry {
+        static final String KEY_THIS = "gs://smart-lecture-cmp.appspot.com/";
+
+        static final String FOLDER_PROFILE_IMAGES = "profile-images";
+        static final String KEY_PROFILE_IMAGE_NAME = "main.png";
     }
 
 
