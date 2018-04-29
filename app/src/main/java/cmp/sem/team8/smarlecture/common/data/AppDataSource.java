@@ -2,12 +2,16 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
 /**
  * Main entry point for accessing app data.
@@ -98,7 +102,39 @@ public interface AppDataSource {
 
     void refuseFollowingGroup(String userId, String groupId, Update callback);
 
+    //get session name and group owner for the session id to be viewed for the student when he joins a session
+    void getJoinedSessionInfo(String sessionID,String groupID,Get<SessionForUserModel> callback);
+
+
+    //check for session status
+    void listenForsessionStatus(String sessionID,Listen<String> callback);
+
+
+    //gets the objectives for a session
+    void getObjectives(String sessionID, Get<ArrayList<ObjectiveModel>> callback);
+
+    //update new average rating of objective
+    void updateObjectivesRating(String sessionID,String objectiveID,Float newObjectiveRating,Integer newNumberUsersRated,Update callback);
+
+    void insertObjective(String sessionID,ObjectiveModel addedObjective,Insert<Void> callback);
+
     void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
+
+    void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback);
+
+    void getSessionStatus(String sessionId, Get<SessionStatus> callback);
+
+    void setAttendanceStatus(String sessionId, AttendanceStatus status, Update callback);
+
+    void setSessionSecret(String sessionId, String secret, Update callback);
+
+    Listen ListenSessionMembers(String sessionId, Listen<MemberModel> callback);
+
+    void setMemberAttendance(String sessionId, String memberId, boolean isAttend, Update callback);
+
+    void addNote(String sessionId, String memberId, String noteText, Insert<NoteModel> callback);
+
+    void deleteNote(String sessionId, String memberId, String noteId, Delete callback);
 
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
@@ -124,7 +160,6 @@ public interface AppDataSource {
 
     void getSessionById(String sessionId, Get<SessionModel> callback);
 
-    void getSessionStatus(String sessionId, Get<SessionStatus> callback);
 
     void getAttendanceStatus(String sessionId, Get<AttendanceStatus> callback);
 

@@ -10,9 +10,11 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -21,10 +23,10 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * Created by AmmarRabie on 21/04/2018.
  */
 
-public class FirebaseSerializer {
+class FirebaseSerializer {
     private static final String TAG = "FirebaseSerializer";
 
-    public static GroupModel serializeGroup(DataSnapshot groupSnapshot) {
+    static GroupModel serializeGroup(DataSnapshot groupSnapshot) {
         String[] requiredChildes = GroupEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, groupSnapshot)) return null;
 
@@ -35,7 +37,7 @@ public class FirebaseSerializer {
         return new GroupModel(name, groupId, ownerId);
     }
 
-    public static SessionModel serializeSession(DataSnapshot sessionSnapshot) {
+    static SessionModel serializeSession(DataSnapshot sessionSnapshot) {
         String[] requiredChildes = SessionEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, sessionSnapshot)) return null;
 
@@ -56,13 +58,13 @@ public class FirebaseSerializer {
         return sessionModel;
     }
 
-    public static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
+    static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
         UserModel userModel = serializeUser(userRoot);
         return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.getValue()));
     }
 
-    public static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
+    static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
         GroupModel groupModel = serializeGroup(groupRoot);
         SessionModel sessionModel = serializeSession(sessionRoot);
         UserModel userModel = serializeUser(userRoot);
@@ -77,7 +79,7 @@ public class FirebaseSerializer {
                 , userModel.getName());
     }
 
-    public static UserModel serializeUser(DataSnapshot userRoot) {
+    static UserModel serializeUser(DataSnapshot userRoot) {
         String[] requiredChildes = UserEntry.requiredChildes;
         if (!checkRequiredChildes(requiredChildes, userRoot)) return null;
 
@@ -101,7 +103,7 @@ public class FirebaseSerializer {
         return result;
     }*/
 
-    public static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
+    static GroupInvitationModel serializeGroupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
         GroupModel groupModel = serializeGroup(groupSnapshot);
         UserModel userModel = serializeUser(userSnapshot);
         if (groupModel == null || userModel == null) {
@@ -116,8 +118,25 @@ public class FirebaseSerializer {
         );
     }
 
+    static MemberModel serializeAttendee(DataSnapshot attendeeSnapshot, DataSnapshot userSnapshot) {
+        UserModel userModel = serializeUser(userSnapshot);
+        boolean isAttend = ((boolean) attendeeSnapshot.child(SessionEntry.KEY_ATTEND).getValue());
+        if (!attendeeSnapshot.child(SessionEntry.KEY_NOTES).exists())
+            return new MemberModel(userModel, isAttend);
+        ArrayList<NoteModel> notes = new ArrayList<>();
+        for (DataSnapshot oneNoteSnapshot : attendeeSnapshot.child(SessionEntry.KEY_NOTES).getChildren())
+            notes.add(serializeNote(oneNoteSnapshot));
+        return new MemberModel(userModel, isAttend, notes);
+    }
 
-    public static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
+    static NoteModel serializeNote(DataSnapshot noteSnapshot) {
+        String noteId = noteSnapshot.getKey();
+        String noteText = noteSnapshot.getValue(String.class);
+
+        return new NoteModel(noteId, noteText);
+    }
+
+    static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
             keys.add(child.getKey());

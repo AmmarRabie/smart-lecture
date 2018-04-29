@@ -20,12 +20,6 @@ public class UserModel implements Serializable{
         this.id = id;
     }
 
-    public UserModel(String name, String email, String id, ArrayList<String> groupInvitations) {
-        this.name = name;
-        this.email = email;
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
