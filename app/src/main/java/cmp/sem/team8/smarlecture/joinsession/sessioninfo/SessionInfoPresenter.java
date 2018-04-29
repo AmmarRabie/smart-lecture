@@ -1,4 +1,5 @@
 package cmp.sem.team8.smarlecture.joinsession.sessioninfo;
+
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,7 +17,7 @@ import cmp.sem.team8.smarlecture.session.sessioninfo.*;
  * Created by Loai Ali on 4/23/2018.
  */
 
-public class SessionInfoPresenter implements cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoContract.Actions{
+public class SessionInfoPresenter implements cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoContract.Actions {
 
     private static final String TAG = "SessionInfoPresenter";
     private String sessionID;
@@ -24,13 +25,14 @@ public class SessionInfoPresenter implements cmp.sem.team8.smarlecture.joinsessi
     SessionInfoContract.Views mView;
     private DatabaseReference mRef;
     private AppDataSource mDataSource;
-    public SessionInfoPresenter(SessionInfoContract.Views view,String groupID,String sessionID, AppDataSource dataSource) {
-        this.groupID=groupID;
-        this.sessionID=sessionID;
-        mView=view;
+
+    public SessionInfoPresenter(SessionInfoContract.Views view, String groupID, String sessionID, AppDataSource dataSource) {
+        this.groupID = groupID;
+        this.sessionID = sessionID;
+        mView = view;
         mView.setPresenter(this);
-        mRef= FirebaseDatabase.getInstance().getReference();
-        mDataSource=dataSource;
+        mRef = FirebaseDatabase.getInstance().getReference();
+        mDataSource = dataSource;
     }
 
     @Override
@@ -38,9 +40,9 @@ public class SessionInfoPresenter implements cmp.sem.team8.smarlecture.joinsessi
         mDataSource.getJoinedSessionInfo(sessionID, groupID, new AppDataSource.Get<SessionForUserModel>() {
             @Override
             public void onDataFetched(SessionForUserModel data) {
-                mView.showSessionInfo(sessionID,data.getOwnerName(),data.getForGroupName(),data.getSessionName());
+                mView.showSessionInfo(sessionID, data.getOwnerName(), data.getForGroupName(), data.getSessionName());
+            }
 
-                }
             @Override
             public void onDataNotAvailable() {
                 Log.e(TAG,
@@ -55,11 +57,12 @@ public class SessionInfoPresenter implements cmp.sem.team8.smarlecture.joinsessi
                 mView.showErrorMessage(cause);
             }
         });
-        mDataSource.listenForsessionStatus(sessionID, new AppDataSource.Listen<String>(1,1) {
+        mDataSource.listenForsessionStatus(sessionID, new AppDataSource.Listen<String>(1, 1) {
             @Override
             public void onDataReceived(String dataSnapshot) {
-                if(dataSnapshot.equals(AppDataSource.SessionStatus.CLOSED.toString())){
-                    mView.closeSession(sessionID);
+                if (dataSnapshot.equals(AppDataSource.SessionStatus.CLOSED.toString())) {
+                    if (mView != null)
+                        mView.closeSession(sessionID);
                 }
             }
         });

@@ -27,6 +27,7 @@ import java.util.HashMap;
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
+import cmp.sem.team8.smarlecture.group.GroupActivity;
 import cmp.sem.team8.smarlecture.grouplist.GroupListActivity;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 import cmp.sem.team8.smarlecture.session.objectives.ObjectivesContract;
@@ -36,8 +37,8 @@ import cmp.sem.team8.smarlecture.session.objectives.ObjectivesContract;
  */
 
 public class RateObjectivesFragment extends android.support.v4.app.Fragment
-implements RateObjectivesContract.Views,
-RateObjectivesRecyclerAdapter.OnItemClickListener,InternetConnectivityReceiver.OnInternetConnectionChangeListener{
+        implements RateObjectivesContract.Views,
+        RateObjectivesRecyclerAdapter.OnItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
 
     Animator spruceAnimator;
 
@@ -55,20 +56,27 @@ RateObjectivesRecyclerAdapter.OnItemClickListener,InternetConnectivityReceiver.O
 
     private ArrayList<ObjectiveModel> mObjectiveList;
 
-    private HashMap<String,Float> mObjectivesRating;//changed on every change in rating bar used in submitting ratings
+    // private ArrayList<Float> mUserRatings;
 
-    private View.OnClickListener mSubmitRatingListner=new View.OnClickListener() {
+    private ArrayList<Float> mObjectivesRating;//changed on every change in rating bar used in submitting ratings
+
+    private View.OnClickListener mSubmitRatingListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-          //  mPresenter.RateObjectives(mObjectivesRating);
+            mPresenter.RateObjectives(mObjectivesRating);
+
+            //  mPresenter.RateObjectives(mObjectivesRating);
         }
     };
 
-    private View.OnClickListener mCancelRatingListner=new View.OnClickListener() {
+    private View.OnClickListener mCancelRatingListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent i=new Intent(getContext(),GroupListActivity.class);
+            Intent i = new Intent(getContext(), GroupListActivity.class);
             startActivity(i);
+            //remove the activity from the backstack so after starting grouplist activity
+            // if clicking on back button it won't get us back to this activity
+            getActivity().finish();
         }
     };
 
@@ -78,33 +86,39 @@ RateObjectivesRecyclerAdapter.OnItemClickListener,InternetConnectivityReceiver.O
 
     private boolean isInEmptyView = false;
 
-    public RateObjectivesFragment(){}
+    public RateObjectivesFragment() {
+    }
 
-    public static RateObjectivesFragment newInstace() {return new RateObjectivesFragment();}
+    public static RateObjectivesFragment newInstace() {
+        return new RateObjectivesFragment();
+    }
 
 
     @Override
-    public View onCreateView( LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root=inflater.inflate(R.layout.frag_rate_objectives,container,false);
+        View root = inflater.inflate(R.layout.frag_rate_objectives, container, false);
 
-       mSumbitRating=root.findViewById(R.id.submitrating);
+        mSumbitRating = root.findViewById(R.id.submitrating);
 
-        mCancelRating=root.findViewById(R.id.cancelrating);
+        mCancelRating = root.findViewById(R.id.cancelrating);
 
         mOfflineView = root.findViewById(R.id.offlineView);
 
-        mObjectiveRecyclerView=root.findViewById(R.id.objectivesList);
+        mObjectiveRecyclerView = root.findViewById(R.id.objectivesList);
 
         mSumbitRating.setOnClickListener(mSubmitRatingListner);
 
         mCancelRating.setOnClickListener(mCancelRatingListner);
 
-        mObjectivesRating=new HashMap<>();
+        mObjectivesRating = new ArrayList<>();
 
-        mObjectiveList=new ArrayList<>();
+        mObjectiveList = new ArrayList<>();
 
-        mObjectiveAdapter=new RateObjectivesRecyclerAdapter(getContext(),mObjectiveList,this);
+        // mUserRatings=new ArrayList<>();
+
+
+        mObjectiveAdapter = new RateObjectivesRecyclerAdapter(getContext(), mObjectiveList, this, mObjectivesRating);
 
         mObjectiveRecyclerView.setAdapter(mObjectiveAdapter);
 
@@ -133,25 +147,23 @@ RateObjectivesRecyclerAdapter.OnItemClickListener,InternetConnectivityReceiver.O
         return root;
 
 
-
     }
 
     @Override
     public void setPresenter(RateObjectivesContract.Actions presenter) {
-        mPresenter=presenter;
+        mPresenter = presenter;
 
     }
 
     @Override
     public void showOnErrorMessage(String cause) {
-        Toast.makeText(getContext(),cause,Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), cause, Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void showObjectivesList(ArrayList<ObjectiveModel> objectivesList) {
         if (mObjectiveList.equals(objectivesList))
-
             return;
 
         mObjectiveList.clear();
@@ -159,6 +171,23 @@ RateObjectivesRecyclerAdapter.OnItemClickListener,InternetConnectivityReceiver.O
         mObjectiveList.addAll(objectivesList);
 
         mObjectiveAdapter.notifyDataSetChanged();
+
+        for (int i = 0; i < mObjectiveList.size(); i++) {
+            mObjectivesRating.add(0f);
+        }
+
+
+    }
+
+    @Override
+    public void updateSuccess() {
+//        Intent i = new Intent(getContext(), GroupListActivity.class);
+//        startActivity(i);
+
+        //remove the activity from the backstack so after starting grouplist activity
+        // if clicking on back button it won't get us back to this activity
+        if (getActivity() != null)
+            getActivity().finish();
 
 
     }
@@ -178,8 +207,9 @@ RateObjectivesRecyclerAdapter.OnItemClickListener,InternetConnectivityReceiver.O
     }
 
     @Override
-    public void onRateItemClick(View view, int position,float rating) {
-        mObjectivesRating.put(mObjectiveList.get(position).getmObjectiveID(),rating);
+    public void onRateItemClick(View view, int position, float rating) {
+        mObjectivesRating.set(position, rating);
+
     }
 
     @Override

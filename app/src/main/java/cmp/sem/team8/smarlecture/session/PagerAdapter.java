@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendanceFragment;
 import cmp.sem.team8.smarlecture.session.beginattendance.BeginAttendancePresenter;
 import cmp.sem.team8.smarlecture.session.objectives.ObjectivesFragment;
@@ -95,7 +96,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
                     mObjectivesFragment = ObjectivesFragment.newInstance();
 
-                mObjectivesPresenter = new ObjectivesPresenter(mObjectivesFragment, mSessionID);
+                mObjectivesPresenter = new ObjectivesPresenter(mObjectivesFragment, mSessionID, FirebaseRepository.getInstance());
 
                 return mObjectivesFragment;
 

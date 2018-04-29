@@ -45,7 +45,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 writeAttendanceFragment = writeAttendanceFragment == null ?
                         WriteAttendanceFragment.newInstance()
                         : writeAttendanceFragment;
-                mwriteAttendancePresenter = new WriteAttendancePresenter(writeAttendanceFragment);
+                mwriteAttendancePresenter = new WriteAttendancePresenter(writeAttendanceFragment,FirebaseRepository.getInstance());
                 return writeAttendanceFragment;
 
             case 1:

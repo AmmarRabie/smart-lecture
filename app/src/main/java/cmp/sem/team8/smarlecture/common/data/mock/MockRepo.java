@@ -6,7 +6,9 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
 /**
  * Created by AmmarRabie on 24/04/2018.
@@ -176,7 +178,8 @@ public class MockRepo implements AppDataSource {
 
 
     @Override
-    public void getUsersListOfGroup(String groupId, Get<ArrayList<UserModel>> callback) {
+    public void getUsersListOfGroup(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {
+
 
     }
 
@@ -187,6 +190,21 @@ public class MockRepo implements AppDataSource {
 
     @Override
     public void listenForsessionStatus(String sessionID, Listen<String> callback) {
+
+    }
+
+    @Override
+    public void getObjectives(String sessionID, Get<ArrayList<ObjectiveModel>> callback) {
+
+    }
+
+    @Override
+    public void updateObjectivesRating(String sessionID, String objectiveID, Float newObjectiveRating,Integer newNumberUsersRated,Update callback) {
+
+    }
+
+    @Override
+    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {
 
     }
 
