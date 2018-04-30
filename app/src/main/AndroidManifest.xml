@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="cmp.sem.team8.smarlecture">
-
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
     <application
         android:allowBackup="true"
@@ -14,17 +13,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".auth.LoginActivity" />
-        <activity android:name=".auth.SignUpActivity" android:exported="true"/>
-        <activity android:name=".profile.ProfileActivity" android:exported="true"/>
+        <activity
+            android:name=".auth.SignUpActivity"
+            android:exported="true" />
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:exported="true" />
         <activity android:name=".session.SessionActivity" />
         <activity android:name=".joinsession.JoinedSession" />
-        <activity android:name=".group.GroupActivity"  android:exported="true"/>
-        <activity android:name=".newsfeed.NewsFeedActivity" android:exported="true"/>
-        <activity android:name=".invitations.InvitationsActivity" android:exported="true"/>
-
-        <activity android:name=".grouplist.GroupListActivity"  android:exported="true">
+        <activity
+            android:name=".group.GroupActivity"
+            android:exported="true" />
+        <activity
+            android:name=".newsfeed.NewsFeedActivity"
+            android:exported="true" />
+        <activity
+            android:name=".invitations.InvitationsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".rateobjectives.RateObjectivesActivity"
+            android:exported="true"></activity>
+        <activity
+            android:name=".grouplist.GroupListActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -32,9 +44,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
+        <activity
+            android:name=".statistics.GroupStatisticsActivity"
+            android:label="@string/title_activity_group_statistics"></activity>
     </application>
 
 </manifest>

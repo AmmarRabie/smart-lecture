@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
 /**
  * Created by AmmarRabie on 24/04/2018.
@@ -206,6 +209,7 @@ public class MockRepo implements AppDataSource {
     @Override
     public void getUser(final String userId, final Get<UserModel> callback) {
 
+        callback.onDataFetched(new UserModel("name of "+userId,userId+".email.com",userId));
     }
 
     @Override
@@ -274,6 +278,32 @@ public class MockRepo implements AppDataSource {
     @Override
     public void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback) {
 
+    }
+
+    @Override
+    public void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback) {
+
+        ArrayList<String > groupMem=new ArrayList<>();
+
+        for (int i=0;i<15;i++)
+        {
+           groupMem.add(Integer.toString(i));
+        }
+
+        ArrayList<ArrayList<String>> SessionMem=new ArrayList<>();
+        for (int i=0;i<3;i++)
+        {
+            ArrayList<String>names_list=new ArrayList<>();
+            for (int j=0;j<8;j++)
+            {
+                names_list.add(Integer.toString(j));
+            }
+            SessionMem.add(names_list);
+        }
+
+
+
+        callback.onDataFetched(new GroupStatisticsModel(groupMem,SessionMem));
     }
 
     @Override
@@ -359,22 +389,39 @@ public class MockRepo implements AppDataSource {
     }*/
 
 
+
+  
     @Override
     public void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback) {
 
     }
 
     @Override
-    public void getSessionStatus(String sessionId, Get<SessionStatus> callback) {
-
+    public void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {
+        
     }
 
+    @Override
+    public void getSessionStatus(String sessionId, Get<SessionStatus> callback) {
+    }
+
+    @Override
+    public void getJoinedSessionInfo(String sessionID, String groupID, Get<SessionForUserModel> callback) {}
+  
     @Override
     public void setAttendanceStatus(String sessionId, AttendanceStatus status, Update callback) {
+    }
+
+    @Override
+
+    public void listenForsessionStatus(String sessionID, Listen<String> callback) {
 
     }
 
     @Override
+    public void getObjectives(String sessionID, Get<ArrayList<ObjectiveModel>> callback) {
+    }
+
     public void setSessionSecret(String sessionId, String secret, Update callback) {
 
     }
@@ -419,22 +466,26 @@ public class MockRepo implements AppDataSource {
 
     @Override
     public void setMemberAttendance(String sessionId, String memberId, boolean isAttend, Update callback) {
-
     }
 
+    @Override
+    public void updateObjectivesRating(String sessionID, String objectiveID, Float newObjectiveRating,Integer newNumberUsersRated,Update callback) {
+    }
+  
     @Override
     public void addNote(String sessionId, String memberId, String noteText, Insert<NoteModel> callback) {
-
     }
 
     @Override
+    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {
+    }
+  
+    @Override 
     public void deleteNote(String sessionId, String memberId, String noteId, Delete callback) {
-
     }
 
     @Override
     public void forget(Listen listener) {
-
     }
 
 }

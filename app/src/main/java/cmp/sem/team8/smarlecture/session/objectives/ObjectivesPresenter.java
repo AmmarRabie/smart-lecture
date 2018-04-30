@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
@@ -26,13 +27,17 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
     private ObjectivesContract.Views mView;
 
+    private AppDataSource mDataSource;
+
     private final String SESSION_ID;
 
     private DatabaseReference mObjectiveRef;
 
-    public ObjectivesPresenter(ObjectivesContract.Views mView, String SESSION_ID) {
+    public ObjectivesPresenter(ObjectivesContract.Views mView, String SESSION_ID,AppDataSource dataSource) {
 
         this.mView = mView;
+
+        mDataSource=dataSource;
 
         this.SESSION_ID = SESSION_ID;
 
@@ -91,7 +96,25 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
     @Override
     public void getObjectives() {
 
-        if (mObjectiveRef == null)
+        mDataSource.getObjectives(SESSION_ID, new AppDataSource.Get<ArrayList<ObjectiveModel>>() {
+            @Override
+            public void onDataFetched(ArrayList<ObjectiveModel> data) {
+                mView.showObjectivesList(data);
+
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                mView.showOnErrorMessage("Wrong Session ID");
+            }
+        });
+
+       /* if (mObjectiveRef == null)
 
             return;
 
@@ -111,9 +134,12 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
                     String name = child.child(FirebaseContract.ObjectiveEntry.KEY_DESC).getValue(String.class);
 
-                    float averageRating=child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(float.class);
+                   // float averageRating=child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(float.class);
 
-                    int numberUsersRated=child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(int.class);
+                    Float averageRating = child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(Float.class);
+
+                   // int numberUsersRated=child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(int.class);
+                    Integer numberUsersRated = child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(Integer.class);
 
                     ObjectiveModel thisObjective = new ObjectiveModel();
 
@@ -140,7 +166,7 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
             }
         });
-
+*/
 
     }
 

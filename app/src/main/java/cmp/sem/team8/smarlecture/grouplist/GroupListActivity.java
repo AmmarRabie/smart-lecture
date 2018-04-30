@@ -12,6 +12,7 @@ import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.profile.ProfileActivity;
+import cmp.sem.team8.smarlecture.statistics.GroupStatisticsActivity;
 import es.dmoral.toasty.Toasty;
 
 public class GroupListActivity extends AppCompatActivity {
@@ -45,6 +46,12 @@ public class GroupListActivity extends AppCompatActivity {
                 Intent profileActivity = new Intent(this, ProfileActivity.class);
                 startActivity(profileActivity);
                 return true;
+            case R.id.optionGroupList_statistics:
+                Intent GroupStatis = new Intent(this, GroupStatisticsActivity.class);
+                GroupStatis.putExtra("GroupID","-LBCAWGxSUtyqoeNIMYC");
+                startActivity(GroupStatis);
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
