@@ -26,6 +26,10 @@ interface ProfileContract {
         void showOnChangePassSuccess();
 
         void showOnSignOutSuccess();
+
+        void showProgressIndicator(String progressWorkMessage);
+
+        void hideProgressIndicator();
     }
 
 
@@ -38,5 +42,7 @@ interface ProfileContract {
         void changeName(String newName);
 
         void signOut();
+
+        void changeProfileImage(byte[] newImageBytes);
     }
 }

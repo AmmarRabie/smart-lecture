@@ -218,6 +218,11 @@ public class MockRepo implements AppDataSource {
 
     }
 
+    @Override
+    public void updateUserProfileImage(String userId, byte[] newImageBytes, Update callback) {
+
+    }
+
 
     @Override
     public void listenUser(String userId, final Listen<UserModel> callback) {

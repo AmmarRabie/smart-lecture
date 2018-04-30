@@ -31,10 +31,6 @@ import es.dmoral.toasty.Toasty;
 
 public class SignUpFragment extends Fragment implements SignUpContract.Views, View.OnClickListener {
 
-
-    private static final int[] foregroundColors = new int[]{0xfff14242, 0xff57c867, 0xff5379e5, 0xff9753e5, 0xff3e3e3e};
-    private static final int backgroundColor = 0xffffffff;
-
     private SignUpContract.Actions mAction;
     private EditText mEmail;
     private EditText mPassword;
@@ -132,17 +128,11 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
     }
 
     private void setRandomPicture() {
-//        int[] foregroundColors = getResources().getIntArray(R.array.randomColorsForProfilePicture);
-//        int backgroundColor = getResources().getInteger(R.integer.backgroundColor);
-        int randomIndex = ((int) (Math.random() * 100)) % foregroundColors.length;
-        final int foregroundColor = foregroundColors[randomIndex];
-        Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.kaleidoscope_source);
-        Bitmap bitmap = ProfileImageUtil.createProfileImage(original, foregroundColor, backgroundColor);
-        bitmap = Bitmap.createScaledBitmap(bitmap, 250, 250, true);
+        Bitmap randBitmap = ProfileImageUtil.createRandomImage(getContext(), 250, 250);
 
         // set the view and update curr bytes
-        profileImageView.setImageBitmap(bitmap);
-        updateImageBytes(bitmap);
+        profileImageView.setImageBitmap(randBitmap);
+        updateImageBytes(randBitmap);
     }
 
     @Override

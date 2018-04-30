@@ -1,15 +1,21 @@
 package cmp.sem.team8.smarlecture.profile;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +26,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.common.util.ProfileImageUtil;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -30,6 +39,11 @@ import es.dmoral.toasty.Toasty;
  */
 
 public class ProfileFragment extends Fragment implements ProfileContract.Views {
+
+    private static final String TAG = "ProfileFragment";
+
+    private static final int GALLERY_REQUEST = 1254;
+    private static final int CAMERA_REQUEST = 546;
 
     private ProfileContract.Actions mAction;
 
@@ -39,6 +53,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
     private Button mEditNameView;
     private Button mSignOutView;
     private ImageView mProfileImageView;
+    private ProgressDialog progressIndicatorView;
 
     private AlertDialog changePasswordDialog;
 
@@ -82,10 +97,41 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
                     mEditState = true;
                     mEditNameView.setBackground(getResources().getDrawable(android.R.drawable.ic_menu_save));
                     mNameView.setEnabled(true);
+                    mNameView.selectAll();
                 }
             }
         });
 
+        mProfileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CharSequence[] selections = {
+                        "Camera", "Gallery", "Set Random profile"
+                };
+
+                AlertDialog.Builder selectionDialogBuilder = new AlertDialog.Builder(getContext());
+                selectionDialogBuilder.setTitle("Set new image from");
+                selectionDialogBuilder.setItems(selections, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch (item) {
+                            case 0: // Camera
+                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                                break;
+                            case 1: // Gallery
+                                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+                                break;
+                            case 2: // random
+                                changeImage(ProfileImageUtil.createRandomImage(getContext(), 250, 250));
+                                break;
+                        }
+                    }
+                });
+                selectionDialogBuilder.show();
+            }
+        });
 
         final AlertDialog.Builder changePasswordDialogBuilder = new AlertDialog.Builder(getActivity());
         changePasswordDialogBuilder.setTitle(getString(R.string.dTitle_changePass));
@@ -118,9 +164,53 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
             }
         });
 
+        if (savedInstanceState == null)
+            mAction.start();
         return root;
     }
 
+    private void changeImage(Bitmap newBitmap) {
+        newBitmap = Bitmap.createScaledBitmap(newBitmap, 250, 250, true); // scale it first
+        mProfileImageView.setImageBitmap(newBitmap);
+
+        // convert to bytes
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        newBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] newImageBytes = byteArrayOutputStream.toByteArray();
+
+        mAction.changeProfileImage(newImageBytes);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        if (resultCode != Activity.RESULT_OK)
+            return;
+        switch (requestCode) {
+            case CAMERA_REQUEST:
+                Bitmap photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                if (photo == null) {
+                    Log.e(TAG, "onActivityResult: data can't be casted to Bitmap");
+                    return;
+                }
+                changeImage(photo);
+                break;
+            case GALLERY_REQUEST:
+                Uri selectedImage = imageReturnedIntent.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                Bitmap selectedProfileImg = BitmapFactory.decodeFile(filePath);
+
+                changeImage(selectedProfileImg);
+                break;
+        }
+    }
 
     @Override
     public void showOnChangeNameSuccess() {
@@ -165,9 +255,35 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
     }
 
     @Override
+    public void showProgressIndicator(String progressWorkMessage) {
+        if (progressIndicatorView == null)
+            progressIndicatorView = ProgressDialog.show(getContext(),
+                    null, progressWorkMessage
+                    , true, false);
+        else {
+            progressIndicatorView.setMessage(progressWorkMessage);
+            progressIndicatorView.show();
+        }
+    }
+
+    @Override
+    public void hideProgressIndicator() {
+        if (progressIndicatorView != null)
+            progressIndicatorView.dismiss();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        mAction.start();
+/*        //  wait 5 seconds to make sure that the image was updated to the server
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mAction.start();
+                handler.removeCallbacks(this);
+            }
+        }, 5000);*/
     }
 
     private LinearLayout buildDialogLayout() {

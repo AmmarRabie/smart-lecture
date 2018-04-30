@@ -1,6 +1,8 @@
 package cmp.sem.team8.smarlecture.common.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -12,12 +14,24 @@ import android.graphics.PorterDuffXfermode;
 
 import java.util.Random;
 
+import cmp.sem.team8.smarlecture.R;
+
 /**
  * Created by AmmarRabie on 29/04/2018.
  */
 public class ProfileImageUtil {
 
+    private static final int[] foregroundColors = new int[]{0xfff14242, 0xff57c867, 0xff5379e5, 0xff9753e5, 0xff3e3e3e};
+    private static final int backgroundColor = 0xffffffff;
     private static Random random = new Random();
+
+    public static Bitmap createRandomImage(Context context, int width, int height) {
+        int randomIndex = ((int) (Math.random() * 100)) % foregroundColors.length;
+        final int foregroundColor = foregroundColors[randomIndex];
+        Bitmap original = BitmapFactory.decodeResource(context.getResources(), R.drawable.kaleidoscope_source);
+        Bitmap bitmap = ProfileImageUtil.createProfileImage(original, foregroundColor, backgroundColor);
+        return Bitmap.createScaledBitmap(bitmap, width, height, true);
+    }
 
     /**
      * Takes a bitmap with transparent background, colors the foreground and the background and
@@ -168,6 +182,7 @@ public class ProfileImageUtil {
 
     /**
      * Get the angle between a point and 12 o'clock on a circle with center as its center
+     *
      * @return angle in [0,360]
      */
     private static double getAngle(Point point, Point center) {

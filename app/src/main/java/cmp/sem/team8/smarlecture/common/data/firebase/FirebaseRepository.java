@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
 
             private void setProfileImage(final UserModel userModel) {
-                getProfileImageRef(userModel.getId()).getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                getProfileImageRef(userModel.getId()).getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
                         userModel.setProfileImage(bytes);
@@ -131,6 +132,24 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 });
     }
 
+    @Override
+    public void updateUserProfileImage(String userId, byte[] newImageBytes, final Update callback) {
+        getProfileImageRef(userId).putBytes(newImageBytes)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        if (callback != null)
+                            callback.onUpdateSuccess();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+                if (callback != null)
+                    callback.onError(e.getMessage());
+            }
+        });
+    }
 
     @Override
     public void listenUser(String userId, final Listen<UserModel> callback) {
