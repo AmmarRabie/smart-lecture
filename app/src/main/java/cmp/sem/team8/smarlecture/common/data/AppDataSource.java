@@ -114,7 +114,7 @@ public interface AppDataSource {
     //update new average rating of objective
     void updateObjectivesRating(String sessionID,String objectiveID,Float newObjectiveRating,Integer newNumberUsersRated,Update callback);
 
-    void insertObjective(String sessionID,ObjectiveModel addedObjective,Insert<Void> callback);
+    void insertObjective(String sessionID,String addedObjective,boolean isOffline,Insert<ObjectiveModel> callback);
 
     void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 

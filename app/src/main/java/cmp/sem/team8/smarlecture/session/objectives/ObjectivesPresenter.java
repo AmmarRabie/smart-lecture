@@ -187,7 +187,19 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
             return;
         }
 
-        DatabaseReference newObjective = mObjectiveRef.push();
+        mDataSource.insertObjective(SESSION_ID, objectiveDescription, mView.getOfflineState(), new AppDataSource.Insert<ObjectiveModel>() {
+            @Override
+            public void onDataInserted(ObjectiveModel feedback) {
+                mView.onAddSuccess(feedback);
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+        });
+
+      /*  DatabaseReference newObjective = mObjectiveRef.push();
 
         final String key = newObjective.getKey();
 
@@ -242,7 +254,7 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
                     mView.showOnErrorMessage(task.getException().getMessage());
                 }
             }
-        });
+        });*/
 
 
     }

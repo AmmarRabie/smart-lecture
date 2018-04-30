@@ -365,7 +365,7 @@ public class MockRepo implements AppDataSource {
 
     @Override
     public void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {
-        
+
     }
 
     @Override
@@ -444,7 +444,7 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
-    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {
+    public void insertObjective(String sessionID, String addedObjectiveDescription,boolean isOffline, Insert<ObjectiveModel> callback) {
     }
   
     @Override 

@@ -634,7 +634,85 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {}
+    public void insertObjective(final String sessionID,  final String addedObjectiveDescription,final boolean isOffline, final Insert<ObjectiveModel> callback) {
+        DatabaseReference mobjectiveRef = FirebaseDatabase.getInstance().
+                getReference().child(SessionEntry.KEY_THIS).child(sessionID)
+                .child(SessionEntry.KEY_FOR_OBJECTIVES_LIST).push();
+       final String objectiveID=mobjectiveRef.getKey();
+
+
+
+
+
+        if (isOffline) {
+
+            ObjectiveModel addedObjective = new ObjectiveModel();
+
+            addedObjective.setmSessionID(sessionID);
+
+            addedObjective.setmObjectiveID(objectiveID);
+
+            addedObjective.setmObjectiveDescription(addedObjectiveDescription);
+
+            addedObjective.setmObjectivesAverageRating(0);
+
+            addedObjective.setmNumberofUsersRatedThisObjective(0);
+
+           callback.onDataInserted(addedObjective);
+        }
+        mobjectiveRef.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).setValue(0);
+
+        mobjectiveRef.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).setValue(0);
+
+        mobjectiveRef.child(FirebaseContract.ObjectiveEntry.KEY_DESC).setValue(addedObjectiveDescription).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+
+                    if (!isOffline) {
+
+                        ObjectiveModel addedObjective = new ObjectiveModel();
+
+                        addedObjective.setmSessionID(sessionID);
+
+                        addedObjective.setmObjectiveID(objectiveID);
+
+                        addedObjective.setmObjectiveDescription(addedObjectiveDescription);
+
+                        addedObjective.setmNumberofUsersRatedThisObjective(0);
+
+                        addedObjective.setmObjectivesAverageRating(0);
+
+
+                       callback.onDataInserted(addedObjective);
+
+                    }
+                } else {
+
+                    callback.onError(task.getException().getMessage());
+                }
+            }
+        });
+
+
+
+
+       /* mobjectiveRef.child(addedObjective.getmObjectiveID());
+        mobjectiveRef.child(addedObjective.getmObjectiveID()).child(FirebaseContract.ObjectiveEntry.KEY_DESC).setValue(addedObjective.getmObjectiveDescription());
+        mobjectiveRef.child(addedObjective.getmObjectiveID()).child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).setValue(0);
+
+        mobjectiveRef.child(addedObjective.getmObjectiveID()).child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).setValue(0.0).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                    callback.onDataInserted(null);
+                else callback.onError(task.getException().getMessage());
+            }
+        });*/
+
+
+    }
 
     @Override
     public void setAttendanceStatus(String sessionId, AttendanceStatus status, final Update callback) {
