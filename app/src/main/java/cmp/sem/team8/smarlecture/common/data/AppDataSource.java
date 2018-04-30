@@ -2,10 +2,10 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
-import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
@@ -36,10 +36,19 @@ public interface AppDataSource {
 
     void updateUserName(String userId, String newName, Update callback);
 
+    /**
+     * return all sessions that passed user is a member in their groups
+     *
+     * @param userId   the user id you want to get sessions he is a member in
+     * @param callback return the data on this callback
+     */
+//    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback); // for student
+
+
+    void updateUserProfileImage(String userId, byte[] newImageBytes, Update callback);
+
+
     void listenUser(String userId, Listen<UserModel> callback);
-
-
-
     /**
      * return all sessions that passed user is a member in their groups filtered by flags
      *
@@ -49,20 +58,12 @@ public interface AppDataSource {
      * @param withOpened    if false, the sessions returned will exclude opened ones
      * @param withNotActive if false, the sessions returned will exclude not active ones
      */
+
+
 /*    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
             , boolean withClosed
             , boolean withOpened
             , boolean withNotActive);*/
-
-
-    /**
-     * return all sessions that passed user is a member in their groups
-     *
-     * @param userId   the user id you want to get sessions he is a member in
-     * @param callback return the data on this callback
-     */
-//    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback); // for student
-
 
     /**
      * return all sessions that passed user is a member in their groups filtered by flags <B><I>one by one</B>
@@ -88,7 +89,8 @@ public interface AppDataSource {
 
     /**
      * return all group invitations sent userId, doesn't return the groups he is actually in.
-     * @param userId the user id you want to get invited groups.
+     *
+     * @param userId   the user id you want to get invited groups.
      * @param callback return the data on this callback.
      */
     void getGroupInvitationsForUser(String userId, Get<GroupInvitationModel> callback);
@@ -190,11 +192,6 @@ public interface AppDataSource {
             value = val;
         }
 
-
-        @Override
-        public String toString() {
-            return value;
-        }
         public static AttendanceStatus fromString(String value) {
             for (AttendanceStatus status : AttendanceStatus.values()) {
                 if (status.value.equalsIgnoreCase(value)) {
@@ -202,6 +199,11 @@ public interface AppDataSource {
                 }
             }
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return value;
         }
     }
 

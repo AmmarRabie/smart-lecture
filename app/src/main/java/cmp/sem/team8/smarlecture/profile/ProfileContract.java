@@ -3,6 +3,7 @@ package cmp.sem.team8.smarlecture.profile;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -18,13 +19,17 @@ interface ProfileContract {
 
         void showErrorMessage(String cause);
 
-        void showUserInfo(String name, String email);
+        void showUserInfo(UserModel user);
 
         void showOnChangeNameSuccess();
 
         void showOnChangePassSuccess();
 
         void showOnSignOutSuccess();
+
+        void showProgressIndicator(String progressWorkMessage);
+
+        void hideProgressIndicator();
     }
 
 
@@ -37,5 +42,7 @@ interface ProfileContract {
         void changeName(String newName);
 
         void signOut();
+
+        void changeProfileImage(byte[] newImageBytes);
     }
 }

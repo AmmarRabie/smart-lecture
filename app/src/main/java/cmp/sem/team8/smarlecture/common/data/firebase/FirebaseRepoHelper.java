@@ -3,20 +3,22 @@ package cmp.sem.team8.smarlecture.common.data.firebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.common.data.AppDataSource.Listen;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.StorageEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 
 /**
  * Created by AmmarRabie on 21/04/2018.
  */
 
-public abstract class FirebaseRepoHelper implements AppDataSource{
+abstract class FirebaseRepoHelper implements AppDataSource {
 
     protected ListenersList listeners;
 
@@ -39,6 +41,11 @@ public abstract class FirebaseRepoHelper implements AppDataSource{
 
     public DatabaseReference getUserRef(String userId) {
         return getReference(UserEntry.KEY_THIS).child(userId);
+    }
+
+    protected StorageReference getProfileImageRef(String imageId) {
+        return FirebaseStorage.getInstance()
+                .getReference(StorageEntry.FOLDER_PROFILE_IMAGES).child(imageId + ".png");
     }
 
 
