@@ -3,6 +3,7 @@ package cmp.sem.team8.smarlecture.auth;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,9 @@ import es.dmoral.toasty.Toasty;
  */
 
 public class SignUpFragment extends Fragment implements SignUpContract.Views, View.OnClickListener {
+    private static final String TAG = "SignUpFragment";
+    private static final int GALLERY_REQUEST = 1254;
+    private static final int CAMERA_REQUEST = 546;
 
     private SignUpContract.Actions mAction;
     private EditText mEmail;
@@ -64,17 +70,31 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setRandomPicture();
-            }
-        });
+                final CharSequence[] selections = {
+                        "Camera", "Gallery", "Set Random profile"
+                };
 
-        profileImageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Intent i = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 54452);
-                return true;
+                AlertDialog.Builder selectionDialogBuilder = new AlertDialog.Builder(getContext());
+                selectionDialogBuilder.setTitle("Set new image from");
+                selectionDialogBuilder.setItems(selections, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch (item) {
+                            case 0: // Camera
+                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                                break;
+                            case 1: // Gallery
+                                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+                                break;
+                            case 2: // random
+                                setRandomPicture();
+                                break;
+                        }
+                    }
+                });
+                selectionDialogBuilder.show();
             }
         });
 
@@ -129,46 +149,53 @@ public class SignUpFragment extends Fragment implements SignUpContract.Views, Vi
 
     private void setRandomPicture() {
         Bitmap randBitmap = ProfileImageUtil.createRandomImage(getContext(), 250, 250);
-
-        // set the view and update curr bytes
-        profileImageView.setImageBitmap(randBitmap);
         updateImageBytes(randBitmap);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
+        if (resultCode != Activity.RESULT_OK)
+            return;
         switch (requestCode) {
-            case 54452:
-                if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                    Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-                    cursor.close();
-
-                    Bitmap selectedProfileImg = BitmapFactory.decodeFile(filePath);
-                    selectedProfileImg = Bitmap.createScaledBitmap(selectedProfileImg, 250, 250, true);
-
-                    // set the view and update curr bytes
-                    profileImageView.setImageBitmap(selectedProfileImg);
-                    updateImageBytes(selectedProfileImg);
+            case CAMERA_REQUEST:
+                Bitmap photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                if (photo == null) {
+                    Log.e(TAG, "onActivityResult: data can't be casted to Bitmap");
+                    return;
                 }
+                updateImageBytes(photo);
+                break;
+            case GALLERY_REQUEST:
+                Uri selectedImage = imageReturnedIntent.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                Bitmap selectedProfileImg = BitmapFactory.decodeFile(filePath);
+                updateImageBytes(selectedProfileImg);
+                break;
         }
     }
 
     /**
-     * update the bytes that will be send to the presenter as the profile image of the user
+     * Update the view with scaled version of the new image.
+     * Update the bytes that will be send to the presenter as the profile image of the user
      * so it should be called every time user change his profile image
      *
      * @param newBitmap new image in bitmap
      */
     private void updateImageBytes(Bitmap newBitmap) {
+        // scale the bitmap and update the view
+        newBitmap = Bitmap.createScaledBitmap(newBitmap, 250, 250, true);
+        profileImageView.setImageBitmap(newBitmap);
+
+        // save compressed value of image
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         newBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         currImageBytes = byteArrayOutputStream.toByteArray();

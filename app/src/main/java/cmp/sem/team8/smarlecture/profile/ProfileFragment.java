@@ -183,6 +183,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         if (resultCode != Activity.RESULT_OK)
             return;
         switch (requestCode) {
