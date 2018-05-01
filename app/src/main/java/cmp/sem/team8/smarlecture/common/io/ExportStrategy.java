@@ -9,6 +9,6 @@ import cmp.sem.team8.smarlecture.common.data.model.FileModel;
  */
 
 public interface ExportStrategy {
-    ExportTask exportOneFile(FileModel fileData);
+    ExportTask exportOneFile(FileModel fileData, String fileName);
     ExportTask exportFiles(List<FileModel> filesData);
 }

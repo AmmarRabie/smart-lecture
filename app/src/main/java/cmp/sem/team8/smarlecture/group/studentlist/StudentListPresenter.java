@@ -72,15 +72,21 @@ public class StudentListPresenter implements StudentListContract.Actions {
     }
 
     @Override
-    public void exportExcel() {
-        mDataSource.getGroupInfoForExport(GROUP_ID, new ExportExcelCallback());
+    public void exportExcel(String fileName) {
+        mDataSource.getGroupInfoForExport(GROUP_ID, new ExportExcelCallback(fileName));
     }
 
     final class ExportExcelCallback extends AppDataSource.Get<FileModel> {
+        private String fileName;
+
+        ExportExcelCallback(String fileName) {
+            this.fileName = fileName;
+        }
+
         @Override
         public void onDataFetched(FileModel fileData) {
             ExportContext exportContext = new ExportContext(new ExcelExportStrategy());
-            exportContext.export(fileData).addOnSuccessListener(new ExportTask.OnSuccessListener() {
+            exportContext.export(fileData, fileName).addOnSuccessListener(new ExportTask.OnSuccessListener() {
                 @Override
                 public void onSuccess() {
                     mView.onExportSuccess();

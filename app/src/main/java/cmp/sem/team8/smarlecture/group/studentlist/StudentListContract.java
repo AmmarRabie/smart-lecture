@@ -41,7 +41,7 @@ public interface StudentListContract {
 
         void end();
 
-        void exportExcel();
+        void exportExcel(String fileName);
     }
 
 }

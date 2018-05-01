@@ -210,7 +210,7 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.optionGroup_exportToExcel:
-                mPresenter.exportExcel();
+                mPresenter.exportExcel(null);
                 return true;
         }
         return super.onOptionsItemSelected(item);

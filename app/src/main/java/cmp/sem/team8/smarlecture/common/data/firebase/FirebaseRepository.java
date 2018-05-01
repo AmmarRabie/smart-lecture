@@ -885,6 +885,106 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
     @Override
     public void getGroupInfoForExport(final String groupId, final Get<FileModel> callback) {
+        final FileModel result = new FileModel();
+        final ArrayList<SessionModel> groupSessions = new ArrayList<>();
+        final ArrayList<FileModel.GroupMember> groupMembers = new ArrayList<>();
 
+        getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            private boolean isLastSession = false;
+            private int sessionHandledCount = 0;
+            private int currMembersHandled = 0;
+
+            @Override
+            public void onDataChange(DataSnapshot groupSnapshot) {
+                GroupModel group = FirebaseSerializer.serializeGroup(groupSnapshot);
+                result.setGroup(group);
+                withGroupSnapshot(groupSnapshot);
+            }
+
+            private void withGroupSnapshot(DataSnapshot groupSnapshot) {
+                final DataSnapshot sessionsKeysSnapshot = groupSnapshot.child(GroupEntry.KEY_SESSIONS);
+
+                for (final DataSnapshot sessionKey : sessionsKeysSnapshot.getChildren()) {
+                    String currSessionId = sessionKey.getKey();
+                    getSessionRef(currSessionId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot sessionSnapshot) {
+                            SessionModel sessionModel = FirebaseSerializer.serializeSession(sessionSnapshot);
+                            groupSessions.add(sessionModel);
+
+                            if (++sessionHandledCount == sessionsKeysSnapshot.getChildrenCount())
+                                isLastSession = true;
+                            currMembersHandled = 0;
+                            withSessionMembersList(sessionKey.getKey(), sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+                    });
+                }
+            }
+
+            private void withSessionMembersList(final String sessionId, DataSnapshot sessionMembersSnapshot) {
+                long membersCount = sessionMembersSnapshot.getChildrenCount();
+                for (final DataSnapshot oneSessionMemberKeySnapshot : sessionMembersSnapshot.getChildren()) {
+                    String currMemberKey = oneSessionMemberKeySnapshot.getKey();
+                    FileModel.GroupMember existedGroupMember = findGroupMemberById(currMemberKey);
+                    if (existedGroupMember != null) {
+                        // add to this group member, this contribution (member model)
+                        boolean isAttend = ((boolean) oneSessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
+                        ArrayList<NoteModel> thisSessionMemberNotes = FirebaseSerializer.serializeNotes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        existedGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
+
+                        if (++currMembersHandled == membersCount)
+                            returnDataIfLastSession();
+                        continue; // continue and don't fetch the data again
+                    }
+                    withSessionMemberSnapshot(oneSessionMemberKeySnapshot, sessionId, currMemberKey, membersCount);
+                }
+
+            }
+
+            private void withSessionMemberSnapshot(final DataSnapshot sessionMemberKeySnapshot,
+                                                   final String sessionId,
+                                                   String currMemberKey,
+                                                   final long membersCount) {
+                getUser(currMemberKey, new Get<UserModel>() {
+                    @Override
+                    public void onDataFetched(UserModel thisUser) {
+                        final FileModel.GroupMember newGroupMember = new FileModel.GroupMember(thisUser);
+                        boolean isAttend = ((boolean) sessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
+                        ArrayList<NoteModel> thisSessionMemberNotes = FirebaseSerializer.serializeNotes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        newGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
+                        groupMembers.add(newGroupMember);
+
+                        if (++currMembersHandled == membersCount)
+                            returnDataIfLastSession();
+                    }
+                });
+            }
+
+            private void returnDataIfLastSession() {
+                if (!isLastSession)
+                    return;
+                result.setSessions(groupSessions);
+                result.setMembers(groupMembers);
+                callback.onDataFetched(result);
+            }
+
+            private FileModel.GroupMember findGroupMemberById(String memberId) {
+                for (FileModel.GroupMember groupMember : groupMembers)
+                    if (groupMember.getId().equals(memberId))
+                        return groupMember;
+                return null;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
     }
 }

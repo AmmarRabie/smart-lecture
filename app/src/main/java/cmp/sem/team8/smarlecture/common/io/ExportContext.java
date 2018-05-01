@@ -19,8 +19,8 @@ public class ExportContext {
         strategy = exportStrategy;
     }
 
-    public ExportTask export(FileModel file) {
-       return strategy.exportOneFile(file);
+    public ExportTask export(FileModel file, String fileName) {
+        return strategy.exportOneFile(file, fileName);
     }
 
     public ExportTask export(ArrayList<FileModel> files) {

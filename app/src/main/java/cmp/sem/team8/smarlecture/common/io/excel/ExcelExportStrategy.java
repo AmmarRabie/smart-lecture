@@ -14,8 +14,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
@@ -31,14 +35,20 @@ public class ExcelExportStrategy implements ExportStrategy {
     private static final String TAG = "ExcelExportStrategy";
 
     @Override
-    public ExportTask exportOneFile(FileModel fileData) {
+    public ExportTask exportOneFile(FileModel fileData, String fileName) {
+        // make the fileName the group name + curr day date
+        if (fileName == null) {
+            fileName = fileData.getGroup().getName();
+            DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss", Locale.US);
+            fileName += " " + df.format(new Date());
+        }
         try {
             Workbook workbook = new HSSFWorkbook(); // HSSFWorkbook for generating `.xls` file
 
             createSheet(workbook, fileData);
             // Write the output to a file
             File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-            File file = new File(path, "/" + "MainSL.xls");
+            File file = new File(path, "/" + fileName + ".xls");
 
             FileOutputStream fileOut = new FileOutputStream(file);
             workbook.write(fileOut);
@@ -134,7 +144,7 @@ public class ExcelExportStrategy implements ExportStrategy {
             ArrayList<NoteModel> notes = currSessionData.getNotes();
             currCell.setCellValue("");
             for (NoteModel note : notes) {
-                currCell.setCellValue(currCell.getStringCellValue() +  note.getText() + '\n');
+                currCell.setCellValue(currCell.getStringCellValue() + note.getText() + '\n');
             }
             if (notes.size() == 0)
                 currCell.setCellValue("NO notes !");
