@@ -18,13 +18,13 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
@@ -187,82 +187,82 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     @Override
     public void getGroupAndItsSessionNameList(String groupId, final Get<GroupStatisticsModel> callback) {
 
-       final GroupStatisticsModel group=new GroupStatisticsModel(null,null);
+        final GroupStatisticsModel group = new GroupStatisticsModel(null, null);
 
         getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST).
                 addListenerForSingleValueEvent(new ValueEventListener() {
-                                                   @Override
-                                                   synchronized public void onDataChange(DataSnapshot dataSnapshot) {
-                                                       ArrayList<String>groupp=new ArrayList<>();
-                                                       for (DataSnapshot ds : dataSnapshot.getChildren())
-                                                       {
-                                                           groupp.add(ds.getKey());
-                                                       }
-                                                       group.setGroupMembers(groupp);
-                                                   }
+                    @Override
+                    synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<String> groupp = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            groupp.add(ds.getKey());
+                        }
+                        group.setGroupMembers(groupp);
+                    }
 
-                                                   @Override
-                                                   synchronized public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    synchronized public void onCancelled(DatabaseError databaseError) {
 
-                                                   }
-                                               });
+                    }
+                });
 
-      //  getReference(GroupEntry.KEY_SESSIONS).child(groupId).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
-          getReference(FirebaseContract.SessionEntry.KEY_THIS).orderByChild(FirebaseContract.SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addValueEventListener(new ValueEventListener() {
+        //  getReference(GroupEntry.KEY_SESSIONS).child(groupId).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
+        getReference(FirebaseContract.SessionEntry.KEY_THIS).orderByChild(FirebaseContract.SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addValueEventListener(new ValueEventListener() {
             String SessionID;
 
             @Override
             synchronized public void onDataChange(DataSnapshot dataSnapshot) {
 
-                final  ArrayList<ArrayList<String>>sessionMem=new ArrayList<>();
+                final ArrayList<ArrayList<String>> sessionMem = new ArrayList<>();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     SessionID = ds.getKey();
-                   // DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS).child(FirebaseContract.SessionEntry.KEY_NAMES_LIST);
+                    // DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS).child(FirebaseContract.SessionEntry.KEY_NAMES_LIST);
 
-                   getReference(FirebaseContract.SessionEntry.KEY_THIS).child(SessionID).child(FirebaseContract.SessionEntry.KEY_NAMES_LIST).addListenerForSingleValueEvent(new SessionValueEvent(SessionID,sessionMem,dataSnapshot.getChildrenCount()));
+                    getReference(FirebaseContract.SessionEntry.KEY_THIS).child(SessionID).child(FirebaseContract.SessionEntry.KEY_NAMES_LIST).addListenerForSingleValueEvent(new SessionValueEvent(SessionID, sessionMem, dataSnapshot.getChildrenCount()));
                 }
 
             }
+
             @Override
             synchronized public void onCancelled(DatabaseError databaseError) {
                 callback.onError(databaseError.getMessage());
             }
 
-                            class SessionValueEvent implements ValueEventListener {
+            class SessionValueEvent implements ValueEventListener {
 
-                                String sessionID;
-                                ArrayList<ArrayList<String>> sessionMem;
-                                long count;
-                                SessionValueEvent(String SessionID, ArrayList<ArrayList<String>> sessionMem,long count)
-                                {
-                                   this.sessionID=SessionID;
-                                   this.sessionMem=sessionMem;
-                                   this.count=count;
+                String sessionID;
+                ArrayList<ArrayList<String>> sessionMem;
+                long count;
 
-                                }
-                                @Override
+                SessionValueEvent(String SessionID, ArrayList<ArrayList<String>> sessionMem, long count) {
+                    this.sessionID = SessionID;
+                    this.sessionMem = sessionMem;
+                    this.count = count;
 
-                                synchronized public void onDataChange(DataSnapshot dataSnapshot) {
-                                    ArrayList<String>userIdList=new ArrayList<>();
-                                    for (DataSnapshot dss : dataSnapshot.getChildren()) {
-                                        userIdList.add(dss.getKey());
-                                    }
-                                    sessionMem.add(userIdList);
+                }
 
-                                    if (sessionMem.size()==count)
-                                    {
-                                        group.setSessionMembers(sessionMem);
-                                        callback.onDataFetched(group);
-                                    }
-                                }
+                @Override
 
-                                @Override
-                                synchronized public void onCancelled(DatabaseError databaseError) {
-                                    callback.onError(databaseError.getMessage());
-                                }
-                            }
-                        });
+                synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+                    ArrayList<String> userIdList = new ArrayList<>();
+                    for (DataSnapshot dss : dataSnapshot.getChildren()) {
+                        userIdList.add(dss.getKey());
+                    }
+                    sessionMem.add(userIdList);
+
+                    if (sessionMem.size() == count) {
+                        group.setSessionMembers(sessionMem);
+                        callback.onDataFetched(group);
+                    }
+                }
+
+                @Override
+                synchronized public void onCancelled(DatabaseError databaseError) {
+                    callback.onError(databaseError.getMessage());
+                }
+            }
+        });
 
 
     }
@@ -747,7 +747,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {}
+    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {
+    }
 
     @Override
     public void setAttendanceStatus(String sessionId, AttendanceStatus status, final Update callback) {
@@ -881,14 +882,9 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             return;
         callback.onDataInserted(new NoteModel(noteId, noteText));
     }
+
+    @Override
+    public void getGroupInfoForExport(final String groupId, final Get<FileModel> callback) {
+
+    }
 }
-
-
-
-
-
-
-
-
-
-

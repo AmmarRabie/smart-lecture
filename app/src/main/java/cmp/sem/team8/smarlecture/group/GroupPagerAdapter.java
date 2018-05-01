@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
+import cmp.sem.team8.smarlecture.common.data.mock.MockRepo;
 import cmp.sem.team8.smarlecture.group.sessionslist.SessionListFragment;
 import cmp.sem.team8.smarlecture.group.sessionslist.SessionListPresenter;
 import cmp.sem.team8.smarlecture.group.studentlist.StudentListFragment;
@@ -37,7 +38,7 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 if (studentListFragment == null)
                     studentListFragment = StudentListFragment.newInstance();
-                studentListPresenter = new StudentListPresenter(FirebaseRepository.getInstance(), studentListFragment, GROUP_ID, GROUP_NAME);
+                studentListPresenter = new StudentListPresenter(MockRepo.getInstance(), studentListFragment, GROUP_ID, GROUP_NAME);
                 return studentListFragment;
 
             case 1:

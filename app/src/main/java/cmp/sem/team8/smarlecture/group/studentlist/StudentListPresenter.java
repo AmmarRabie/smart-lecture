@@ -6,8 +6,12 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.common.io.ExportContext;
+import cmp.sem.team8.smarlecture.common.io.ExportTask;
+import cmp.sem.team8.smarlecture.common.io.excel.ExcelExportStrategy;
 
 /**
  * Created by Loai Ali on 3/16/2018.
@@ -67,6 +71,28 @@ public class StudentListPresenter implements StudentListContract.Actions {
             mGroupRef.child("namesList").removeEventListener(valueEventListeners.get(i));*/
     }
 
+    @Override
+    public void exportExcel() {
+        mDataSource.getGroupInfoForExport(GROUP_ID, new ExportExcelCallback());
+    }
+
+    final class ExportExcelCallback extends AppDataSource.Get<FileModel> {
+        @Override
+        public void onDataFetched(FileModel fileData) {
+            ExportContext exportContext = new ExportContext(new ExcelExportStrategy());
+            exportContext.export(fileData).addOnSuccessListener(new ExportTask.OnSuccessListener() {
+                @Override
+                public void onSuccess() {
+                    mView.onExportSuccess();
+                }
+            }).addOnFailureListener(new ExportTask.OnFailureListener() {
+                @Override
+                public void onFailure() {
+                    mView.showOnErrorMessage("Sorry, Can't export this group");
+                }
+            });
+        }
+    }
 
     final class InviteUserCallback extends AppDataSource.Insert<UserModel> {
         @Override
@@ -81,7 +107,6 @@ public class StudentListPresenter implements StudentListContract.Actions {
         }
 
     }
-
 
     final class GetUserCallback extends AppDataSource.Get<ArrayList<InvitedUserModel>> {
         @Override

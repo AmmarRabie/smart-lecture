@@ -41,5 +41,6 @@
     <string name="dMes_connection">Turn of the internet connection + turn on airplane mode</string>
     <string name="dTitle_enterPin">Please enter PIN</string>
     <string name="title_activity_group_statistics">GroupStatisticsActivity</string>
+    <string name="export_to_excel">Export to excel</string>
 
 </resources>

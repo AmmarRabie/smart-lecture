@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.group.studentlist;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -22,6 +24,8 @@ import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.profile.ProfileActivity;
+import cmp.sem.team8.smarlecture.statistics.GroupStatisticsActivity;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -60,6 +64,7 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
                              Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.frag_studentlist, container, false);
+        setHasOptionsMenu(true);
 
         mStudentListRecyclerView = root.findViewById(R.id.groupFrag_list);
         mOfflineView = root.findViewById(R.id.offlineView);
@@ -120,6 +125,11 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
         InvitedUserModel newStudent = new InvitedUserModel(user, false);
         mNamesList.add(newStudent);
         mStudentListRecyclerAdapter.notifyItemInserted(mNamesList.size());
+    }
+
+    @Override
+    public void onExportSuccess() {
+        Toasty.success(getContext(), "Exported successfully", Toast.LENGTH_SHORT,true).show();
     }
 
     @Override
@@ -194,5 +204,15 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
     public void onInternetConnectionBack() {
         mInternetState = true;
         mOfflineView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.optionGroup_exportToExcel:
+                mPresenter.exportExcel();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

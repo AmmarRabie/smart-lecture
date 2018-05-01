@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
@@ -137,6 +138,8 @@ public interface AppDataSource {
     void addNote(String sessionId, String memberId, String noteText, Insert<NoteModel> callback);
 
     void deleteNote(String sessionId, String memberId, String noteId, Delete callback);
+
+    void getGroupInfoForExport(String groupId, Get<FileModel> callback);
 
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
