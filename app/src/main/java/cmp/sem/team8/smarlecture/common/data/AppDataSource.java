@@ -32,6 +32,7 @@ import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 public interface AppDataSource {
 
     void getUser(String userId, Get<UserModel> callback);
+    void getUserGrade(int Grade,String userId,Get<UserGradeModel> callback);
 
     void insertUser(UserModel userModel, Insert<Void> callback);
 

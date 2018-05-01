@@ -91,6 +91,28 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
+    public void getUserGrade(final int Grade, String userId,final Get<UserGradeModel> callback) {
+        getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot userSnapshot) {
+                if (!userSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                UserGradeModel model=new UserGradeModel(userModel.getName(),userModel.getEmail(),userModel.getId(),Integer.toString(Grade));
+                callback.onDataFetched(model);
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
     public void insertUser(final UserModel userModel, final Insert<Void> callback) {
         HashMap<String, String> values = new HashMap<>();
         values.put(UserEntry.KEY_EMAIL, userModel.getEmail());

@@ -1,10 +1,12 @@
 package cmp.sem.team8.smarlecture.common.data.model;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by ramym on 5/1/2018.
  */
 
-public class UserGradeModel extends UserModel {
+public class UserGradeModel extends UserModel implements Comparable<UserGradeModel> {
 
     String grade;
 
@@ -19,5 +21,10 @@ public class UserGradeModel extends UserModel {
 
     public void setGrade(String grade) {
         this.grade = grade;
+    }
+
+    @Override
+    public int compareTo(@NonNull UserGradeModel o) {
+        return (Integer.parseInt(this.getGrade())-Integer.parseInt(o.getGrade()));
     }
 }

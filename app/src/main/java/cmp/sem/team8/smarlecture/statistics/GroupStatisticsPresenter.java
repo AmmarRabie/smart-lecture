@@ -19,6 +19,7 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.data.mock.MockRepo;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
@@ -32,6 +33,8 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
     GroupStatisticsContract.Views mView;
     GroupStatisticsModel data;
     MockRepo  mTestDatabase;
+
+    int mode=0;   // to be used to sort the list to avoid listeners are Asincronized   worst=0;  best=1;
 
 
     GroupStatisticsPresenter(GroupStatisticsContract.Views mView)
@@ -104,33 +107,38 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
 
         Collections.sort(mylist);
 
-       final ArrayList<UserModel> mostusers=new ArrayList<>();
-       final ArrayList<UserModel> worstusers=new ArrayList<>();
+       final ArrayList<UserGradeModel> mostusers=new ArrayList<>();
+       final ArrayList<UserGradeModel> worstusers=new ArrayList<>();
         if (mylist.size()>10)
         {
             for (int i = 0; i <10; i++)
             {
-                    mDatabase.getUser(mylist.get(i).getElement0(), new AppDataSource.Get<UserModel>()
+                    mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new AppDataSource.Get<UserGradeModel>()
                     {
                         @Override
-                        public void onDataFetched(UserModel data) {
+                        public void onDataFetched(UserGradeModel data) {
                             worstusers.add(data);
 
-                            if (worstusers.size()==10)
-                            mView.showWorstAttendantUsers(worstusers);
+                            if (worstusers.size()==10) {
+                                Collections.sort(worstusers);
+                                mView.showWorstAttendantUsers(worstusers);
+                            }
                         }
                     });
             }
 
             for (int i = mylist.size()-1; i>=mylist.size()-10; i--)
              {
-            mDatabase.getUser(mylist.get(i).getElement0(), new AppDataSource.Get<UserModel>() {
+            mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new AppDataSource.Get<UserGradeModel>(){
                 @Override
-                public void onDataFetched(UserModel data) {
+                public void onDataFetched(UserGradeModel data) {
                     mostusers.add(data);
 
-                    if (mostusers.size()==10)
+                    if (mostusers.size()==10) {
+                        Collections.sort(mostusers);
+                        Collections.reverse(mostusers);
                         mView.showMostAttendantUsers(mostusers);
+                    }
                 }
             });
              }
@@ -139,12 +147,13 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
         {
             for (int i = 0; i <mylist.size(); i++)
             {
-                    mDatabase.getUser(mylist.get(i).getElement0(), new AppDataSource.Get<UserModel>() {
+                    mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new AppDataSource.Get<UserGradeModel>(){
                         @Override
-                        public void onDataFetched(UserModel data) {
+                        public void onDataFetched(UserGradeModel data) {
                             worstusers.add(data);
 
                             if (worstusers.size()==mylist.size()) {
+                                Collections.sort(worstusers);
                                 mView.showWorstAttendantUsers(worstusers);
                                 Collections.reverse(worstusers);
                                 mView.showMostAttendantUsers(worstusers);

@@ -214,6 +214,11 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
+    public void getUserGrade(int Grade, String userId, Get<UserGradeModel> callback) {
+
+    }
+
+    @Override
     public void insertUser(final UserModel userModel, final Insert<Void> callback) {
 
     }

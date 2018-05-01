@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.model.GroupOfUsersModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 import android.util.SparseArray;
@@ -119,11 +120,12 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
     }
 
     @Override
-    public void showMostAttendantUsers(List<UserModel> users) {
+    public void showMostAttendantUsers(List<UserGradeModel> users) {
         GroupOfUsersModel group=new GroupOfUsersModel("Best Users");
         for (int i=0;i< users.size();i++)
         {
-            group.children.add(users.get(i));
+            UserModel model=users.get(i);
+            group.children.add(model);
         }
 
         mGroups.append(1,group);
@@ -131,12 +133,13 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
     }
 
     @Override
-    public void showWorstAttendantUsers(List<UserModel> users) {
+    public void showWorstAttendantUsers(List<UserGradeModel> users) {
 
         GroupOfUsersModel group=new GroupOfUsersModel("worst Users");
         for (int i=0;i< users.size();i++)
         {
-            group.children.add(users.get(i));
+            UserModel model=users.get(i);
+            group.children.add(model);
         }
 
         mGroups.append(0,group);

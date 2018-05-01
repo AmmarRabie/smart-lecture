@@ -4,6 +4,7 @@ import java.util.List;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 
@@ -25,13 +26,13 @@ public interface GroupStatisticsContract {
          *  show list of most 10 attendant users
          * @param users
          */
-        void showMostAttendantUsers(List<UserModel> users);
+        void showMostAttendantUsers(List<UserGradeModel> users);
 
         /**--- show worst attendant Users -----------
          *  show list of worst 10 attendant users
          * @param users
          */
-        void showWorstAttendantUsers(List<UserModel> users);
+        void showWorstAttendantUsers(List<UserGradeModel> users);
 
          String getGroupID();
 
