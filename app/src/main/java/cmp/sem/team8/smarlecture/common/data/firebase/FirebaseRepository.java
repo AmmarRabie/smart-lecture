@@ -15,12 +15,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
@@ -28,6 +30,7 @@ import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.common.util.MapUtils;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
 /**
@@ -837,6 +840,272 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
+    public void editObjective(String objectiveID, String sessionID, String objectiveDescription, final boolean isOffline, final Update callback) {
+        if(isOffline)
+            callback.onUpdateSuccess();
+        else {
+            DatabaseReference mObjectiveRef=FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessionID).child(SessionEntry.KEY_FOR_OBJECTIVES_LIST).child(objectiveID).child(FirebaseContract.ObjectiveEntry.KEY_DESC);
+            mObjectiveRef.setValue(objectiveDescription).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                        callback.onUpdateSuccess();
+                    else
+                        callback.onError(task.getException().getMessage());
+                }
+            });
+
+        }
+
+
+
+    }
+
+    @Override
+    public void deleteObjective(String objectiveID, String sesisonID, boolean isOffline, final Delete callback) {
+        if(isOffline)
+        {
+            callback.onDeleted();
+        }
+        else {
+            DatabaseReference mObjectiveRef=FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sesisonID).child(SessionEntry.KEY_FOR_OBJECTIVES_LIST).child(objectiveID);
+            mObjectiveRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                        callback.onDeleted();
+                    else
+                        callback.onError(task.getException().getMessage());
+                }
+            });
+
+
+
+        }
+    }
+
+    @Override
+    public void getGroupSessions(String groupId, final Get<ArrayList<SessionModel>> callback) {
+        DatabaseReference mGroupRef=FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS);
+        mGroupRef.orderByChild(SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists())
+                    return;
+
+
+                ArrayList<SessionModel> sessionsList=new ArrayList<>();
+                for(DataSnapshot session:dataSnapshot.getChildren())
+                {if(!session.exists())
+                    continue;
+                SessionModel addedSession = FirebaseSerializer.serializeSession(session);
+                sessionsList.add(addedSession);
+
+
+
+                }
+                callback.onDataFetched(sessionsList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+
+            }
+        });
+
+    }
+
+    @Override
+    public void addSession(String groupId, String sessionId, String sessionName, final Insert<Void> callback) {
+        DatabaseReference mSessionRef=FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessionId);
+        mSessionRef.child(SessionEntry.KEY_SESSION_STATUS).setValue(SessionStatus.NOT_ACTIVATED.toString());
+        mSessionRef.child(SessionEntry.KEY_ATTENDANCE_STATUS).setValue(AttendanceStatus.NOT_ACTIVATED.toString());
+        mSessionRef.child(SessionEntry.KEY_FOR_GROUP_ID).setValue(groupId);
+        mSessionRef.child(SessionEntry.KEY_FOR_SESSION_NAME_).setValue(sessionName).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                    callback.onDataInserted(null);
+                else
+                    callback.onError(task.getException().getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void editSession(String sessionId, String sessionName, final boolean isOffline, final Update callback) {
+        if(isOffline)
+            callback.onUpdateSuccess();
+
+           FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS)
+                   .child(sessionId).child(SessionEntry.KEY_FOR_SESSION_NAME_).
+                   setValue(sessionName).addOnCompleteListener(new OnCompleteListener<Void>() {
+               @Override
+               public void onComplete(@NonNull Task<Void> task) {
+                   if(task.isSuccessful()) {
+                       if(!isOffline)
+                       callback.onUpdateSuccess();
+                   }
+                   else
+                       callback.onError(task.getException().getMessage());
+               }
+           });
+        }
+
+
+
+
+    @Override
+    public void deleteSession(String sessoinId, final boolean isOffline, final Delete callback) {
+        if(isOffline)
+            callback.onDeleted();
+        FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessoinId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    if (!isOffline)
+                        callback.onDeleted();
+
+                }
+                else callback.onError(task.getException().getMessage());
+
+
+            }
+        });
+
+    }
+
+    @Override
+    public void deleteGroupById(final String groupId, final boolean isOffline, final Delete callback) {
+        FirebaseDatabase.getInstance().getReference().child(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot sessionSnapShot:dataSnapshot.getChildren())
+                    {
+                        String sessionKey= sessionSnapShot.getKey();
+                        FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessionKey).removeValue();
+                    }
+                }
+                if(isOffline)
+                    callback.onDeleted();
+                FirebaseDatabase.getInstance().getReference().child(GroupEntry.KEY_THIS).child(groupId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            if(!isOffline)
+                                callback.onDeleted();
+                        }
+                        else
+                            callback.onError(task.getException().getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+
+            }
+        });
+    }
+
+    @Override
+    public void addGroup(String userId, final String groupName, final boolean isOffline, final Insert<String> callback) {
+
+        DatabaseReference groupRef=FirebaseDatabase.getInstance().getReference().child(GroupEntry.KEY_THIS);
+        DatabaseReference newGroupRef=groupRef.push();
+        final String groupId=newGroupRef.getKey();
+        if(isOffline)
+            callback.onDataInserted(groupId);
+
+        newGroupRef.child(GroupEntry.KEY_OWNER_ID).setValue(userId);
+        newGroupRef.child(GroupEntry.KEY_NAME).setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+
+                    if (!isOffline)
+                        callback.onDataInserted(groupId);
+                } else {
+
+                        callback.onError(task.getException().getMessage());
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void updateGroup(String groupId, String groupName, final boolean isOffline, final Update callback) {
+        if (isOffline)
+            callback.onUpdateSuccess();
+       FirebaseDatabase.getInstance().getReference().child(GroupEntry.KEY_THIS).child(groupId)
+               .child(GroupEntry.KEY_NAME).setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    if ( !isOffline)
+                       callback.onUpdateSuccess();
+                } else {
+                   callback.onError(task.getException().getMessage());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getGroupId(String sessionId, final Get<String> callback) {
+        FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessionId).child(SessionEntry.KEY_FOR_GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                callback.onDataFetched(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+
+            }
+        });
+    }
+
+    @Override
+    public void getGroupsForUser(String userId, final Get<ArrayList<GroupModel>> callback) {
+        Query userGroups = FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS)
+                .orderByChild(GroupEntry.KEY_OWNER_ID)
+                .equalTo(userId);
+        userGroups.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<GroupModel> list = new ArrayList<>();
+                for (DataSnapshot groupSnapShot : dataSnapshot.getChildren()) {
+                    if (!dataSnapshot.exists())
+                        continue;
+                    GroupModel groupModel = FirebaseSerializer.serializeGroup(groupSnapShot);
+
+
+                    list.add(groupModel);
+                }
+                callback.onDataFetched(list);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+
+            }
+
+
+        });
+    }
+
+    @Override
     public void addNote(String sessionId, String memberId, final String noteText, final Insert<NoteModel> callback) {
         DatabaseReference newNoteRef = getSessionRef(sessionId).child(SessionEntry.KEY_NAMES_LIST)
                 .child(memberId).child(SessionEntry.KEY_NOTES).push();
@@ -847,13 +1116,3 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         callback.onDataInserted(new NoteModel(noteId, noteText));
     }
 }
-
-
-
-
-
-
-
-
-
-

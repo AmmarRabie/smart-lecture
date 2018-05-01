@@ -1,5 +1,7 @@
 package cmp.sem.team8.smarlecture.common.data.mock;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
@@ -449,6 +451,61 @@ public class MockRepo implements AppDataSource {
   
     @Override 
     public void deleteNote(String sessionId, String memberId, String noteId, Delete callback) {
+    }
+
+    @Override
+    public void editObjective(String objectiveID, String sessionID,String objectiveDescription,boolean isOffline,Update callback) {
+
+    }
+
+    @Override
+    public void deleteObjective(String objectiveID, String sesisonID, boolean isOffline, Delete callback) {
+
+    }
+
+    @Override
+    public void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback) {
+
+    }
+
+    @Override
+    public void addSession(String groupId,String sessionId,String sessionName,Insert<Void> callback) {
+
+    }
+
+    @Override
+    public void editSession(String sessionId, String sessionName,boolean isOffline, Update callback) {
+
+    }
+
+    @Override
+    public void deleteSession(String sessoinId, boolean isOffline, Delete callback) {
+
+    }
+
+    @Override
+    public void deleteGroupById(String groupId, boolean isOffline,Delete callback) {
+
+    }
+
+    @Override
+    public void addGroup(String userId, String groupName,boolean isOffline, Insert<String> callback) {
+
+    }
+
+    @Override
+    public void updateGroup(String groupId, String groupName, boolean isOffline, Update callback) {
+
+    }
+
+    @Override
+    public void getGroupId(String sessionId, Get<String> callback) {
+
+    }
+
+    @Override
+    public void getGroupsForUser(String userId, Get<ArrayList<GroupModel>> callback) {
+
     }
 
     @Override

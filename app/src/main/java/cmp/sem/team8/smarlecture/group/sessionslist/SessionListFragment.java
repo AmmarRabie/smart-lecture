@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
 
-import cmp.sem.team8.smarlecture.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.*;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
 
 /**
@@ -179,7 +179,7 @@ SessionListRecyclerAdapter.OnItemClickListener  {
         int position = 0;
 
 
-        while(!sessionID.equals(mSessionslist.get(position).getmSessionID())){position++;}
+        while(!sessionID.equals(mSessionslist.get(position).getId())){position++;}
         mSessionslist.remove(position);
         mSessionListRecyclerAdapter.notifyDataSetChanged();
         /*
@@ -235,11 +235,11 @@ SessionListRecyclerAdapter.OnItemClickListener  {
 
         int position = 0;
 
-        while (!sessionID.equals(mSessionslist.get(position).getmSessionID())) {
+        while (!sessionID.equals(mSessionslist.get(position).getId())) {
             position++;
         }
 
-        mSessionslist.get(position).setmName(sessionName);
+        mSessionslist.get(position).setName(sessionName);
 
         mSessionListRecyclerAdapter.notifyItemChanged(position, null);
 /*
@@ -307,7 +307,7 @@ SessionListRecyclerAdapter.OnItemClickListener  {
 
     @Override
     public void onDeleteSessionClick(View view, int position) {
-        String sessionID=mSessionslist.get(position).getmSessionID();
+        String sessionID=mSessionslist.get(position).getId();
         mPresenter.deleteSession(sessionID);
 
 
@@ -315,8 +315,8 @@ SessionListRecyclerAdapter.OnItemClickListener  {
 
     @Override
     public void onEditSessionClick(View view, int position) {
-        final String sessionID=mSessionslist.get(position).getmSessionID();
-        String sessionName=mSessionslist.get(position).getmName();
+        final String sessionID=mSessionslist.get(position).getId();
+        String sessionName=mSessionslist.get(position).getName();
 
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
@@ -345,8 +345,8 @@ SessionListRecyclerAdapter.OnItemClickListener  {
     @Override
     public void onItemClick(View view, int position) {
         SessionModel session=mSessionslist.get(position);
-        String groupID=session.getmGroupID();
-        String sessionID=session.getmSessionID();
+        String groupID=session.getForGroup();
+        String sessionID=session.getId();
         Intent sessionActivity = new Intent(getContext(), SessionActivity.class);
         sessionActivity.putExtra("group_id", groupID);
         sessionActivity.putExtra("session_id",sessionID);

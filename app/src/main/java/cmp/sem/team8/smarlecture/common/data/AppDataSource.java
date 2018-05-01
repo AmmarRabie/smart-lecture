@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
@@ -134,12 +135,32 @@ public interface AppDataSource {
 
     void deleteNote(String sessionId, String memberId, String noteId, Delete callback);
 
-/*    //
-    void getGroupById(String groupId, Get<GroupModel> callback);
+    void editObjective(String objectiveID,String sessionID,String objectiveDescription,boolean isOffline,Update callback);
+
+    void deleteObjective(String objectiveID,String sesisonID,boolean isOffline,Delete callback);
 
     void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback);
 
-    void deleteGroupById(String groupId, Delete callback);
+    void addSession(String groupId,String sessionId,String sessionName,Insert<Void> callback );
+
+    void editSession(String sessionId,String sessionName,boolean isOffline,Update callback);
+
+    void deleteSession(String sessoinId,boolean isOffline,Delete callback);
+
+    void deleteGroupById(String groupId, boolean isOffline,Delete callback);
+
+    void addGroup(String userId,String groupName,boolean isOffline,Insert<String>callback);
+
+    void updateGroup(String groupId,String groupName,boolean isOffline,Update callback);
+
+    void getGroupId(String sessionId,Get<String >callback);
+
+    void getGroupsForUser(String userId, Get<ArrayList< GroupModel>> callback);
+/*    //
+    void getGroupById(String groupId, Get<GroupModel> callback);
+
+
+
 
     void updateGroup(GroupModel updatingValues, Update callback);
 

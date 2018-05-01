@@ -43,7 +43,7 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 if (sessionListFragment == null) {
                     sessionListFragment = SessionListFragment.newInstance();
-                    sessionListPresenter = new SessionListPresenter(sessionListFragment, GROUP_ID);
+                    sessionListPresenter = new SessionListPresenter(sessionListFragment, GROUP_ID,FirebaseRepository.getInstance());
                     return sessionListFragment;
                 }
             default:

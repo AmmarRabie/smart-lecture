@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 
 /**
  * when the presenter start he should look for the current user -unless it is passes earlier-
@@ -33,11 +34,11 @@ public interface GroupListContract {
 
         void showErrorMessage(String cause);
 
-        void showGroupList(ArrayList<HashMap<String, Object>> groupList);
+        void showGroupList(ArrayList<GroupModel> groupList);
 
         void onDeleteSuccess(String groupID);
         void onEditSuccess(String groupID,String newName);
-        void onAddSuccess(String groupID,String newName);
+        void onAddSuccess(String groupID,String newName,String OwnerId);
 
         void startJoinSessionView(String sessionId, String groupId);
 

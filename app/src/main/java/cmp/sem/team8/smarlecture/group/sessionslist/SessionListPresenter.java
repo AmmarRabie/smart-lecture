@@ -29,19 +29,18 @@ public class SessionListPresenter implements SessionListContract.Actions {
     private static final String TAG = "SessionListPresenter";
 
     private DatabaseReference mGroupRef;
-
     private final String GROUP_ID;
-
+    private AppDataSource mDataSource;
     private SessionListContract.Views mView;
 
     private static final int minId = 0;
     private static final int maxId = 10000000;
 
 
-
-    public SessionListPresenter(SessionListContract.Views view,final String groupID){
-        mView=view;
-        GROUP_ID=groupID;
+    public SessionListPresenter(SessionListContract.Views view, final String groupID,AppDataSource dataSource) {
+        mView = view;
+        mDataSource=dataSource;
+        GROUP_ID = groupID;
         mGroupRef = null;
         if (groupID == null) {
             Log.e(TAG, "StudentListPresenter: group passed as null");
@@ -49,6 +48,7 @@ public class SessionListPresenter implements SessionListContract.Actions {
         }
         mView.setPresenter(this);
     }
+
     @Override
     public void start() {
         mView.handleOfflineStates();
@@ -56,27 +56,26 @@ public class SessionListPresenter implements SessionListContract.Actions {
 
         FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    mGroupRef = FirebaseDatabase.getInstance().
-                            getReference(SessionEntry.KEY_THIS);
-                    addSessions();
-                } else {
-                    Log.e(TAG, "onDataChange: the Gruop presenter is called with invalid group id");
-                    mView.showOnErrorMessage("group doesn't exist");
-                    mGroupRef = null;
-                }
-            }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            mGroupRef = FirebaseDatabase.getInstance().
+                                    getReference(SessionEntry.KEY_THIS);
+                            addSessions();
+                        } else {
+                            Log.e(TAG, "onDataChange: the Gruop presenter is called with invalid group id");
+                            mView.showOnErrorMessage("group doesn't exist");
+                            mGroupRef = null;
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                mGroupRef = null;
-                mView.showOnErrorMessage(databaseError.getMessage());
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        mGroupRef = null;
+                        mView.showOnErrorMessage(databaseError.getMessage());
+                    }
+                });
     }
-
 
 
     private String generateUniqueId() {
@@ -91,99 +90,142 @@ public class SessionListPresenter implements SessionListContract.Actions {
     }
 
 
-
     @Override
-    public void addSession(String sessionName) {
-        if(sessionName==null|| sessionName.isEmpty())
+    public void addSession(final String sessionName) {
+        if (sessionName == null || sessionName.isEmpty())
             mView.showOnErrorMessage("Session can't have an empty name");
 
         final String sessionID = generateUniqueId();
-        DatabaseReference sessionsRef=FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS);
-        DatabaseReference newsessionRef=sessionsRef.child(sessionID);
+        mDataSource.addSession(GROUP_ID, sessionID, sessionName, new AppDataSource.Insert<Void>() {
+            @Override
+            public void onDataInserted(Void feedback) {
+                mView.OnAddSuccess(new cmp.sem.team8.smarlecture.common.data.model.SessionModel(sessionID,GROUP_ID, AppDataSource.AttendanceStatus.NOT_ACTIVATED, AppDataSource.SessionStatus.NOT_ACTIVATED,sessionName));
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+        });
+      /*  DatabaseReference sessionsRef = FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS);
+        DatabaseReference newsessionRef = sessionsRef.child(sessionID);
         //final String sessionID=newsessionRef.getKey();
-        final SessionModel addedSession=new SessionModel();
-        addedSession.setmSessionStatus(AppDataSource.SessionStatus.NOT_ACTIVATED.toString());
-        addedSession.setmStudentsList(new ArrayList<String>());
-        addedSession.setmSessionID(sessionID);
-        addedSession.setmAttendanceStatus(AppDataSource.AttendanceStatus.NOT_ACTIVATED.toString());
-        addedSession.setmGroupID(GROUP_ID);
-        addedSession.setmName(sessionName);
+        final cmp.sem.team8.smarlecture.common.data.model.SessionModel addedSession = new cmp.sem.team8.smarlecture.common.data.model.SessionModel();
+        addedSession.setSessionStatus(AppDataSource.SessionStatus.NOT_ACTIVATED);
+       // addedSession.setmStudentsList(new ArrayList<String>());
+        addedSession.setId(sessionID);
+        addedSession.setAttendanceStatus(AppDataSource.AttendanceStatus.NOT_ACTIVATED);
+        addedSession.setForGroup(GROUP_ID);
+        addedSession.setName(sessionName);
 
 
-        newsessionRef.child(SessionEntry.KEY_FOR_GROUP_ID).setValue(addedSession.getmGroupID());
-       newsessionRef.child(SessionEntry.KEY_FOR_SESSION_NAME_).setValue(addedSession.getmName());
-       newsessionRef.child(SessionEntry.KEY_SESSION_STATUS).setValue(addedSession.getmSessionStatus());
-       newsessionRef.child(SessionEntry.KEY_ATTENDANCE_STATUS).setValue(addedSession.getmAttendanceStatus()).addOnCompleteListener(new OnCompleteListener<Void>() {
-           @Override
-           public void onComplete(@NonNull Task<Void> task) {
-               if(task.isSuccessful())
-                   mView.OnAddSuccess(addedSession);
-               else {
-                   if(mView!=null)
-                       mView.showOnErrorMessage(task.getException().toString());
-               }
-           }
-       });
+        newsessionRef.child(SessionEntry.KEY_FOR_GROUP_ID).setValue(addedSession.getForGroup());
+        newsessionRef.child(SessionEntry.KEY_FOR_SESSION_NAME_).setValue(addedSession.getName());
+        newsessionRef.child(SessionEntry.KEY_SESSION_STATUS).setValue(addedSession.getSessionStatus());
+        newsessionRef.child(SessionEntry.KEY_ATTENDANCE_STATUS).setValue(addedSession.getAttendanceStatus()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    mView.OnAddSuccess(addedSession);
+                else {
+                    if (mView != null)
+                        mView.showOnErrorMessage(task.getException().toString());
+                }
+            }
+        });*/
     }
 
     @Override
     public void editSession(final String sessionName, final String sessionID) {
-        if(mGroupRef==null) return;
-        if(sessionID==null|| sessionID.isEmpty()){
+        if (mGroupRef == null) return;
+        if (sessionID == null || sessionID.isEmpty()) {
             mView.showOnErrorMessage("Session doesn't have an ID ");
             return;
         }
-        if(sessionName==null||sessionName.isEmpty()){
+        if (sessionName == null || sessionName.isEmpty()) {
             mView.showOnErrorMessage("Session can't have an empty name");
             return;
 
         }
-        final boolean isOffline=mView.getOfflineState();
-        if(isOffline){
-            mView.OnEditSuccess(sessionID,sessionName);
+        mDataSource.editSession(sessionID, sessionName, mView.getOfflineState(), new AppDataSource.Update() {
+            @Override
+            public void onUpdateSuccess() {
+                mView.OnEditSuccess(sessionID,sessionName);
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+        });
+      /*  final boolean isOffline = mView.getOfflineState();
+        if (isOffline) {
+            mView.OnEditSuccess(sessionID, sessionName);
         }
         mGroupRef.child(sessionID).child(SessionEntry.KEY_FOR_SESSION_NAME_).setValue(sessionName)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                    if(!isOffline)
-                    mView.OnEditSuccess(sessionID,sessionName);
-                else mView.showOnErrorMessage(task.getException().getMessage());
-            }
-        });
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful())
+                            if (!isOffline)
+                                mView.OnEditSuccess(sessionID, sessionName);
+                            else mView.showOnErrorMessage(task.getException().getMessage());
+                    }
+                });*/
     }
 
     @Override
     public void deleteSession(final String sessionID) {
-        if(sessionID==null||sessionID.isEmpty()){
+        if (sessionID == null || sessionID.isEmpty()) {
             mView.showOnErrorMessage("This Session doesn't have an ID");
             return;
         }
-        final boolean isOffline=mView.getOfflineState();
-        if(isOffline)
+        mDataSource.deleteSession(sessionID, mView.getOfflineState(), new AppDataSource.Delete() {
+            @Override
+            public void onDeleted() {
+                mView.OnDeleteSuccess(sessionID);
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+        });
+      /*  final boolean isOffline = mView.getOfflineState();
+        if (isOffline)
             mView.OnDeleteSuccess(sessionID);
         mGroupRef.child(sessionID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    if(!isOffline)
+                if (task.isSuccessful()) {
+                    if (!isOffline)
                         mView.OnDeleteSuccess(sessionID);
-                }
-                else {
-                    mView.showOnErrorMessage(task.getException().getMessage()   );
+                } else {
+                    mView.showOnErrorMessage(task.getException().getMessage());
                 }
             }
         });
-
+*/
 
     }
 
-    private  void addSessions(){
+    private void addSessions() {
         if (mGroupRef == null) {
             return;
         }
-        Query groupSessions=FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS).
+
+        mDataSource.getGroupSessions(GROUP_ID, new AppDataSource.Get<ArrayList<cmp.sem.team8.smarlecture.common.data.model.SessionModel>>() {
+            @Override
+            public void onDataFetched(ArrayList<cmp.sem.team8.smarlecture.common.data.model.SessionModel> data) {
+                mView.showSessionsList(data);
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+        });
+       /* Query groupSessions = FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS).
                 orderByChild(SessionEntry.KEY_FOR_GROUP_ID).equalTo(GROUP_ID);
 
 
@@ -192,11 +234,11 @@ public class SessionListPresenter implements SessionListContract.Actions {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<SessionModel> sessionsList = new ArrayList<SessionModel>();
 
-                for(DataSnapshot sessionSnapshot:dataSnapshot.getChildren()){
-                    if(!dataSnapshot.exists())
+                for (DataSnapshot sessionSnapshot : dataSnapshot.getChildren()) {
+                    if (!dataSnapshot.exists())
                         continue;
                     String sessionId = sessionSnapshot.getKey();
-                    SessionModel sessionModel=sessionSnapshot.getValue(SessionModel.class);
+                    SessionModel sessionModel = sessionSnapshot.getValue(SessionModel.class);
                     sessionModel.setmSessionID(sessionId);
 
                     sessionModel.setmName(sessionSnapshot.child(SessionEntry.KEY_FOR_SESSION_NAME_).getValue(String.class));
@@ -205,23 +247,24 @@ public class SessionListPresenter implements SessionListContract.Actions {
                     sessionModel.setmGroupID(GROUP_ID);
                     sessionModel.setmAttendanceStatus(sessionSnapshot.child(SessionEntry.KEY_ATTENDANCE_STATUS).getValue(String.class));
 
-                    HashMap<String,String>list= (HashMap<String,String>)sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
-                  //if students list is empty list will be equal to null
-                   if(list!=null){
-                    ArrayList<String> students= new ArrayList<>(list.values());
-                    sessionModel.setmStudentsList(students);}
-                    else{
-                       sessionModel.setmStudentsList(new ArrayList<String>());
+                    HashMap<String, String> list = (HashMap<String, String>) sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
+                    //if students list is empty list will be equal to null
+                    if (list != null) {
+                        ArrayList<String> students = new ArrayList<>(list.values());
+                        sessionModel.setmStudentsList(students);
+                    } else {
+                        sessionModel.setmStudentsList(new ArrayList<String>());
 
-                   }
+                    }
                     //sessionModel.setmStudentsList(sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
                     sessionsList.add(sessionModel);
                 }
                 mView.showSessionsList(sessionsList);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                if(mView!=null)
+                if (mView != null)
                     mView.showOnErrorMessage(databaseError.getMessage());
             }
         });
@@ -258,6 +301,7 @@ public class SessionListPresenter implements SessionListContract.Actions {
             }
         });*/
     }
+
     @Override
     public void end() {
 

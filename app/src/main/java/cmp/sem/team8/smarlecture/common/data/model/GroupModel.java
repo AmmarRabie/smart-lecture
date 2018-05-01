@@ -24,6 +24,14 @@ public class GroupModel {
         this.name = name;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public String getId() {
         return id;
     }

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.*;
 
 
 /**
@@ -111,8 +111,8 @@ public class SessionListRecyclerAdapter extends RecyclerView.Adapter<SessionList
             SessionModel currSession=mSessionList.get(position);
                // HashMap<String, Object> currSession = mSessionList.get(position);
 
-                nameTextView.setText(currSession.getmName());
-                statusTextView.setText(currSession.getmSessionStatus());
+                nameTextView.setText(currSession.getName());
+                statusTextView.setText(currSession.getSessionStatus().toString());
 
                 if (mItemClickListener == null)
                     return;

@@ -260,8 +260,19 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
     }
 
     @Override
-    public void editObjective(String objectiveID, String objectiveDescription) {
+    public void editObjective(final String objectiveID, final String objectiveDescription) {
 
+        mDataSource.editObjective(objectiveID, SESSION_ID,objectiveDescription, mView.getOfflineState(), new AppDataSource.Update() {
+            @Override
+            public void onUpdateSuccess() {
+                mView.onEditSuccess(objectiveID,objectiveDescription);
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+        });
         if (mObjectiveRef == null)
 
             return;
@@ -270,7 +281,19 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
     }
 
     @Override
-    public void deleteObjective(String objectiveID) {
+    public void deleteObjective(final String objectiveID) {
+        mDataSource.deleteObjective(objectiveID, SESSION_ID, mView.getOfflineState(), new AppDataSource.Delete() {
+            @Override
+            public void onDeleted() {
+                mView.onDeleteSuccess(objectiveID);
+            }
+
+            @Override
+            public void onError(String cause) {
+                mView.showOnErrorMessage(cause);
+            }
+        });
+
 
     }
 }

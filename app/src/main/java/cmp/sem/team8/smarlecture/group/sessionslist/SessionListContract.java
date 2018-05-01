@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
-import cmp.sem.team8.smarlecture.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.*;
 
 /**
  * Created by Loai Ali on 4/15/2018.
