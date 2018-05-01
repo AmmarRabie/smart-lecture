@@ -3,8 +3,7 @@
     package="cmp.sem.team8.smarlecture">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -33,7 +32,7 @@
             android:exported="true" />
         <activity
             android:name=".rateobjectives.RateObjectivesActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".grouplist.GroupListActivity"
             android:exported="true">
@@ -46,7 +45,8 @@
         </activity>
         <activity
             android:name=".statistics.GroupStatisticsActivity"
-            android:label="@string/title_activity_group_statistics"></activity>
+            android:label="@string/title_activity_group_statistics" />
+        <activity android:name=".grades.GradesActivity"></activity>
     </application>
 
 </manifest>
