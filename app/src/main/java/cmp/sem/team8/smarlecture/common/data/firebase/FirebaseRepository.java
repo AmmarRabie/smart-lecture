@@ -32,6 +32,7 @@ import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
@@ -112,6 +113,18 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 getProfileImageRef(userModel.getId()).putBytes(profileImage);
             }
         });
+    }
+
+    @Override
+    public void updateGroupGrades(String groupId,ArrayList<String> ids, ArrayList<Integer> grade, final Update callback) {
+
+        for (int i=0;i<ids.size();i++)
+        {
+            getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST).child(ids.get(i))
+                    .child(GroupEntry.KEY_NAMES_LIST_grade).setValue(grade.get(i));
+        }
+
+        callback.onUpdateSuccess();
     }
 
 
@@ -268,6 +281,72 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
+    public void getGroupGrade(String groupId,final Get<ArrayList<UserGradeModel>> callback) {
+
+        getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    synchronized public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        final ArrayList<UserGradeModel> users=new ArrayList<>();
+
+                        for (DataSnapshot ch:dataSnapshot.getChildren())
+                        {
+                            HashMap<String,Object> ob = (HashMap<String, Object>) ch.getValue();
+                            //ob.clear();
+                            String UserId=ch.getKey();
+                            long num=(Long)ob.get(GroupEntry.KEY_NAMES_LIST_grade);
+                            String attendaceGrade=Long.toString(num);
+                            getUserRef(UserId).addListenerForSingleValueEvent(new UserValueEvent(attendaceGrade, users ,dataSnapshot.getChildrenCount()));
+                        }
+                    }
+                    @Override
+                    synchronized public void onCancelled(DatabaseError databaseError)
+                    {
+
+                    }
+
+                    class UserValueEvent implements ValueEventListener {
+
+                        String attendanceGrade;
+                        ArrayList<UserGradeModel> users;
+                        long count;
+                        UserValueEvent(String attendanceGrade, ArrayList<UserGradeModel> users ,long count)
+                        {
+                            this.attendanceGrade=attendanceGrade;
+                            this.users=users;
+                            this.count=count;
+
+                        }
+                        @Override
+
+                        synchronized  public void onDataChange(DataSnapshot userSnapshot) {
+                            if (!userSnapshot.exists()) {
+                                callback.onDataNotAvailable();
+                                return;
+                            }
+                            UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                            UserGradeModel userGradeModel=new UserGradeModel(userModel.getName(),userModel.getEmail(),userModel.getId(),attendanceGrade);
+                            users.add(userGradeModel);
+
+                            if (users.size()==count)
+                            {
+                                 callback.onDataFetched(users);
+                            }
+                        }
+
+                        @Override
+                        synchronized public void onCancelled(DatabaseError databaseError) {
+                            callback.onError(databaseError.getMessage());
+                        }
+                    }
+
+                });
+
+    }
+
+    @Override
     public void inviteUserToGroup(String email, final String groupId, final Insert<UserModel> callback) {
         getReference(UserEntry.KEY_THIS)
                 .orderByChild(UserEntry.KEY_EMAIL)
@@ -312,8 +391,11 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     private void continueWithUserSnapshot(DataSnapshot userSnapshot) {
 
                         // insert the user into fetched group
+                        HashMap<String,Object>value=new HashMap<>();
+                        value.put(GroupEntry.KEY_NAMES_LIST_invite,false);
+                        value.put(GroupEntry.KEY_NAMES_LIST_grade,0);
                         getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST)
-                                .child(userSnapshot.getKey()).setValue(false); // false mean not accepted yet
+                                .child(userSnapshot.getKey()).setValue(value); // false mean not accepted yet
 
                         // insert the group to the requested groups of the user
                         getUserRef(userSnapshot.getKey()).child(UserEntry.KEY_INVITATIONS)

@@ -10,6 +10,7 @@ import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
@@ -33,6 +34,8 @@ public interface AppDataSource {
     void getUser(String userId, Get<UserModel> callback);
 
     void insertUser(UserModel userModel, Insert<Void> callback);
+
+    void updateGroupGrades(String groupId,ArrayList<String>ids,ArrayList<Integer>grade, final Update callback);
 
     void updateUserName(String userId, String newName, Update callback);
 
@@ -97,6 +100,8 @@ public interface AppDataSource {
 
     void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
     void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback); // for lecturer
+
+    void getGroupGrade(String groupId, Get<ArrayList<UserGradeModel>> callback);
 
     void inviteUserToGroup(String email, String groupId, Insert<UserModel> callback); // add a new student
 

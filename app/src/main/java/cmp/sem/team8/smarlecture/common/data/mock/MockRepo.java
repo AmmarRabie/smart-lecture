@@ -12,6 +12,7 @@ import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
@@ -218,6 +219,11 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
+    public void updateGroupGrades(String groupId, ArrayList<String> ids, ArrayList<Integer> grade, Update callback) {
+
+    }
+
+    @Override
     public void updateUserName(String userId, String newName, final Update callback) {
 
     }
@@ -304,6 +310,11 @@ public class MockRepo implements AppDataSource {
 
 
         callback.onDataFetched(new GroupStatisticsModel(groupMem,SessionMem));
+    }
+
+    @Override
+    public void getGroupGrade(String groupId, Get<ArrayList<UserGradeModel>> callback) {
+
     }
 
     @Override
