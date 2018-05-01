@@ -102,7 +102,7 @@ public class GradesPresenter implements  GradesContract.Actions{
                     ArrayList<String> ids = new ArrayList<>();
                     ArrayList<Integer> grades = new ArrayList<>();
 
-                    double slope = (highest_grade - lowest_grade) / ((mylist.get(mylist.size() - 1)).element1 - (mylist.get(0)).element1);
+                    double slope = (double)(highest_grade - lowest_grade) / ((mylist.get(mylist.size() - 1)).element1 - (mylist.get(0)).element1);
                     for (int i = mylist.size() - 1; i >= 0; i--) {
                         mylist.get(i).element1 = lowest_grade + (int) (round((mylist.get(i).element1 * slope)));
                         ids.add(mylist.get(i).element0);
