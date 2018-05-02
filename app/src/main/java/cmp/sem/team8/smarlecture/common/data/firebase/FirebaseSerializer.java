@@ -136,6 +136,13 @@ class FirebaseSerializer {
         return new NoteModel(noteId, noteText);
     }
 
+    static ArrayList<NoteModel> serializeNotes(DataSnapshot notesSnapshot) {
+        ArrayList<NoteModel> notes = new ArrayList<>();
+        for (DataSnapshot oneNoteSnapshot : notesSnapshot.getChildren())
+            notes.add(serializeNote(oneNoteSnapshot));
+        return notes;
+    }
+
     static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
