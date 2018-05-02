@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="@dimen/fab_margin"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:paddingLeft="40dp"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="User name "
+            android:gravity="start"
+            android:drawablePadding="5dp"
+            android:drawableLeft="@mipmap/user_item"
+            android:id="@+id/grade_item_name">
+        </TextView>
+
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:text="Email"
+            android:gravity="end"
+            android:drawablePadding="5dp"
+            android:id="@+id/grade_item_email">
+        </TextView>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.25"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="grade "
+            android:gravity="end"
+            android:drawablePadding="5dp"
+            android:id="@+id/grade_item_grade">
+        </TextView>
+
+    </LinearLayout>
+
+</LinearLayout>
+

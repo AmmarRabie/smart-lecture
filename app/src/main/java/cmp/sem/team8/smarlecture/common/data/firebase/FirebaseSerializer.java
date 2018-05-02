@@ -61,7 +61,7 @@ class FirebaseSerializer {
     static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
         UserModel userModel = serializeUser(userRoot);
-        return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.getValue()));
+        return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.child(GroupEntry.KEY_NAMES_LIST_invite).getValue()));
     }
 
     static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
