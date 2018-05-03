@@ -562,6 +562,16 @@ public class MockRepo implements AppDataSource {
         Log.d(TAG, "getGroupInfoForExport() returned: " + result);
         callback.onDataFetched(result);
     }
+
+    @Override
+    public void getSessionById(String sessionId, Get<SessionModel> callback) {
+
+    }
+
+    @Override
+    public Listen listenAttendanceStatus(String sessionId, Listen<AttendanceStatus> callback) {
+        return null;
+    }
 }
 
 

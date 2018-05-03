@@ -7,6 +7,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
@@ -21,9 +22,11 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry
 abstract class FirebaseRepoHelper implements AppDataSource {
 
     protected ListenersList listeners;
+    protected HashMap<Listen, ValueEventWithRef> listenersMap;
 
     FirebaseRepoHelper() {
         listeners = new ListenersList();
+        listenersMap = new HashMap<>();
     }
 
 
@@ -60,11 +63,23 @@ abstract class FirebaseRepoHelper implements AppDataSource {
 
     @Override
     public void forget(Listen listener) {
+        ValueEventWithRef target = listenersMap.get(listener);
+        if (target != null) {
+            listenersMap.remove(listener); // remove from the map
+            target.forget();
+            return;
+        }
         for (int i = 0; i < listeners.size(); i++) {
-            if (listeners.get(i).listener.equals(listener)) {
+            if (listeners.get(i).firebaseListener.equals(listener)) {
                 listeners.get(i).forget();
             }
         }
+    }
+
+    protected void addNewListener(Listen callback, ValueEventListener listener, DatabaseReference reference)
+    {
+        ValueEventWithRef valueEventWithRef = new ValueEventWithRef(listener, reference);
+        listenersMap.put(callback, valueEventWithRef);
     }
 
     protected static final class ListenersList extends ArrayList<ValueEventWithRef> {
@@ -82,11 +97,11 @@ abstract class FirebaseRepoHelper implements AppDataSource {
     }
 
     protected static final class ValueEventWithRef {
-        ValueEventListener listener;
+        ValueEventListener firebaseListener;
         DatabaseReference reference;
 
         public ValueEventWithRef(ValueEventListener listener, DatabaseReference reference) {
-            this.listener = listener;
+            this.firebaseListener = listener;
             this.reference = reference;
         }
 
@@ -95,21 +110,16 @@ abstract class FirebaseRepoHelper implements AppDataSource {
         }
 
         void forget() {
-            if (reference == null || listener == null)
+            if (reference == null || firebaseListener == null)
                 return;
-            reference.removeEventListener(listener);
+            reference.removeEventListener(firebaseListener);
             reference = null;
-            listener = null;
+            firebaseListener = null;
         }
 
-        public ValueEventListener getListener() {
-            return listener;
+        public void setFirebaseListener(ValueEventListener firebaseListener) {
+            this.firebaseListener = firebaseListener;
         }
-
-        public void setListener(ValueEventListener listener) {
-            this.listener = listener;
-        }
-
 
     }
 }

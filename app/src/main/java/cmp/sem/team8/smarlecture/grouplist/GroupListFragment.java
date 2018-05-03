@@ -286,14 +286,13 @@ public class GroupListFragment extends Fragment implements
     }
 
     @Override
-
     public void startJoinSessionView(String sessionId, String groupId) {
 
         Intent joinSessionActivity = new Intent(getContext(), JoinedSession.class);
 
         joinSessionActivity.putExtra(getString(R.string.IKey_groupId), groupId);
-
         joinSessionActivity.putExtra(getString(R.string.IKey_sessionId), sessionId);
+        joinSessionActivity.putExtra(getString(R.string.IKey_isMember), true);
 
         startActivity(joinSessionActivity);
     }

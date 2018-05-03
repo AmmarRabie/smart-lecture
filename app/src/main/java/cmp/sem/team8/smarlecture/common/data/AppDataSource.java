@@ -147,6 +147,10 @@ public interface AppDataSource {
 
     void getGroupInfoForExport(String groupId, Get<FileModel> callback);
 
+    void getSessionById(String sessionId, Get<SessionModel> callback);
+
+    Listen listenAttendanceStatus(String sessionId, Listen<AttendanceStatus> callback);
+
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 
@@ -169,7 +173,6 @@ public interface AppDataSource {
     void insertNameInNamesList(String groupId, String userId, Insert<String> callback);
 
 
-    void getSessionById(String sessionId, Get<SessionModel> callback);
 
 
     void getAttendanceStatus(String sessionId, Get<AttendanceStatus> callback);
