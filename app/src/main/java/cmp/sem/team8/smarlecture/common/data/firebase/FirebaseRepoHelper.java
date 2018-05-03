@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupMessagesEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.StorageEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -44,6 +45,10 @@ abstract class FirebaseRepoHelper implements AppDataSource {
 
     public DatabaseReference getUserRef(String userId) {
         return getReference(UserEntry.KEY_THIS).child(userId);
+    }
+
+    public DatabaseReference getGroupMessagesRef(String groupId) {
+        return getReference(GroupMessagesEntry.KEY_THIS).child(groupId);
     }
 
     protected StorageReference getProfileImageRef(String imageId) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
@@ -571,6 +572,11 @@ public class MockRepo implements AppDataSource {
     @Override
     public Listen listenAttendanceStatus(String sessionId, Listen<AttendanceStatus> callback) {
         return null;
+    }
+
+    @Override
+    public void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback) {
+
     }
 }
 

@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEn
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
@@ -440,6 +442,10 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 .child(groupId).setValue(true);
         getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST)
                 .child(userId).setValue(true);
+
+        // subscribe user to this group
+        FirebaseMessaging.getInstance().subscribeToTopic(groupId);
+
         callback.onUpdateSuccess();
     }
 
@@ -1129,5 +1135,32 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         });
         addNewListener(callback, listener, attendanceRef);
         return callback;
+    }
+
+    @Override
+    public void getGroupMessages(final String groupId, final Get<ArrayList<GroupMessageModel>> callback) {
+        getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot groupSnapshot) {
+                getGroupMessagesRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot messagesSnapshot) {
+                        ArrayList<GroupMessageModel> groupMessages = FirebaseSerializer.serializeGroupMessages(groupSnapshot, messagesSnapshot);
+                        if (groupMessages != null)
+                            callback.onDataFetched(groupMessages);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        callback.onError(databaseError.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
