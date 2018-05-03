@@ -104,6 +104,8 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
     private void writeAttendanceLocally() {
         mDataSource.setMemberAttendance(SESSION_ID, USER_ID, true, null);
+        mView.showSuccessMessage("Your attendance saved locally.");
+        mView.setInstructionSuccess(3);
     }
 
     @Override
@@ -139,6 +141,8 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
      */
     private void doOnOpeningConnectionBeforeAttendanceTimeEnd() {
         mView.showErrorMessage("Connection detected. your attendance is ignored");
+        // set his attendance false again as we set it when he verify the secret
+        mDataSource.setMemberAttendance(SESSION_ID, USER_ID, false, null);
         mView.endView();
     }
 

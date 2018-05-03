@@ -209,7 +209,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 forget(callback);
             }
         });
-        listenUserEvent.setListener(valueEventListener);
+        listenUserEvent.setFirebaseListener(valueEventListener);
         listeners.add(listenUserEvent);
     }
 
@@ -935,7 +935,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     }
                 }
         );
-//        eventWithRef.setListener(listener);
+//        eventWithRef.setFirebaseListener(firebaseListener);
 //        listeners.add(eventWithRef);
         return callback;
     }
@@ -1112,7 +1112,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     @Override
     public Listen listenAttendanceStatus(String sessionId, final Listen<AttendanceStatus> callback) {
 //        listeners.add(callback);
-        getSessionRef(sessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS).addValueEventListener(new ValueEventListener() {
+        DatabaseReference attendanceRef = getSessionRef(sessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS);
+        ValueEventListener listener = attendanceRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot statusSnapshot) {
                 if (!statusSnapshot.exists())
@@ -1126,6 +1127,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+        addNewListener(callback, listener, attendanceRef);
         return callback;
     }
 }
