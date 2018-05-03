@@ -1,132 +1,63 @@
 package cmp.sem.team8.smarlecture.joinsession.writeattendance;
 
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.TimerTask;
 
+import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
-import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 
 /**
  * Created by ramym on 3/20/2018.
  */
 
 public class WriteAttendancePresenter implements WriteAttendanceContract.Actions {
+    private static final String TAG = "WriteAttendancePresente";
+
+    private final String SESSION_ID;
+    private final String USER_ID;
 
     private WriteAttendanceContract.Views mView;
     private AppDataSource mDataSource;
-
-    private List<UserAttendanceModel> students;
-    private ValueEventListener listener = null;
-
-    private String mSessionId;
-    private String mGroupId;
-
-
     private String mSecret = null;
+
+    private boolean isTaskRunning = false;
 
     // flags to determine states of the user
     private boolean mIsConnectionTimeOver = false;
     private boolean mIsAttendanceTimeOver = false;
-    private boolean mHasNamesList = false;
 
-    public WriteAttendancePresenter(WriteAttendanceContract.Views view,AppDataSource dataSource) {
+    public WriteAttendancePresenter(WriteAttendanceContract.Views view, AppDataSource dataSource, AuthService authService, String sessionId) {
+        this.mDataSource = dataSource;
         this.mView = view;
+        SESSION_ID = sessionId;
+        USER_ID = authService.getCurrentUser().getUserId();
         mView.setPresenter(this);
-        mDataSource=dataSource;
     }
 
     @Override
     public void start() {
+        if (isTaskRunning)
+            return;
+        mView.requestDisableConnection();
+        mView.startAttendanceTimer(1 * 60);
+        mView.startConnectionTimer(35);
 
-    }
-
-    @Override
-    public void getStudentsList(final String groupId, final String sessionId) {
-
-        mSessionId = sessionId;
-        mGroupId = groupId;
-
-        final DatabaseReference thisSessionRef = FirebaseDatabase.getInstance()
-                .getReference(SessionEntry.KEY_THIS).child(sessionId);
-
-        thisSessionRef.
-                child(SessionEntry.KEY_ATTENDANCE_STATUS).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDataSource.getSessionById(SESSION_ID, new AppDataSource.Get<SessionModel>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String attendanceState = dataSnapshot.getValue(String.class);
-                    if (attendanceState.equals(AppDataSource.AttendanceStatus.OPEN.toString())) {
-                        mView.showErrorMessage("you can't take the attendance while" +
-                                " session attendance is open");
-                        return;
-                    }
-                    if (attendanceState.equals(AppDataSource.AttendanceStatus.CLOSED.toString())) {
-                        // [TODO]: this could be removed after adding objectives and questions
-                        mView.showErrorMessage("The attendance is already taken");
-                        return;
-                    }
-                    fetchNamesListAndSendToView();
-                }
+            public void onDataFetched(SessionModel session) {
+                mSecret = session.getSecret();
+                mView.showInfoMessage(mSecret);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onDataNotAvailable() {
+                mView.showErrorMessage("Invalid Id");
             }
         });
-
-
-        thisSessionRef.
-                child(SessionEntry.KEY_SECRET).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    mSecret = dataSnapshot.getValue(String.class);
-                    thisSessionRef.child(SessionEntry.KEY_SECRET).removeEventListener(this);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        if (listener == null) {
-            listener = FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS).child(mSessionId).
-                    child(SessionEntry.KEY_ATTENDANCE_STATUS).addValueEventListener(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        String state = dataSnapshot.getValue(String.class);
-                        if (state.equals(AppDataSource.AttendanceStatus.OPEN.toString()) && mHasNamesList) {
-                            // Not-Active -> open; begin of the attendance
-
-                            mView.requestDisableConnection();
-                            mView.startAttendanceTimer(1 * 60);
-                            mView.startConnectionTimer(35);
-                            FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS)
-                                    .child(mSessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS)
-                                    .removeEventListener(this);
-                            listener = null;
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
+        isTaskRunning = true;
     }
 
     @Override
@@ -136,8 +67,11 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
         mView.stopAttendanceTimer();
         mView.showInfoMessage("time end");
 
-        if (verifySecret(mView.getProvidedSecret())) doOnProvidingCorrectSecret();
-        else doOnProvidingWrongSecret();
+        if (mView.getProvidedSecret().equals(mSecret)) {
+            // Mean that the user wait till the attendance timer finish with correct secret
+            mView.setInstructionSuccess(4);
+            mView.showInfoMessage("open your internet now");
+        } else doOnProvidingWrongSecret();
     }
 
     @Override
@@ -151,7 +85,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
 
     @Override
     public void onConnectionLost() {
-        if (!mIsConnectionTimeOver && mHasNamesList) {
+        if (!mIsConnectionTimeOver) {
             mView.stopConnectionTimer();
             doOnEndingConnectionProperly();
             return;
@@ -165,68 +99,21 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
             mView.stopAttendanceTimer();
             doOnOpeningConnectionBeforeAttendanceTimeEnd();
         }
+        doOnOpeningConnectionAfterAttendanceTimeEnd();
     }
 
-
-    private void fetchNamesListAndSendToView() {
-
-
-        mDataSource.getUsersListOfGroupTemp(mGroupId, new AppDataSource.Get<ArrayList<UserAttendanceModel>>() {
-            @Override
-            public void onDataFetched(ArrayList<UserAttendanceModel> data) {
-                mView.showStudentsList(data);
-            }
-
-            @Override
-            public void onError(String cause) {
-                mView.showErrorMessage(cause);
-            }
-        });
-        /* students = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-        reference = reference.child(GroupEntry.KEY_THIS).child(mGroupId).child(GroupEntry.KEY_NAMES_LIST);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        String name = child.getValue(String.class);
-                        String key = child.getKey();
-                        students.add(new UserAttendanceModel(name, key, false));
-                    }
-
-                    mView.showStudentsList(students);
-                    mHasNamesList = true;
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                mView.showErrorMessage(databaseError.getMessage());
-            }
-        });*/
+    private void writeAttendanceLocally() {
+        mDataSource.setMemberAttendance(SESSION_ID, USER_ID, true, null);
     }
 
-    private void writeAttendance() {
-        DatabaseReference currSessionRef = FirebaseDatabase.getInstance().getReference();
-        currSessionRef = currSessionRef.child(SessionEntry.KEY_THIS).child(mSessionId).child(SessionEntry.KEY_NAMES_LIST)
-                .child(mView.getStudentId());
-        mView.showSuccessMessage("Your attendance saved locally.");
-        mView.showInfoMessage("open your internet now so that lecturer find you");
-        currSessionRef.setValue(true)/*.addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful())
-                    mView.showErrorMessage("success ya zemely");
-                else
-                    mView.showErrorMessage(task.getException().getMessage());
-            }
-        })*/;
-    }
-
-    private boolean verifySecret(String secret) {
-        return secret.equals(mSecret);
+    @Override
+    public boolean verifySecret(String secret) {
+        if (secret.equals(mSecret)) {
+            writeAttendanceLocally();
+            mView.setInstructionSuccess(2);
+            return true;
+        }
+        return false;
     }
 
 
@@ -235,6 +122,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
      */
     private void doOnNotEndingConnection() {
         mView.showErrorMessage("You don't close the connection. Your attendance is ignored");
+        mView.endView();
     }
 
     /**
@@ -243,6 +131,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     private void doOnEndingConnectionProperly() {
         mView.showSuccessMessage("Connection ended successfully.");
         mView.showInfoMessage("Don't turn on the connection before attendance time over");
+        mView.setInstructionSuccess(1);
     }
 
     /**
@@ -250,15 +139,29 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
      */
     private void doOnOpeningConnectionBeforeAttendanceTimeEnd() {
         mView.showErrorMessage("Connection detected. your attendance is ignored");
+        mView.endView();
     }
 
     /**
-     * do tasks for case of "after attendance time is end, the user provide correct secret"
-     * this case mean that the user will successfully write his attendance
+     * do tasks for case of "After providing correct secret, user opened the connection after attendance time is ended"
      */
-    private void doOnProvidingCorrectSecret() {
-        writeAttendance();
+    private void doOnOpeningConnectionAfterAttendanceTimeEnd() {
+        mView.setInstructionSuccess(5);
+
+        // End the view after proper time
+        new java.util.Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: " + Thread.currentThread().getName());
+                        mView.endView();
+                        cancel();
+                    }
+                },
+                5000
+        );
     }
+
 
     /**
      * do tasks for case of "after attendance time is end, the user provide wrong secret"
@@ -267,5 +170,6 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
      */
     private void doOnProvidingWrongSecret() {
         mView.showErrorMessage("This secret is not correct. You attendance is ignored");
+        mView.endView();
     }
 }

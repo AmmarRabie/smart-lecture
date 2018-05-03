@@ -3,7 +3,7 @@
     package="cmp.sem.team8.smarlecture">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -46,7 +46,17 @@
         <activity
             android:name=".statistics.GroupStatisticsActivity"
             android:label="@string/title_activity_group_statistics" />
-        <activity android:name=".grades.GradesActivity"></activity>
+        <activity android:name=".grades.GradesActivity" />
+
+        <service
+            android:name=".joinsession.writeattendance.AttendanceMonitorService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".joinsession.writeattendance.WriteAttendanceActivity">
+
+        </activity>
     </application>
 
 </manifest>

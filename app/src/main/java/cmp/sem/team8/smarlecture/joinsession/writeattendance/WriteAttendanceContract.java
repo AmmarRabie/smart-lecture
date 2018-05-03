@@ -13,8 +13,6 @@ import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 public class WriteAttendanceContract {
     interface Views extends IBaseView<WriteAttendanceContract.Actions> {
 
-        void showStudentsList(List<UserAttendanceModel> list);
-
         void startAttendanceTimer(int seconds);
         void startConnectionTimer(int seconds);
 
@@ -27,8 +25,11 @@ public class WriteAttendanceContract {
 
         void requestDisableConnection();
 
-        String getStudentId();
         String getProvidedSecret();
+
+        void setInstructionSuccess(int instruction);
+
+        void endView();
     }
 
 
@@ -36,12 +37,7 @@ public class WriteAttendanceContract {
      * Actions methods implemented by presenter
      */
     interface Actions extends IBasePresenter {
-
-        void getStudentsList(String GroupID, String SessionID);
-
-//        void writeAttendance(int position, String SessionId, String providedSecret);
-
-//        void onTimerFinish(int position, String secretProvided);
+        boolean verifySecret(String secret);
 
         void onAttendanceTimeEnd();
         void onConnectionTimeEnd();
