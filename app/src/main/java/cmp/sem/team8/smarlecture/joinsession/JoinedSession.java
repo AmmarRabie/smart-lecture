@@ -30,13 +30,13 @@ public class JoinedSession extends AppCompatActivity {
         tabLayout = findViewById(R.id.joined_session_tablayout);
         WriteAttendanceTab = findViewById(R.id.joined_session_attendance);
 
-        sessionInfoTab=findViewById(R.id.joined_session_info);
+        sessionInfoTab = findViewById(R.id.joined_session_info);
         viewPager = findViewById(R.id.joined_session_viewPager);
 
         SessionId = getIntent().getStringExtra(getString(R.string.IKey_sessionId));
         GroupID = getIntent().getStringExtra(getString(R.string.IKey_groupId));
-      
-        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), SessionId,GroupID);
+
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), SessionId, GroupID);
         viewPager.setAdapter(pageAdapter);
 
 
@@ -45,11 +45,4 @@ public class JoinedSession extends AppCompatActivity {
 
     }
 
-    /*@Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Intent i =new Intent(context, RateObjectivesActivity.class);
-        i.putExtra("session_id",SessionId);
-        startActivity(i);
-    }*/
 }

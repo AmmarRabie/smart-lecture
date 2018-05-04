@@ -18,7 +18,6 @@ public class GroupActivity extends AppCompatActivity {
     GroupPagerAdapter groupPagerAdapter;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +29,7 @@ public class GroupActivity extends AppCompatActivity {
         String groupName = getIntent().getStringExtra("group_name");
 
 
-
-
-        groupPagerAdapter = new GroupPagerAdapter(getSupportFragmentManager(),groupId,groupName);
+        groupPagerAdapter = new GroupPagerAdapter(getSupportFragmentManager(), groupId, groupName);
 
         viewPager.setAdapter(groupPagerAdapter);
 
@@ -40,28 +37,5 @@ public class GroupActivity extends AppCompatActivity {
 
     }
 
-  /*  private StudentListPresenter mStudentListPresenter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group);
-
-        StudentListFragment groupfragment = (StudentListFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.contentFrame);
-
-
-        if (groupfragment == null) {
-            groupfragment = StudentListFragment.newInstance();
-
-
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    groupfragment, R.id.contentFrame);
-        }
-
-        String groupId = getIntent().getStringExtra("group_id");
-        String groupName = getIntent().getStringExtra("group_name");
-        // Create the presenter
-        mStudentListPresenter = new StudentListPresenter(groupfragment, groupId, groupName);
-    }*/
 }

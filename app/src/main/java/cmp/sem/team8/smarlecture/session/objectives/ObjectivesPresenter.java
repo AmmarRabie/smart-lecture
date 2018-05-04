@@ -33,11 +33,11 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
     private DatabaseReference mObjectiveRef;
 
-    public ObjectivesPresenter(ObjectivesContract.Views mView, String SESSION_ID,AppDataSource dataSource) {
+    public ObjectivesPresenter(ObjectivesContract.Views mView, String SESSION_ID, AppDataSource dataSource) {
 
         this.mView = mView;
 
-        mDataSource=dataSource;
+        mDataSource = dataSource;
 
         this.SESSION_ID = SESSION_ID;
 
@@ -114,59 +114,6 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
             }
         });
 
-       /* if (mObjectiveRef == null)
-
-            return;
-
-        mObjectiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot objectivesSnapshot) {
-
-                ArrayList<ObjectiveModel> objectiveList = new ArrayList<>();
-
-                for (DataSnapshot child : objectivesSnapshot.getChildren()) {
-
-                    if (!objectivesSnapshot.exists())
-                        continue;
-
-                    String key = child.getKey();
-
-                    String name = child.child(FirebaseContract.ObjectiveEntry.KEY_DESC).getValue(String.class);
-
-                   // float averageRating=child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(float.class);
-
-                    Float averageRating = child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(Float.class);
-
-                   // int numberUsersRated=child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(int.class);
-                    Integer numberUsersRated = child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(Integer.class);
-
-                    ObjectiveModel thisObjective = new ObjectiveModel();
-
-                    thisObjective.setmObjectiveDescription(name);
-
-                    thisObjective.setmObjectiveID(key);
-
-                    thisObjective.setmNumberofUsersRatedThisObjective(numberUsersRated);
-
-                    thisObjective.setmObjectivesAverageRating(averageRating);
-
-                    thisObjective.setmSessionID(SESSION_ID);
-
-                    objectiveList.add(thisObjective);
-                }
-
-                mView.showObjectivesList(objectiveList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                mView.showOnErrorMessage(databaseError.getMessage());
-
-            }
-        });
-*/
 
     }
 
@@ -199,73 +146,16 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
             }
         });
 
-      /*  DatabaseReference newObjective = mObjectiveRef.push();
-
-        final String key = newObjective.getKey();
-
-        final boolean isOffline = mView.getOfflineState();
-
-        if (isOffline) {
-
-            ObjectiveModel addedObjective = new ObjectiveModel();
-
-            addedObjective.setmSessionID(SESSION_ID);
-
-            addedObjective.setmObjectiveID(key);
-
-            addedObjective.setmObjectiveDescription(objectiveDescription);
-
-            addedObjective.setmObjectivesAverageRating(0);
-
-            addedObjective.setmNumberofUsersRatedThisObjective(0);
-
-            mView.onAddSuccess(addedObjective);
-        }
-        newObjective.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).setValue(0);
-
-        newObjective.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).setValue(0);
-
-        newObjective.child(FirebaseContract.ObjectiveEntry.KEY_DESC).setValue(objectiveDescription).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-
-                if (task.isSuccessful()) {
-
-                    if (!isOffline) {
-
-                        ObjectiveModel addedObjective = new ObjectiveModel();
-
-                        addedObjective.setmSessionID(SESSION_ID);
-
-                        addedObjective.setmObjectiveID(key);
-
-                        addedObjective.setmObjectiveDescription(objectiveDescription);
-
-                        addedObjective.setmNumberofUsersRatedThisObjective(0);
-
-                        addedObjective.setmObjectivesAverageRating(0);
-
-
-                        mView.onAddSuccess(addedObjective);
-
-                    }
-                } else {
-
-                    mView.showOnErrorMessage(task.getException().getMessage());
-                }
-            }
-        });*/
-
 
     }
 
     @Override
     public void editObjective(final String objectiveID, final String objectiveDescription) {
 
-        mDataSource.editObjective(objectiveID, SESSION_ID,objectiveDescription, mView.getOfflineState(), new AppDataSource.Update() {
+        mDataSource.editObjective(objectiveID, SESSION_ID, objectiveDescription, mView.getOfflineState(), new AppDataSource.Update() {
             @Override
             public void onUpdateSuccess() {
-                mView.onEditSuccess(objectiveID,objectiveDescription);
+                mView.onEditSuccess(objectiveID, objectiveDescription);
             }
 
             @Override

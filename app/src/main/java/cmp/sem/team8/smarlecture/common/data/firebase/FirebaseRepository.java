@@ -1049,6 +1049,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     if ( !isOffline)
                        callback.onUpdateSuccess();
                 } else {
+
                    callback.onError(task.getException().getMessage());
                 }
             }

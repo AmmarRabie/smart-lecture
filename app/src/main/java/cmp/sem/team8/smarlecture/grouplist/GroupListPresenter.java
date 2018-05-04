@@ -39,10 +39,10 @@ public class GroupListPresenter implements GroupListContract.Actions {
     private AppDataSource mDataSource;
 
 
-    public GroupListPresenter(GroupListContract.Views grouplistView,AppDataSource dataSource) {
+    public GroupListPresenter(GroupListContract.Views grouplistView, AppDataSource dataSource) {
         mView = grouplistView;
         mView.setPresenter(this);
-        mDataSource=dataSource;
+        mDataSource = dataSource;
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
@@ -60,41 +60,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 mView.showErrorMessage(cause);
             }
         });
-     /*   // remove sessions related to this group first and after this remove the group
-        getGroupRef(groupID).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot sessionSnapshot : dataSnapshot.getChildren()) {
-                        String sessionKey = sessionSnapshot.getKey();
-                        getSessionRef(sessionKey).removeValue();
-                    }
-                }
-                // remove after ending, this is out of if because we want to delete the group
-                // even we don't have any session related to it
-                final boolean isOffline = mView.getOfflineState();
-                if (isOffline)
-                    mView.onDeleteSuccess(groupID);
-                getGroupRef(groupID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            if (mView != null && !isOffline)
-                                mView.onDeleteSuccess(groupID);
-                        } else {
-                            if (mView != null)
-                                mView.showErrorMessage(task.getException().getMessage());
-                        }
-                    }
-                });
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                if (mView != null)
-                    mView.showErrorMessage("can't delete");
-            }
-        });*/
 
     }
 
@@ -113,7 +79,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
         mDataSource.addGroup(userID, groupName, mView.getOfflineState(), new AppDataSource.Insert<String>() {
             @Override
             public void onDataInserted(String feedback) {
-                mView.onAddSuccess(feedback,groupName,userID);
+                mView.onAddSuccess(feedback, groupName, userID);
             }
 
             @Override
@@ -121,28 +87,6 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 mView.showErrorMessage(cause);
             }
         });
-       /* DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS);
-        DatabaseReference newGroupRef = groupsRef.push();
-
-        final String groupID = newGroupRef.getKey();
-
-        final boolean isOffline = mView.getOfflineState();
-        if (isOffline)
-            mView.onAddSuccess(groupID, groupName,mCurrentUser.getUid());
-        newGroupRef.child(GroupEntry.KEY_OWNER_ID).setValue(userID);
-        newGroupRef.child(GroupEntry.KEY_NAME).setValue(groupName).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-
-                  if (mView != null && !isOffline)
-                        mView.onAddSuccess(groupID, groupName,mCurrentUser.getUid());
-                } else {
-                    if (mView != null)
-                        mView.showErrorMessage(task.getException().getMessage());
-                }
-            }
-        });*/
     }
 
     @Override
@@ -159,7 +103,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
         mDataSource.updateGroup(groupID, newGroupName, mView.getOfflineState(), new AppDataSource.Update() {
             @Override
             public void onUpdateSuccess() {
-                mView.onEditSuccess(groupID,newGroupName);
+                mView.onEditSuccess(groupID, newGroupName);
             }
 
             @Override
@@ -167,101 +111,48 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 mView.showErrorMessage(cause);
             }
         });
-      /*  final boolean isOffline = mView.getOfflineState();
-        if (isOffline)
-            mView.onEditSuccess(groupID, newGroupName);
-        getGroupRef(groupID).child(GroupEntry.KEY_NAME).setValue(newGroupName).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                   if (mView != null && !isOffline)
-                        mView.onEditSuccess(groupID, newGroupName);
-                } else {
-                    if (mView != null)
-                        mView.showErrorMessage(task.getException().getMessage());
-                }
-            }
-        });*/
     }
 
     @Override
     public void joinSession(final String sessionId) {
 
 
-      mDataSource.getSessionStatus(sessionId, new AppDataSource.Get<AppDataSource.SessionStatus>() {
-          @Override
-          public void onDataFetched(AppDataSource.SessionStatus data) {
-              if(data==null) {
-                  mView.showErrorMessage("Session Doesn't Exist");
-                  return;
-              }
-              if(data.equals(AppDataSource.SessionStatus.CLOSED)){
-                  mView.showErrorMessage("Session has been closed");
-                  return;
-              }
-              mDataSource.getGroupId(sessionId, new AppDataSource.Get<String>() {
-                  @Override
-                  public void onDataFetched(String data) {
-                      mView.startJoinSessionView(sessionId,data);
-                  }
-
-                  @Override
-                  public void onDataNotAvailable() {
-                      mView.showErrorMessage("Session doesn't belong to a group");
-                  }
-
-                  @Override
-                  public void onError(String cause) {
-                      mView.showErrorMessage(cause);
-                  }
-              });
-
-
-
-          }
-
-          @Override
-          public void onDataNotAvailable() {
-              mView.showErrorMessage("Session Doesn't Exist");
-          }
-      });
-
-
-
-
-      /*  DatabaseReference thisSession = FirebaseDatabase.getInstance()
-                .getReference(SessionEntry.KEY_THIS).child(sessionId);
-        thisSession.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDataSource.getSessionStatus(sessionId, new AppDataSource.Get<AppDataSource.SessionStatus>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String groupId = null;
-                    for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-
-                        if (childDataSnapshot.getKey().equals(SessionEntry.KEY_SESSION_STATUS)) {
-                            if (childDataSnapshot.getValue().equals(AppDataSource.AttendanceStatus.CLOSED.toString())) {
-                                mView.showErrorMessage("Session has been closed");
-                                return;
-                            }
-                        } else if (childDataSnapshot.getKey().equals(SessionEntry.KEY_FOR_GROUP_ID)) {
-                            groupId = childDataSnapshot.getValue().toString();
-                        }
+            public void onDataFetched(AppDataSource.SessionStatus data) {
+                if (data == null) {
+                    mView.showErrorMessage("Session Doesn't Exist");
+                    return;
+                }
+                if (data.equals(AppDataSource.SessionStatus.CLOSED)) {
+                    mView.showErrorMessage("Session has been closed");
+                    return;
+                }
+                mDataSource.getGroupId(sessionId, new AppDataSource.Get<String>() {
+                    @Override
+                    public void onDataFetched(String data) {
+                        mView.startJoinSessionView(sessionId, data);
                     }
 
+                    @Override
+                    public void onDataNotAvailable() {
+                        mView.showErrorMessage("Session doesn't belong to a group");
+                    }
 
-                    if (groupId != null)
-                        mView.startJoinSessionView(sessionId, groupId);
+                    @Override
+                    public void onError(String cause) {
+                        mView.showErrorMessage(cause);
+                    }
+                });
 
-                } else {
-                    mView.showErrorMessage("Session not exists");
-                }
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onDataNotAvailable() {
+                mView.showErrorMessage("Session Doesn't Exist");
             }
-        });*/
+        });
     }
 
     @Override
@@ -286,32 +177,7 @@ public class GroupListPresenter implements GroupListContract.Actions {
                 mView.showErrorMessage(cause);
             }
         });
-       /* Query userGroups = FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS)
-                .orderByChild(GroupEntry.KEY_OWNER_ID)
-                .equalTo(id);
-        userGroups.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<GroupModel> list = new ArrayList<>();
-                for (DataSnapshot groupSnapShot : dataSnapshot.getChildren()) {
-                    if (!dataSnapshot.exists())
-                        continue;
-                    GroupModel groupModel = groupSnapShot.getValue(GroupModel.class);
-                    groupModel.setId(groupSnapShot.getKey());
-                    HashMap<String, Object> thisGroup = MapUtils.toHashMap(groupModel);
 
-                    list.add(thisGroup);
-                }
-                if (mView != null)
-                    mView.showGroupList(list);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                if (mView != null)
-                    mView.showErrorMessage(databaseError.getMessage());
-            }
-        });*/
     }
 
 

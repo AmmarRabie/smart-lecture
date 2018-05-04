@@ -33,9 +33,9 @@ import cmp.sem.team8.smarlecture.session.SessionActivity;
  */
 
 public class SessionListFragment extends android.support.v4.app.Fragment implements
-        SessionListContract .Views,
+        SessionListContract.Views,
         InternetConnectivityReceiver.OnInternetConnectionChangeListener,
-SessionListRecyclerAdapter.OnItemClickListener  {
+        SessionListRecyclerAdapter.OnItemClickListener {
 
 
     Animator spruceAnimator;
@@ -51,7 +51,6 @@ SessionListRecyclerAdapter.OnItemClickListener  {
     private SessionListRecyclerAdapter mSessionListRecyclerAdapter;
 
     private ArrayList<SessionModel> mSessionslist;
-
 
 
     private View.OnClickListener mAddGroupClickListener = new View.OnClickListener() {
@@ -97,12 +96,12 @@ SessionListRecyclerAdapter.OnItemClickListener  {
     private InternetConnectivityReceiver internetConnectivityReceiver;
     private boolean isInEmptyView = false;
 
-    public SessionListFragment(){}
-    public static SessionListFragment newInstance(){return new SessionListFragment();}
+    public SessionListFragment() {
+    }
 
-
-
-
+    public static SessionListFragment newInstance() {
+        return new SessionListFragment();
+    }
 
 
     @Override
@@ -147,14 +146,8 @@ SessionListRecyclerAdapter.OnItemClickListener  {
     }
 
 
-
-
-
-
-
-
     public void setPresenter(SessionListContract.Actions presenter) {
-        mPresenter=presenter;
+        mPresenter = presenter;
 
     }
 
@@ -175,58 +168,23 @@ SessionListRecyclerAdapter.OnItemClickListener  {
     }
 
     @Override
-    public void OnDeleteSuccess(String sessionID) {
+    public void OnDeleteSuccess(String deletedSessionId) {
         int position = 0;
 
 
-        while(!sessionID.equals(mSessionslist.get(position).getId())){position++;}
+        while (!deletedSessionId.equals(mSessionslist.get(position).getId())) {
+            position++;
+        }
         mSessionslist.remove(position);
         mSessionListRecyclerAdapter.notifyDataSetChanged();
-        /*
-        //delete from list that contain sessions names
-        while (!sessionID.equals(mSessionslistNames.get(position).get("id").toString())) {
-            position++;
-        }
-        mSessionslistNames.remove(position);
-
-        //delete from list that contain sessions status
-        while (!sessionID.equals(mSessionslistStatus.get(position).get("id").toString())) {
-            position++;
-        }
-        mSessionslistStatus.remove(position);
-        mSessionListRecyclerAdapter.notifyDataSetChanged(); // call this instead to get onBind called on all views so that onClick listeners get updated with correct position
-
-
-*/
     }
 
     @Override
-    public void OnAddSuccess(SessionModel sessionModel) {
+    public void OnAddSuccess(SessionModel addedSessionName) {
 
-        mSessionslist.add(sessionModel);
+        mSessionslist.add(addedSessionName);
         mSessionListRecyclerAdapter.notifyItemInserted(mSessionslist.size());
         mSessionListRecyclerView.setVisibility(View.VISIBLE);
-
-
-
-
-
-      /*
-        HashMap<String, Object> newSessionName = new HashMap<>();
-
-        newSessionName.put("name", sessionName);
-        newSessionName.put("id", sessionID);
-        mSessionslistNames.add(newSessionName);
-
-        HashMap<String, Object> newSessionStatus = new HashMap<>();
-
-        //TODO choose good name for this state
-        newSessionStatus.put("status", "NotActive");
-        newSessionStatus.put("id", sessionID);
-        mSessionslistStatus.add(newSessionStatus);
-
-*/
-
 
     }
 
@@ -242,14 +200,6 @@ SessionListRecyclerAdapter.OnItemClickListener  {
         mSessionslist.get(position).setName(sessionName);
 
         mSessionListRecyclerAdapter.notifyItemChanged(position, null);
-/*
-        position=0;
-        while (!sessionID.equals(mSessionslistStatus.get(position).get("id").toString())) {
-            position++;
-        }
-        mSessionslistStatus.get(position).put("status", sessionName);
-
-*/
 
 
     }
@@ -272,6 +222,7 @@ SessionListRecyclerAdapter.OnItemClickListener  {
         mOfflineView.setVisibility(View.VISIBLE);
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -291,23 +242,10 @@ SessionListRecyclerAdapter.OnItemClickListener  {
 
     }
 
-   /* @Override
-    public void onStartSessionClick(View view, int position) {
-       SessionModel session=mSessionslist.get(position);
-       String groupID=session.getmGroupID();
-       String sessionID=session.getmSessionID();
-        Intent sessionActivity = new Intent(getContext(), SessionActivity.class);
-        sessionActivity.putExtra("group_id", groupID);
-        sessionActivity.putExtra("session_id",sessionID);
-        startActivity(sessionActivity);
-
-
-
-    }*/
 
     @Override
     public void onDeleteSessionClick(View view, int position) {
-        String sessionID=mSessionslist.get(position).getId();
+        String sessionID = mSessionslist.get(position).getId();
         mPresenter.deleteSession(sessionID);
 
 
@@ -315,12 +253,12 @@ SessionListRecyclerAdapter.OnItemClickListener  {
 
     @Override
     public void onEditSessionClick(View view, int position) {
-        final String sessionID=mSessionslist.get(position).getId();
-        String sessionName=mSessionslist.get(position).getName();
+        final String sessionID = mSessionslist.get(position).getId();
+        String sessionName = mSessionslist.get(position).getName();
 
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-        final EditText newNameView = buildEditTextDialogView(null,sessionName);
+        final EditText newNameView = buildEditTextDialogView(null, sessionName);
 
         mBuilder.setView(newNameView);
         mBuilder.setTitle(getString(R.string.dTitle_editSession));
@@ -344,15 +282,16 @@ SessionListRecyclerAdapter.OnItemClickListener  {
 
     @Override
     public void onItemClick(View view, int position) {
-        SessionModel session=mSessionslist.get(position);
-        String groupID=session.getForGroup();
-        String sessionID=session.getId();
+        SessionModel session = mSessionslist.get(position);
+        String groupID = session.getForGroup();
+        String sessionID = session.getId();
         Intent sessionActivity = new Intent(getContext(), SessionActivity.class);
         sessionActivity.putExtra("group_id", groupID);
-        sessionActivity.putExtra("session_id",sessionID);
+        sessionActivity.putExtra("session_id", sessionID);
         startActivity(sessionActivity);
 
     }
+
     private EditText buildEditTextDialogView(String hint, String text) {
         EditText input = new EditText(getContext());
         input.setLayoutParams(new LinearLayout.LayoutParams(

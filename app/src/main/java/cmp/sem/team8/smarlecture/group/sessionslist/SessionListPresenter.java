@@ -37,9 +37,9 @@ public class SessionListPresenter implements SessionListContract.Actions {
     private static final int maxId = 10000000;
 
 
-    public SessionListPresenter(SessionListContract.Views view, final String groupID,AppDataSource dataSource) {
+    public SessionListPresenter(SessionListContract.Views view, final String groupID, AppDataSource dataSource) {
         mView = view;
-        mDataSource=dataSource;
+        mDataSource = dataSource;
         GROUP_ID = groupID;
         mGroupRef = null;
         if (groupID == null) {
@@ -99,7 +99,7 @@ public class SessionListPresenter implements SessionListContract.Actions {
         mDataSource.addSession(GROUP_ID, sessionID, sessionName, new AppDataSource.Insert<Void>() {
             @Override
             public void onDataInserted(Void feedback) {
-                mView.OnAddSuccess(new cmp.sem.team8.smarlecture.common.data.model.SessionModel(sessionID,GROUP_ID, AppDataSource.AttendanceStatus.NOT_ACTIVATED, AppDataSource.SessionStatus.NOT_ACTIVATED,sessionName));
+                mView.OnAddSuccess(new cmp.sem.team8.smarlecture.common.data.model.SessionModel(sessionID, GROUP_ID, AppDataSource.AttendanceStatus.NOT_ACTIVATED, AppDataSource.SessionStatus.NOT_ACTIVATED, sessionName));
             }
 
             @Override
@@ -107,32 +107,7 @@ public class SessionListPresenter implements SessionListContract.Actions {
                 mView.showOnErrorMessage(cause);
             }
         });
-      /*  DatabaseReference sessionsRef = FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS);
-        DatabaseReference newsessionRef = sessionsRef.child(sessionID);
-        //final String sessionID=newsessionRef.getKey();
-        final cmp.sem.team8.smarlecture.common.data.model.SessionModel addedSession = new cmp.sem.team8.smarlecture.common.data.model.SessionModel();
-        addedSession.setSessionStatus(AppDataSource.SessionStatus.NOT_ACTIVATED);
-       // addedSession.setmStudentsList(new ArrayList<String>());
-        addedSession.setId(sessionID);
-        addedSession.setAttendanceStatus(AppDataSource.AttendanceStatus.NOT_ACTIVATED);
-        addedSession.setForGroup(GROUP_ID);
-        addedSession.setName(sessionName);
 
-
-        newsessionRef.child(SessionEntry.KEY_FOR_GROUP_ID).setValue(addedSession.getForGroup());
-        newsessionRef.child(SessionEntry.KEY_FOR_SESSION_NAME_).setValue(addedSession.getName());
-        newsessionRef.child(SessionEntry.KEY_SESSION_STATUS).setValue(addedSession.getSessionStatus());
-        newsessionRef.child(SessionEntry.KEY_ATTENDANCE_STATUS).setValue(addedSession.getAttendanceStatus()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful())
-                    mView.OnAddSuccess(addedSession);
-                else {
-                    if (mView != null)
-                        mView.showOnErrorMessage(task.getException().toString());
-                }
-            }
-        });*/
     }
 
     @Override
@@ -150,7 +125,7 @@ public class SessionListPresenter implements SessionListContract.Actions {
         mDataSource.editSession(sessionID, sessionName, mView.getOfflineState(), new AppDataSource.Update() {
             @Override
             public void onUpdateSuccess() {
-                mView.OnEditSuccess(sessionID,sessionName);
+                mView.OnEditSuccess(sessionID, sessionName);
             }
 
             @Override
@@ -158,20 +133,7 @@ public class SessionListPresenter implements SessionListContract.Actions {
                 mView.showOnErrorMessage(cause);
             }
         });
-      /*  final boolean isOffline = mView.getOfflineState();
-        if (isOffline) {
-            mView.OnEditSuccess(sessionID, sessionName);
-        }
-        mGroupRef.child(sessionID).child(SessionEntry.KEY_FOR_SESSION_NAME_).setValue(sessionName)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful())
-                            if (!isOffline)
-                                mView.OnEditSuccess(sessionID, sessionName);
-                            else mView.showOnErrorMessage(task.getException().getMessage());
-                    }
-                });*/
+
     }
 
     @Override
@@ -191,22 +153,6 @@ public class SessionListPresenter implements SessionListContract.Actions {
                 mView.showOnErrorMessage(cause);
             }
         });
-      /*  final boolean isOffline = mView.getOfflineState();
-        if (isOffline)
-            mView.OnDeleteSuccess(sessionID);
-        mGroupRef.child(sessionID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    if (!isOffline)
-                        mView.OnDeleteSuccess(sessionID);
-                } else {
-                    mView.showOnErrorMessage(task.getException().getMessage());
-                }
-            }
-        });
-*/
-
     }
 
     private void addSessions() {
@@ -225,81 +171,7 @@ public class SessionListPresenter implements SessionListContract.Actions {
                 mView.showOnErrorMessage(cause);
             }
         });
-       /* Query groupSessions = FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS).
-                orderByChild(SessionEntry.KEY_FOR_GROUP_ID).equalTo(GROUP_ID);
 
-
-        groupSessions.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<SessionModel> sessionsList = new ArrayList<SessionModel>();
-
-                for (DataSnapshot sessionSnapshot : dataSnapshot.getChildren()) {
-                    if (!dataSnapshot.exists())
-                        continue;
-                    String sessionId = sessionSnapshot.getKey();
-                    SessionModel sessionModel = sessionSnapshot.getValue(SessionModel.class);
-                    sessionModel.setmSessionID(sessionId);
-
-                    sessionModel.setmName(sessionSnapshot.child(SessionEntry.KEY_FOR_SESSION_NAME_).getValue(String.class));
-                    sessionModel.setmSessionStatus(sessionSnapshot.child(SessionEntry.KEY_SESSION_STATUS).getValue(String.class));
-
-                    sessionModel.setmGroupID(GROUP_ID);
-                    sessionModel.setmAttendanceStatus(sessionSnapshot.child(SessionEntry.KEY_ATTENDANCE_STATUS).getValue(String.class));
-
-                    HashMap<String, String> list = (HashMap<String, String>) sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
-                    //if students list is empty list will be equal to null
-                    if (list != null) {
-                        ArrayList<String> students = new ArrayList<>(list.values());
-                        sessionModel.setmStudentsList(students);
-                    } else {
-                        sessionModel.setmStudentsList(new ArrayList<String>());
-
-                    }
-                    //sessionModel.setmStudentsList(sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
-                    sessionsList.add(sessionModel);
-                }
-                mView.showSessionsList(sessionsList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                if (mView != null)
-                    mView.showOnErrorMessage(databaseError.getMessage());
-            }
-        });
-
-/*
-        mGroupRef.child(SessionEntry.KEY_THIS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<HashMap<String, Object>> listNames = new ArrayList<HashMap<String, Object>>();
-                ArrayList<HashMap<String, Object>> listStatus = new ArrayList<HashMap<String, Object>>();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if (!dataSnapshot.exists())
-                        continue;
-                    if(GROUP_ID.equals(child.child(SessionEntry.KEY_FOR_GROUP_ID))){
-                        String key=child.getKey();
-                        String name=child.getKey();
-                        String status=mGroupRef.child(SessionEntry.);
-
-                    }
-                    String key = child.getKey();
-                    String name = child.getValue(String.class);
-                    HashMap<String, Object> thisStudent = new HashMap<>();
-                    thisStudent.put("key", key);
-                    thisStudent.put("name", name);
-                    list.add(thisStudent);
-                }
-                mView.showSessionsList(list);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
     @Override

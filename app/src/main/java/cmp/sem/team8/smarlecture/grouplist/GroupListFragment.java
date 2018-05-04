@@ -272,9 +272,9 @@ public class GroupListFragment extends Fragment implements
     }
 
     @Override
-    public void onAddSuccess(String groupID, String newName,String ownerId) {
+    public void onAddSuccess(String groupID, String newName, String ownerId) {
 
-        GroupModel newGroup=new GroupModel(newName,groupID,ownerId);
+        GroupModel newGroup = new GroupModel(newName, groupID, ownerId);
 
 
         mGroupList.add(newGroup);
@@ -386,7 +386,7 @@ public class GroupListFragment extends Fragment implements
     public void onItemClick(View view, int position) {
 
 
-        GroupModel groupClicked=mGroupList.get(position);
+        GroupModel groupClicked = mGroupList.get(position);
 
         String groupId = groupClicked.getId();
 
@@ -405,7 +405,7 @@ public class GroupListFragment extends Fragment implements
     public void onDeleteGroupClick(View view, int position) {
 
 
-        GroupModel groupClicked=mGroupList.get(position);
+        GroupModel groupClicked = mGroupList.get(position);
 
         final String groupId = groupClicked.getId();
 
@@ -444,7 +444,7 @@ public class GroupListFragment extends Fragment implements
     public void onEditGroupClick(View view, final int position) {
 
 
-        GroupModel groupClicked=mGroupList.get(position);
+        GroupModel groupClicked = mGroupList.get(position);
 
         final String groupId = groupClicked.getId();
 

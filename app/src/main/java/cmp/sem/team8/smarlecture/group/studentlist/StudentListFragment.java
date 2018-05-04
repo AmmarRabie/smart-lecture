@@ -138,29 +138,7 @@ public class StudentListFragment extends android.support.v4.app.Fragment impleme
 
     @Override
     public void onEditItemClick(View v, int position) {
-        /*HashMap<String, Object> studentClicked = mNamesList.get(position);
-        final String studentID = studentClicked.get("key").toString();
-        final String studentName = studentClicked.get("name").toString();
 
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-        final EditText newNameView = buildEditTextDialogView(studentName);
-        mBuilder.setView(newNameView);
-        mBuilder.setTitle(getString(R.string.dTitle_editName));
-        mBuilder.setPositiveButton(getString(R.string.dAction_change), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String studentName = newNameView.getText().toString();
-                mPresenter.editStudent(studentID, studentName);
-                dialogInterface.dismiss();
-            }
-        });
-        mBuilder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        mBuilder.show();*/
     }
 
     @Override

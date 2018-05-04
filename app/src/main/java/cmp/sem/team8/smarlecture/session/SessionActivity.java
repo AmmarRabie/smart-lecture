@@ -29,42 +29,22 @@ public class SessionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mGroupID=getIntent().getStringExtra("group_id");
-        mSessionID=getIntent().getStringExtra("session_id");
+        mGroupID = getIntent().getStringExtra("group_id");
+        mSessionID = getIntent().getStringExtra("session_id");
         setContentView(R.layout.activity_session);
 
         tabLayout = findViewById(R.id.tablayout);
         viewPager = findViewById(R.id.viewPager);
 
-        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),mGroupID
+        pageAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), mGroupID
                 , mSessionID);
 
         viewPager.setAdapter(pageAdapter);
 
 
-      viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-      int currposition=0;
-          @Override
-          public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int currposition = 0;
 
-          }
-
-          @Override
-          public void onPageSelected(int position) {
-
-              pageAdapter.getItem(position).onResume();
-              pageAdapter.getItem(currposition).onResume();
-              currposition=position;
-
-          }
-
-          @Override
-          public void onPageScrollStateChanged(int state) {
-
-          }
-      });
-
-     /*   private ViewPager.OnPageChangeListener pageChangeListner=new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -72,16 +52,18 @@ public class SessionActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                PagerAdapter.FragmentLifeCycle fragmentToShow=(PagerAdapter.FragmentLifeCycle)pageAdapter.getItem(position);
-                fragmentToShow.onResumeFragment();
+
+                pageAdapter.getItem(position).onResume();
+                pageAdapter.getItem(currposition).onResume();
+                currposition = position;
+
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
-        };*/
-
+        });
         tabLayout.setupWithViewPager(viewPager);
 
 
@@ -97,7 +79,7 @@ public class SessionActivity extends AppCompatActivity {
     public void onBackPressed() {
         SessionInfoPresenter sessionInfoPresenter = pageAdapter.getmSessionInfoPresenter();
         if (sessionInfoPresenter != null) {
-            if(sessionInfoPresenter.getSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString())) {
+            if (sessionInfoPresenter.getSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString())) {
 
                 AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
                 mAlertBuilder.setTitle("Confirmation");

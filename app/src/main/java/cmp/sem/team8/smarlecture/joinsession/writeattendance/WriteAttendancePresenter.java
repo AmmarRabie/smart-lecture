@@ -38,10 +38,10 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     private boolean mIsAttendanceTimeOver = false;
     private boolean mHasNamesList = false;
 
-    public WriteAttendancePresenter(WriteAttendanceContract.Views view,AppDataSource dataSource) {
+    public WriteAttendancePresenter(WriteAttendanceContract.Views view, AppDataSource dataSource) {
         this.mView = view;
         mView.setPresenter(this);
-        mDataSource=dataSource;
+        mDataSource = dataSource;
     }
 
     @Override
@@ -182,30 +182,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                 mView.showErrorMessage(cause);
             }
         });
-        /* students = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-        reference = reference.child(GroupEntry.KEY_THIS).child(mGroupId).child(GroupEntry.KEY_NAMES_LIST);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        String name = child.getValue(String.class);
-                        String key = child.getKey();
-                        students.add(new UserAttendanceModel(name, key, false));
-                    }
-
-                    mView.showStudentsList(students);
-                    mHasNamesList = true;
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                mView.showErrorMessage(databaseError.getMessage());
-            }
-        });*/
     }
 
     private void writeAttendance() {
@@ -214,15 +191,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
                 .child(mView.getStudentId());
         mView.showSuccessMessage("Your attendance saved locally.");
         mView.showInfoMessage("open your internet now so that lecturer find you");
-        currSessionRef.setValue(true)/*.addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful())
-                    mView.showErrorMessage("success ya zemely");
-                else
-                    mView.showErrorMessage(task.getException().getMessage());
-            }
-        })*/;
+        currSessionRef.setValue(true);
     }
 
     private boolean verifySecret(String secret) {

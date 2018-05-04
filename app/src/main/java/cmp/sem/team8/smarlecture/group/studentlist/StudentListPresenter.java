@@ -63,8 +63,7 @@ public class StudentListPresenter implements StudentListContract.Actions {
 
     @Override
     public void end() {
-/*        for (int i = 0; i < valueEventListeners.size(); i++)
-            mGroupRef.child("namesList").removeEventListener(valueEventListeners.get(i));*/
+
     }
 
 

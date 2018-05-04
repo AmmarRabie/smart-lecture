@@ -63,6 +63,7 @@ public class MembersContract {
         void BeginAttendance();
 
         void onAttendanceMarkChanged(String memberId, boolean attend);
+
         /**
          * mark attendance flag in the database as closed;
          */

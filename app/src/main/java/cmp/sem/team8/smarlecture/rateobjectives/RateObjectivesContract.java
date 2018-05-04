@@ -13,7 +13,7 @@ import cmp.sem.team8.smarlecture.session.objectives.ObjectivesContract;
  */
 
 public interface RateObjectivesContract {
-    interface Views extends IBaseView<Actions>{
+    interface Views extends IBaseView<Actions> {
 
         void showOnErrorMessage(String cause);
 
@@ -25,6 +25,7 @@ public interface RateObjectivesContract {
 
         boolean getOfflineState();
     }
+
     interface Actions extends IBasePresenter {
 
         void getObjectives();

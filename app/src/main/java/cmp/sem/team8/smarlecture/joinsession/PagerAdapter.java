@@ -18,22 +18,22 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     WriteAttendanceFragment writeAttendanceFragment;
     WriteAttendancePresenter mwriteAttendancePresenter;
-  cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoFragment  sessionInfoFragment;
-   cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoPresenter sessionInfoPresenter;
+    cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoFragment sessionInfoFragment;
+    cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoPresenter sessionInfoPresenter;
     private int numOfTabs;
     String mSessionID;
     String mGroupID;
 
-    public PagerAdapter(FragmentManager fm, int numOfTabs,String sessionID,String groupID) {
+    public PagerAdapter(FragmentManager fm, int numOfTabs, String sessionID, String groupID) {
         super(fm);
         this.numOfTabs = numOfTabs;
 
         writeAttendanceFragment = null;
         mwriteAttendancePresenter = null;
-        mSessionID=sessionID;
-        mGroupID=groupID;
-        sessionInfoFragment=null;
-        sessionInfoPresenter=null;
+        mSessionID = sessionID;
+        mGroupID = groupID;
+        sessionInfoFragment = null;
+        sessionInfoPresenter = null;
 
 
     }
@@ -45,14 +45,14 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 writeAttendanceFragment = writeAttendanceFragment == null ?
                         WriteAttendanceFragment.newInstance()
                         : writeAttendanceFragment;
-                mwriteAttendancePresenter = new WriteAttendancePresenter(writeAttendanceFragment,FirebaseRepository.getInstance());
+                mwriteAttendancePresenter = new WriteAttendancePresenter(writeAttendanceFragment, FirebaseRepository.getInstance());
                 return writeAttendanceFragment;
 
             case 1:
-                if(sessionInfoFragment==null){
-                    sessionInfoFragment=cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoFragment.newInstance();
+                if (sessionInfoFragment == null) {
+                    sessionInfoFragment = cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoFragment.newInstance();
                 }
-                sessionInfoPresenter=new cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoPresenter(sessionInfoFragment,mGroupID,mSessionID,FirebaseRepository.getInstance());
+                sessionInfoPresenter = new cmp.sem.team8.smarlecture.joinsession.sessioninfo.SessionInfoPresenter(sessionInfoFragment, mGroupID, mSessionID, FirebaseRepository.getInstance());
                 return sessionInfoFragment;
 
 
@@ -60,6 +60,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
+
     @Override
     public CharSequence getPageTitle(int position) {
 
