@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupMessagesEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
@@ -167,5 +169,17 @@ class FirebaseSerializer {
                 return false;
             }
         return true;
+    }
+
+    public static ArrayList<GroupMessageModel> serializeGroupMessages(DataSnapshot groupSnapshot, DataSnapshot messagesSnapshot) {
+        final GroupModel groupModel = serializeGroup(groupSnapshot);
+        ArrayList<GroupMessageModel> result = new ArrayList<>();
+        for (DataSnapshot messageSnapshot : messagesSnapshot.getChildren()) {
+            String messageId = messageSnapshot.getKey();
+            String title = messageSnapshot.child(GroupMessagesEntry.KEY_TITLE).getValue(String.class);
+            String body = messageSnapshot.child(GroupMessagesEntry.KEY_BODY).getValue(String.class);
+            result.add(new GroupMessageModel(messageId,groupModel, body, title));
+        }
+        return result;
     }
 }

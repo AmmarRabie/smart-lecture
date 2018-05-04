@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
@@ -150,6 +151,8 @@ public interface AppDataSource {
     void getSessionById(String sessionId, Get<SessionModel> callback);
 
     Listen listenAttendanceStatus(String sessionId, Listen<AttendanceStatus> callback);
+
+    void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback);
 
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);

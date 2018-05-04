@@ -7,6 +7,7 @@
     <string name="IKey_forceLogin" translatable="false">force_login</string>
     <string name="IKey_sessionId" translatable="false">session_id</string>
     <string name="IKey_groupId" translatable="false">group_id</string>
+    <string name="IKey_notificationId" translatable="false">notification_id</string>
     <string name="IKey_groupName" translatable="false">group_name</string>
     <string name="IKey_isMember" translatable="false">is_member_in_group</string>
 </resources>

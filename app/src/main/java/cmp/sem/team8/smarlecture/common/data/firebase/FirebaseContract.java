@@ -118,6 +118,16 @@ public final class FirebaseContract {
         }
     }
 
+    public static final class GroupMessagesEntry {
+        public static final String KEY_THIS = "groupNs";
+
+        public static final String KEY_TITLE = "title";
+        public static final String KEY_BODY = "message";
+
+        private GroupMessagesEntry() {
+        }
+    }
+
     static final class StorageEntry {
         static final String KEY_THIS = "gs://smart-lecture-cmp.appspot.com/";
 
