@@ -1,9 +1,12 @@
 package cmp.sem.team8.smarlecture.statistics;
 
+import android.util.SparseArray;
+
 import java.util.List;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.model.GroupOfUsersModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
@@ -58,6 +61,9 @@ public interface GroupStatisticsContract {
          *   to get and show list of most attendance users of the group
          */
         void MostAndWorstAttendanceUsers();
+
+
+        SparseArray<GroupOfUsersModel>getGroupsOfUsers();
 
 
     }

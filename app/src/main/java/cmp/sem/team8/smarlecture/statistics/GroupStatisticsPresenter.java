@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.statistics;
 
 import android.support.annotation.NonNull;
+import android.util.SparseArray;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,6 +18,7 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.data.mock.MockRepo;
+import cmp.sem.team8.smarlecture.common.data.model.GroupOfUsersModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
@@ -27,15 +29,18 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  */
 
 public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions{
-    double sessionPercentage;
-    ArrayList<SessionModel> sessionList;
+
     AppDataSource mDatabase;
     GroupStatisticsContract.Views mView;
     GroupStatisticsModel data;
     MockRepo  mTestDatabase;
+    SparseArray<GroupOfUsersModel> mGroups = new SparseArray<GroupOfUsersModel>();
 
-    int mode=0;   // to be used to sort the list to avoid listeners are Asincronized   worst=0;  best=1;
-
+    @Override
+   public  SparseArray<GroupOfUsersModel>getGroupsOfUsers()
+    {
+        return mGroups;
+    }
 
     GroupStatisticsPresenter(GroupStatisticsContract.Views mView)
     {

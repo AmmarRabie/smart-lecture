@@ -21,7 +21,6 @@ import java.util.List;
 public class GroupStatisticsActivity extends AppCompatActivity implements  GroupStatisticsContract.Views {
 
         // more efficient than HashMap for mapping integers to objects
-        SparseArray<GroupOfUsersModel> mGroups = new SparseArray<GroupOfUsersModel>();
         ExpandpelAdapter adapter;
 
     private ProgressBar spinner;
@@ -49,7 +48,7 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
             Percentage_text.setVisibility(View.GONE);
             mPresenter=new GroupStatisticsPresenter(this);
 
-            adapter = new ExpandpelAdapter(this, mGroups);
+            adapter = new ExpandpelAdapter(this, mPresenter.getGroupsOfUsers());
             mPresenter.start();
 
             mListView = (ExpandableListView) findViewById(R.id.group_statistics_list_view);
@@ -128,7 +127,7 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
             group.children.add(model);
         }
 
-        mGroups.append(1,group);
+        mPresenter.getGroupsOfUsers().append(1,group);
         adapter.notifyDataSetChanged();
     }
 
@@ -142,7 +141,7 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
             group.children.add(model);
         }
 
-        mGroups.append(0,group);
+        mPresenter.getGroupsOfUsers().append(0,group);
         adapter.notifyDataSetChanged();
     }
 
@@ -160,5 +159,7 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
     public void hideProgressIndicator() {
         spinner.setVisibility(View.GONE);
     }
+
+
 }
 
