@@ -59,15 +59,15 @@ public class QuestionFragment extends android.support.v4.app.Fragment implements
 
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
 
-            final EditText questionNameView = buildEditTextDialogView("Name", null);
+            final EditText questionNameView = buildEditTextDialogView("Question", null);
 
             mBuilder.setView(questionNameView);
 
-            mBuilder.setTitle(getString(R.string.dTitle_addObjective));
+            mBuilder.setTitle(" your Question");
 
             mBuilder.setPositiveButton(getString(R.string.dAction_add), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {  //henaaaa
+                public void onClick(DialogInterface dialogInterface, int i) {
 
                     mPresenter.addQuestion(questionNameView.getText().toString());
 

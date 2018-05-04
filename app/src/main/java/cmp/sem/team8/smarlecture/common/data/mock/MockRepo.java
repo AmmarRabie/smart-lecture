@@ -18,6 +18,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
+import cmp.sem.team8.smarlecture.model.QuestionModel;
 
 /**
  * Created by AmmarRabie on 24/04/2018.
@@ -435,6 +436,9 @@ public class MockRepo implements AppDataSource {
 
     @Override
     public void getObjectives(String sessionID, Get<ArrayList<ObjectiveModel>> callback) {
+    }
+    @Override
+    public void getQuestion(String sessionID, Get<ArrayList<QuestionModel>> callback) {
     }
 
     public void setSessionSecret(String sessionId, String secret, Update callback) {
