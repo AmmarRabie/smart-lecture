@@ -26,7 +26,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
     ObjectivesPresenter mObjectivesPresenter;
     QuestionFragment mQuestionFragment;
     QuestionPresenter mQuestionPresenter;
-    
+
     MembersFragment membersFragment;
     MembersPresenter mMembersPresenter;
     private int numOfTabs;
@@ -38,6 +38,10 @@ public class PagerAdapter extends FragmentPagerAdapter {
         super(fm);
 
         this.numOfTabs = numOfTabs;
+
+        mQuestionFragment=null;
+
+        mQuestionPresenter=null;
 
         mMembersPresenter = null;
 
@@ -89,6 +93,15 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 mObjectivesPresenter = new ObjectivesPresenter(mObjectivesFragment, mSessionID, FirebaseRepository.getInstance());
 
                 return mObjectivesFragment;
+            case 3:
+
+                if (mQuestionFragment == null)
+
+                    mQuestionFragment = QuestionFragment.newInstance();
+
+                mQuestionPresenter = new QuestionPresenter(mQuestionFragment, mSessionID, FirebaseRepository.getInstance());
+
+                return mQuestionFragment;
 
             default:
 
@@ -111,7 +124,12 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
             return "Members";
 
-        } else {
+        }
+        else if (position == 3) {
+
+            return "Questions";
+
+        }else {
 
             return "Objectives";
 
@@ -123,7 +141,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     /*public interface FragmentLifeCycle {
