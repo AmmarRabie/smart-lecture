@@ -35,6 +35,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
+import cmp.sem.team8.smarlecture.model.QuestionModel;
 
 /**
  * This is the implementation of the AppDataSource using firebase database
@@ -752,6 +753,69 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
 
+    }
+    @Override
+    public void getQuestion(final String sessionID, final Get<ArrayList<QuestionModel>> callback) {
+        //check that the session exist
+        FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS).child(sessionID).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            DatabaseReference mQuestionRef = FirebaseDatabase.getInstance().getReference()
+                                    .child(FirebaseContract.SessionEntry.KEY_THIS)
+                                    .child(sessionID)
+                                    .child(SessionEntry.KEY_FOR_QUESTION_LIST);
+                            mQuestionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    ArrayList<QuestionModel> QuestionList = new ArrayList<>();
+                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                                        if (!dataSnapshot.exists())
+                                            continue;
+
+                                        String key = child.getKey();
+                                        String name = child.child(FirebaseContract.QuestionEntry.KEY_DESC).getValue(String.class);
+                                       // Float averageRating = child.child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).getValue(Float.class);
+
+
+                                       // Integer numberUsersRated = child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(Integer.class);
+                                        //Integer numberUsersRated=Integer.valueOf(child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(String.class));
+                                        //child.child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).getValue(Integer.class);
+
+                                        QuestionModel thisQuestion = new QuestionModel();
+
+                                        thisQuestion.setmQuestionDescription(name);
+
+                                        thisQuestion.setmQuestionID(key);
+
+                                       // thisQuestion.setmNumberofUsersRatedThisObjective(numberUsersRated);
+
+                                        //thisObjective.setmObjectivesAverageRating(averageRating);
+
+                                        thisQuestion.setmSessionID(sessionID);
+
+                                        QuestionList.add(thisQuestion);
+                                    }
+                                    callback.onDataFetched(QuestionList);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    callback.onError(databaseError.getMessage());
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        callback.onError(databaseError.getMessage());
+
+                    }
+                });
     }
 
     @Override

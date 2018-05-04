@@ -14,6 +14,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
+import cmp.sem.team8.smarlecture.model.QuestionModel;
 
 /**
  * Main entry point for accessing app data.
@@ -117,6 +118,9 @@ public interface AppDataSource {
 
     //check for session status
     void listenForsessionStatus(String sessionID,Listen<String> callback);
+
+    // gets Question for a session
+     void getQuestion(final String sessionID, final Get<ArrayList<QuestionModel>> callback);
 
 
     //gets the objectives for a session

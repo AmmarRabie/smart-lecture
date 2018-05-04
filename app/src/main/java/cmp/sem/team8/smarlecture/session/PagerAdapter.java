@@ -9,6 +9,8 @@ import cmp.sem.team8.smarlecture.session.members.MembersFragment;
 import cmp.sem.team8.smarlecture.session.members.MembersPresenter;
 import cmp.sem.team8.smarlecture.session.objectives.ObjectivesFragment;
 import cmp.sem.team8.smarlecture.session.objectives.ObjectivesPresenter;
+import cmp.sem.team8.smarlecture.session.question.QuestionFragment;
+import cmp.sem.team8.smarlecture.session.question.QuestionPresenter;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoFragment;
 import cmp.sem.team8.smarlecture.session.sessioninfo.SessionInfoPresenter;
 
@@ -22,6 +24,9 @@ public class PagerAdapter extends FragmentPagerAdapter {
     SessionInfoPresenter mSessionInfoPresenter;
     ObjectivesFragment mObjectivesFragment;
     ObjectivesPresenter mObjectivesPresenter;
+    QuestionFragment mQuestionFragment;
+    QuestionPresenter mQuestionPresenter;
+    
     MembersFragment membersFragment;
     MembersPresenter mMembersPresenter;
     private int numOfTabs;

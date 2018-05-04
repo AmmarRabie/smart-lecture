@@ -50,6 +50,7 @@ public final class FirebaseContract {
         public static final String KEY_FOR_GROUP_ID = "for_group";
         public static final String KEY_FOR_SESSION_NAME_ = "for_name";
         public static final String KEY_FOR_OBJECTIVES_LIST = "objectives";
+        public static final String KEY_FOR_QUESTION_LIST = "questions";
         public static final String KEY_ATTEND = "attend";
         public static final String KEY_NOTES = "notes";
 
@@ -91,6 +92,13 @@ public final class FirebaseContract {
         public static final String KEY_DESC="desc";
     }
 
+    public static final class QuestionEntry{
+        private QuestionEntry() {
+        }
+      //  public static final String KEY_AVERAGERATING="rating" ;
+      //  public static final String KEY_NUM_OF_USER_RATED="number_user_rated";
+        public static final String KEY_DESC="desc";
+    }
 
     public static final class UserEntry {
         public static final String KEY_THIS = "user";
