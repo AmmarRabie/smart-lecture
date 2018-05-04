@@ -21,6 +21,9 @@ public class MembersContract {
          */
         void showErrorMessage(String cause);
 
+        /**
+         * called from presenter when the session status is not activated it 
+         */
         void showBeginAttendanceButton();
 
         void hideBeginAttendanceButton();
