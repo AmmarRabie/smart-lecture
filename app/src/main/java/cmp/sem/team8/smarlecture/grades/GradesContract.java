@@ -30,23 +30,34 @@ public interface GradesContract {
          */
         void showGradesOfGroup(ArrayList<UserGradeModel> list);
 
-        /**
+        /**  getHighestGrade
          *
          * @return  Highest grade of  a student
          */
         int getHighestGrade();
 
 
-        /**
+        /**  getLowestGrade
          *
          * @return  Lowest grade of  a student
          */
         int getLowestGrade();
 
-         void showProgressIndicator();
 
+        /**   showProgressIndicator
+         *   to show any Ui to tell the user there is some tasks still running
+         */
+        void showProgressIndicator();
+
+        /**   hideProgressIndicator
+         *   to hide  Ui to tell the user there is some tasks are finished
+         */
          void hideProgressIndicator();
 
+        /** getGroupId
+         *   to send to presenter id of the current group
+         * @return  Group id
+         */
          String getGroupId();
     }
 

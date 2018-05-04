@@ -37,11 +37,22 @@ public interface GroupStatisticsContract {
          */
         void showWorstAttendantUsers(List<UserGradeModel> users);
 
+
+        /** getGroupId
+         *   to send to presenter id of the current group
+         * @return  Group id
+         */
          String getGroupID();
 
 
+        /**   showProgressIndicator
+         *   to show any Ui to tell the user there is some tasks still running
+         */
          void showProgressIndicator();
 
+        /**   hideProgressIndicator
+         *   to hide  Ui to tell the user there is some tasks are finished
+         */
          void  hideProgressIndicator();
     }
 
