@@ -23,7 +23,7 @@ public interface AuthenticatedUser {
 
     void delete(DeleteCallback callback);
 
-    void changePass(String NewPassword, UpdatePassCallback callback);
+    void changePass(String oldPassword, String NewPassword, UpdatePassCallback callback);
 
 
     interface DeleteCallback {
