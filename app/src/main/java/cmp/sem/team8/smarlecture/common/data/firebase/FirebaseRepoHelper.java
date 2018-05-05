@@ -3,25 +3,31 @@ package cmp.sem.team8.smarlecture.common.data.firebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.common.data.AppDataSource.Listen;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupMessagesEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.StorageEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 
 /**
  * Created by AmmarRabie on 21/04/2018.
  */
 
-public abstract class FirebaseRepoHelper implements AppDataSource{
+abstract class FirebaseRepoHelper implements AppDataSource {
 
     protected ListenersList listeners;
+    protected HashMap<Listen, ValueEventWithRef> listenersMap;
 
     FirebaseRepoHelper() {
         listeners = new ListenersList();
+        listenersMap = new HashMap<>();
     }
 
 
@@ -41,6 +47,15 @@ public abstract class FirebaseRepoHelper implements AppDataSource{
         return getReference(UserEntry.KEY_THIS).child(userId);
     }
 
+    public DatabaseReference getGroupMessagesRef(String groupId) {
+        return getReference(GroupMessagesEntry.KEY_THIS).child(groupId);
+    }
+
+    protected StorageReference getProfileImageRef(String imageId) {
+        return FirebaseStorage.getInstance()
+                .getReference(StorageEntry.FOLDER_PROFILE_IMAGES).child(imageId + ".png");
+    }
+
 
     // helper methods and nested classes for handling forgetting Listen callbacks
     protected boolean isDead(Listen callback) {
@@ -53,11 +68,23 @@ public abstract class FirebaseRepoHelper implements AppDataSource{
 
     @Override
     public void forget(Listen listener) {
+        ValueEventWithRef target = listenersMap.get(listener);
+        if (target != null) {
+            listenersMap.remove(listener); // remove from the map
+            target.forget();
+            return;
+        }
         for (int i = 0; i < listeners.size(); i++) {
-            if (listeners.get(i).listener.equals(listener)) {
+            if (listeners.get(i).firebaseListener.equals(listener)) {
                 listeners.get(i).forget();
             }
         }
+    }
+
+    protected void addNewListener(Listen callback, ValueEventListener listener, DatabaseReference reference)
+    {
+        ValueEventWithRef valueEventWithRef = new ValueEventWithRef(listener, reference);
+        listenersMap.put(callback, valueEventWithRef);
     }
 
     protected static final class ListenersList extends ArrayList<ValueEventWithRef> {
@@ -75,11 +102,11 @@ public abstract class FirebaseRepoHelper implements AppDataSource{
     }
 
     protected static final class ValueEventWithRef {
-        ValueEventListener listener;
+        ValueEventListener firebaseListener;
         DatabaseReference reference;
 
         public ValueEventWithRef(ValueEventListener listener, DatabaseReference reference) {
-            this.listener = listener;
+            this.firebaseListener = listener;
             this.reference = reference;
         }
 
@@ -88,21 +115,16 @@ public abstract class FirebaseRepoHelper implements AppDataSource{
         }
 
         void forget() {
-            if (reference == null || listener == null)
+            if (reference == null || firebaseListener == null)
                 return;
-            reference.removeEventListener(listener);
+            reference.removeEventListener(firebaseListener);
             reference = null;
-            listener = null;
+            firebaseListener = null;
         }
 
-        public ValueEventListener getListener() {
-            return listener;
+        public void setFirebaseListener(ValueEventListener firebaseListener) {
+            this.firebaseListener = firebaseListener;
         }
-
-        public void setListener(ValueEventListener listener) {
-            this.listener = listener;
-        }
-
 
     }
 }

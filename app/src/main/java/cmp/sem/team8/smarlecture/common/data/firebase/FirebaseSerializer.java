@@ -8,12 +8,14 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupMessagesEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
-import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
@@ -61,7 +63,7 @@ class FirebaseSerializer {
     static InvitedUserModel serializeInvitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
         UserModel userModel = serializeUser(userRoot);
-        return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.getValue()));
+        return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.child(GroupEntry.KEY_NAMES_LIST_invite).getValue()));
     }
 
     static SessionForUserModel serializeSessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {
@@ -136,6 +138,13 @@ class FirebaseSerializer {
         return new NoteModel(noteId, noteText);
     }
 
+    static ArrayList<NoteModel> serializeNotes(DataSnapshot notesSnapshot) {
+        ArrayList<NoteModel> notes = new ArrayList<>();
+        for (DataSnapshot oneNoteSnapshot : notesSnapshot.getChildren())
+            notes.add(serializeNote(oneNoteSnapshot));
+        return notes;
+    }
+
     static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
@@ -160,5 +169,17 @@ class FirebaseSerializer {
                 return false;
             }
         return true;
+    }
+
+    public static ArrayList<GroupMessageModel> serializeGroupMessages(DataSnapshot groupSnapshot, DataSnapshot messagesSnapshot) {
+        final GroupModel groupModel = serializeGroup(groupSnapshot);
+        ArrayList<GroupMessageModel> result = new ArrayList<>();
+        for (DataSnapshot messageSnapshot : messagesSnapshot.getChildren()) {
+            String messageId = messageSnapshot.getKey();
+            String title = messageSnapshot.child(GroupMessagesEntry.KEY_TITLE).getValue(String.class);
+            String body = messageSnapshot.child(GroupMessagesEntry.KEY_BODY).getValue(String.class);
+            result.add(new GroupMessageModel(messageId,groupModel, body, title));
+        }
+        return result;
     }
 }

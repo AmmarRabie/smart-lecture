@@ -17,6 +17,8 @@ public final class FirebaseContract {
         public static final String KEY_OWNER_ID = "group_owner";
         public static final String KEY_NAME = "name";
         public static final String KEY_NAMES_LIST = "names_list";
+        public static final String KEY_NAMES_LIST_invite = "invite";
+        public static final String KEY_NAMES_LIST_grade = "grade";
         public static final String KEY_SESSIONS = "sessions";
         public static String[] keySet;
         public static String[] requiredChildes;
@@ -25,7 +27,7 @@ public final class FirebaseContract {
             keySet = new String[]{KEY_OWNER_ID,
                     KEY_NAME,
                     KEY_NAMES_LIST,
-                    KEY_SESSIONS};
+                    KEY_SESSIONS,KEY_NAMES_LIST_grade,KEY_NAMES_LIST_invite};
         }
 
         static {
@@ -80,8 +82,10 @@ public final class FirebaseContract {
 
     }
 
+
     public static final class ObjectiveEntry{
-        private ObjectiveEntry(){}
+        private ObjectiveEntry() {
+        }
         public static final String KEY_AVERAGERATING="rating" ;
         public static final String KEY_NUM_OF_USER_RATED="number_user_rated";
         public static final String KEY_DESC="desc";
@@ -95,6 +99,7 @@ public final class FirebaseContract {
         public static final String KEY_NAME = "name";
         public static final String KEY_EMAIL = "email";
         public static final String KEY_INVITATIONS = "followed-groups";
+        public static final String KEY_PROFILE_IMAGE = "profile-image";
         public static String[] keySet;
         public static String[] requiredChildes;
 
@@ -111,6 +116,23 @@ public final class FirebaseContract {
 
         private UserEntry() {
         }
+    }
+
+    public static final class GroupMessagesEntry {
+        public static final String KEY_THIS = "groupNs";
+
+        public static final String KEY_TITLE = "title";
+        public static final String KEY_BODY = "message";
+
+        private GroupMessagesEntry() {
+        }
+    }
+
+    static final class StorageEntry {
+        static final String KEY_THIS = "gs://smart-lecture-cmp.appspot.com/";
+
+        static final String FOLDER_PROFILE_IMAGES = "profile-images";
+        static final String KEY_PROFILE_IMAGE_NAME = "main.png";
     }
 
 

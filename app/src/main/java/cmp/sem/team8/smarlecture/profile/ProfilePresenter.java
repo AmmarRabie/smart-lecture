@@ -102,12 +102,19 @@ class ProfilePresenter implements ProfileContract.Actions {
         mView.showOnSignOutSuccess();
     }
 
+    @Override
+    public void changeProfileImage(byte[] newImageBytes) {
+        mDataSource.updateUserProfileImage(mCurrentUser.getUserId(), newImageBytes, null);
+    }
+
     private void getUserInfoAndUpdateView() {
+        mView.showProgressIndicator("Loading your profile...");
         FirebaseRepository.getInstance()
                 .getUser(mCurrentUser.getUserId(), new AppDataSource.Get<UserModel>() {
                     @Override
-                    public void onDataFetched(UserModel data) {
-                        mView.showUserInfo(data.getName(), data.getEmail());
+                    public void onDataFetched(UserModel user) {
+                        mView.showUserInfo(user);
+                        mView.hideProgressIndicator();
                     }
                 });
     }

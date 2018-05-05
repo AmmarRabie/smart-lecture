@@ -1,18 +1,23 @@
 package cmp.sem.team8.smarlecture.common.data.mock;
 
-import com.google.firebase.database.DatabaseReference;
+
+import android.util.Log;
 
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
@@ -21,28 +26,12 @@ import cmp.sem.team8.smarlecture.model.ObjectiveModel;
  */
 
 public class MockRepo implements AppDataSource {
+    private static final String TAG = "MockRepo";
 
     private static MockRepo INSTANCE = null;
     private ArrayList<UserModel> users;
     private ArrayList<SessionModel> sessions;
     private ArrayList<GroupModel> groups;
-
-    private MockRepo() {
-        users = new ArrayList<>();
-        sessions = new ArrayList<>();
-        groups = new ArrayList<>();
-        insertDummyUsers();
-        insertDummyGroups();
-        insertDummySessions();
-    }
-
-    public static MockRepo getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new MockRepo();
-        }
-        return INSTANCE;
-    }
-
     private void insertDummySessions() {
         sessions.add(new SessionModel(
                 "L4-1",
@@ -207,8 +196,31 @@ public class MockRepo implements AppDataSource {
         ));
     }
 
+    private MockRepo() {
+        users = new ArrayList<>();
+        sessions = new ArrayList<>();
+        groups = new ArrayList<>();
+        insertDummyUsers();
+        insertDummyGroups();
+        insertDummySessions();
+    }
+
+    public static MockRepo getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new MockRepo();
+        }
+        return INSTANCE;
+    }
+
+
     @Override
     public void getUser(final String userId, final Get<UserModel> callback) {
+
+        callback.onDataFetched(new UserModel("name of " + userId, userId + ".email.com", userId));
+    }
+
+    @Override
+    public void getUserGrade(int Grade, String userId, Get<UserGradeModel> callback) {
 
     }
 
@@ -218,7 +230,17 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
+    public void updateGroupGrades(String groupId, ArrayList<String> ids, ArrayList<Integer> grade, Update callback) {
+
+    }
+
+    @Override
     public void updateUserName(String userId, String newName, final Update callback) {
+
+    }
+
+    @Override
+    public void updateUserProfileImage(String userId, byte[] newImageBytes, Update callback) {
 
     }
 
@@ -272,6 +294,33 @@ public class MockRepo implements AppDataSource {
 
     @Override
     public void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback) {
+
+    }
+
+    @Override
+    public void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback) {
+
+        ArrayList<String> groupMem = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            groupMem.add(Integer.toString(i));
+        }
+
+        ArrayList<ArrayList<String>> SessionMem = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            ArrayList<String> names_list = new ArrayList<>();
+            for (int j = 0; j < 8; j++) {
+                names_list.add(Integer.toString(j));
+            }
+            SessionMem.add(names_list);
+        }
+
+
+        callback.onDataFetched(new GroupStatisticsModel(groupMem, SessionMem));
+    }
+
+    @Override
+    public void getGroupGrade(String groupId, Get<ArrayList<UserGradeModel>> callback) {
 
     }
 
@@ -358,8 +407,6 @@ public class MockRepo implements AppDataSource {
     }*/
 
 
-
-  
     @Override
     public void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback) {
 
@@ -375,8 +422,9 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
-    public void getJoinedSessionInfo(String sessionID, String groupID, Get<SessionForUserModel> callback) {}
-  
+    public void getJoinedSessionInfo(String sessionID, String groupID, Get<SessionForUserModel> callback) {
+    }
+
     @Override
     public void setAttendanceStatus(String sessionId, AttendanceStatus status, Update callback) {
     }
@@ -438,9 +486,9 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
-    public void updateObjectivesRating(String sessionID, String objectiveID, Float newObjectiveRating,Integer newNumberUsersRated,Update callback) {
+    public void updateObjectivesRating(String sessionID, String objectiveID, Float newObjectiveRating, Integer newNumberUsersRated, Update callback) {
     }
-  
+
     @Override
     public void addNote(String sessionId, String memberId, String noteText, Insert<NoteModel> callback) {
     }
@@ -448,8 +496,8 @@ public class MockRepo implements AppDataSource {
     @Override
     public void insertObjective(String sessionID, String addedObjectiveDescription,boolean isOffline, Insert<ObjectiveModel> callback) {
     }
-  
-    @Override 
+
+    @Override
     public void deleteNote(String sessionId, String memberId, String noteId, Delete callback) {
     }
 
@@ -512,12 +560,79 @@ public class MockRepo implements AppDataSource {
     public void forget(Listen listener) {
     }
 
+    @Override
+    public void getGroupInfoForExport(String groupId, Get<FileModel> callback) {
+        FileModel result = new FileModel();
+        GroupModel targetGroup = groups.get(0);
+        result.setGroup(targetGroup);
+
+        ArrayList<FileModel.GroupMember> members = new ArrayList<>();
+        ArrayList<SessionModel> groupSessions = new ArrayList<>();
+        groupSessions.add(this.sessions.get(0));
+        groupSessions.add(this.sessions.get(1));
+        groupSessions.add(this.sessions.get(2));
+        result.setSessions(groupSessions);
+
+        ArrayList<NoteModel> dummyNotes = new ArrayList<>();
+        dummyNotes.add(new NoteModel("1", "tutorial bonus"));
+        dummyNotes.add(new NoteModel("2", "mosha2'eb"));
+        dummyNotes.add(new NoteModel("3", "note 2"));
+        dummyNotes.add(new NoteModel("4", "very clever :)"));
+
+        UserModel randUser = users.get(0);
+        FileModel.GroupMember tempMember = new FileModel.GroupMember(randUser.getName(), randUser.getEmail(), randUser.getId());
+        ArrayList<FileModel.SessionMember> inSessions = new ArrayList<>();
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), true, dummyNotes.subList(0,1)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), false, dummyNotes.subList(1,2)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), true, dummyNotes.subList(1,1)));
+        tempMember.setInSessions(inSessions);
+        members.add(tempMember);
+
+        randUser = users.get(1);
+        tempMember = new FileModel.GroupMember(randUser.getName(), randUser.getEmail(), randUser.getId());
+        inSessions = new ArrayList<>();
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), false, dummyNotes.subList(0,1)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), true, dummyNotes.subList(1,2)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), false, dummyNotes.subList(1,1)));
+        tempMember.setInSessions(inSessions);
+        members.add(tempMember);
+
+        randUser = users.get(2);
+        tempMember = new FileModel.GroupMember(randUser.getName(), randUser.getEmail(), randUser.getId());
+        inSessions = new ArrayList<>();
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), true, dummyNotes.subList(3,3)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), false, dummyNotes.subList(2,3)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), true, dummyNotes));
+        tempMember.setInSessions(inSessions);
+        members.add(tempMember);
+
+        randUser = users.get(3); // user with only 2 sessions of 3
+        tempMember = new FileModel.GroupMember(randUser.getName(), randUser.getEmail(), randUser.getId());
+        inSessions = new ArrayList<>();
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), false, new ArrayList<NoteModel>()));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), false, new ArrayList<NoteModel>()));
+        tempMember.setInSessions(inSessions);
+        members.add(tempMember);
+
+
+        result.setMembers(members);
+        Log.d(TAG, "getGroupInfoForExport() returned: " + result);
+        callback.onDataFetched(result);
+    }
+
+    @Override
+    public void getSessionById(String sessionId, Get<SessionModel> callback) {
+
+    }
+
+    @Override
+    public Listen listenAttendanceStatus(String sessionId, Listen<AttendanceStatus> callback) {
+        return null;
+    }
+
+    @Override
+    public void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback) {
+
+    }
 
 }
-
-
-
-
-
-
-

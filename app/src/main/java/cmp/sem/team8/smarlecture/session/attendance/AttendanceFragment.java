@@ -54,18 +54,18 @@ public class AttendanceFragment extends Fragment implements AttendanceContract.V
             }
         });
 
-        ListView attendeeList = root.findViewById(R.id.attendanceFrag_list);
+//        ListView attendeeList = root.findViewById(R.id.attendanceFrag_list);
 
 
         mAtendeeAdapter = null;
-        attendeeList.setAdapter(mAtendeeAdapter);
+//        attendeeList.setAdapter(mAtendeeAdapter);
 
-        attendeeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+/*        attendeeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 mActions.setAttendance(i, true);
             }
-        });
+        });*/
 
         return root;
     }

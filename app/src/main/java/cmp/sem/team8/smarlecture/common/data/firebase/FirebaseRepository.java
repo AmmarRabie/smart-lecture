@@ -4,6 +4,7 @@ package cmp.sem.team8.smarlecture.common.data.firebase;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -13,22 +14,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
+import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.common.util.MapUtils;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
@@ -53,20 +61,31 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
     @Override
     public void getUser(final String userId, final Get<UserModel> callback) {
-        final DatabaseReference userRef =
-                FirebaseDatabase.getInstance().
-                        getReference(UserEntry.KEY_THIS).child(userId);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
+            public void onDataChange(DataSnapshot userSnapshot) {
+                if (!userSnapshot.exists()) {
                     callback.onDataNotAvailable();
                     return;
                 }
-                String userName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
-                String userEmail = dataSnapshot.child(UserEntry.KEY_EMAIL).getValue(String.class);
-                UserModel user = new UserModel(userName, userEmail, userId);
-                callback.onDataFetched(user);
+                UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                setProfileImage(userModel);
+            }
+
+            private void setProfileImage(final UserModel userModel) {
+                getProfileImageRef(userModel.getId()).getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        userModel.setProfileImage(bytes);
+                        callback.onDataFetched(userModel);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                        callback.onDataFetched(userModel);
+                    }
+                });
             }
 
             @Override
@@ -77,33 +96,63 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void insertUser(final UserModel userModel, final Insert<Void> callback) {
-        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference(UserEntry.KEY_THIS);
-        final DatabaseReference thisUserReference = usersReference.child(userModel.getId());
-        thisUserReference.child(UserEntry.KEY_NAME).setValue(userModel.getName())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    private OnCompleteListener<Void> onEmailInserted = new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (!task.isSuccessful()) {
-                                callback.onError("Can't insert the user");
-                                return;
-                            }
-                            callback.onDataInserted(null);
-                        }
-                    };
+    public void getUserGrade(final int Grade, String userId, final Get<UserGradeModel> callback) {
+        getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot userSnapshot) {
+                if (!userSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                UserGradeModel model = new UserGradeModel(userModel.getName(), userModel.getEmail(), userModel.getId(), Integer.toString(Grade));
+                callback.onDataFetched(model);
+            }
 
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            callback.onError("Can't insert the user");
-                            return;
-                        }
-                        thisUserReference.child(UserEntry.KEY_EMAIL).setValue(userModel.getEmail())
-                                .addOnCompleteListener(onEmailInserted);
-                    }
-                });
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
     }
+
+    @Override
+    public void insertUser(final UserModel userModel, final Insert<Void> callback) {
+        HashMap<String, String> values = new HashMap<>();
+        values.put(UserEntry.KEY_EMAIL, userModel.getEmail());
+        values.put(UserEntry.KEY_NAME, userModel.getName());
+        final byte[] profileImage = userModel.getProfileImage();
+
+        getUserRef(userModel.getId()).setValue(values).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    callback.onError("Can't insert the user");
+                    return;
+                }
+                callback.onDataInserted(null);
+                if (profileImage != null)
+                    insertProfileImage();
+            }
+
+            private void insertProfileImage() {
+                getProfileImageRef(userModel.getId()).putBytes(profileImage);
+            }
+        });
+    }
+
+    @Override
+    public void updateGroupGrades(String groupId, ArrayList<String> ids, ArrayList<Integer> grade, final Update callback) {
+
+        for (int i = 0; i < ids.size(); i++) {
+            getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST).child(ids.get(i))
+                    .child(GroupEntry.KEY_NAMES_LIST_grade).setValue(grade.get(i));
+        }
+
+        callback.onUpdateSuccess();
+    }
+
 
     @Override
     public void updateUserName(String userId, String newName, final Update callback) {
@@ -127,6 +176,24 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 });
     }
 
+    @Override
+    public void updateUserProfileImage(String userId, byte[] newImageBytes, final Update callback) {
+        getProfileImageRef(userId).putBytes(newImageBytes)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        if (callback != null)
+                            callback.onUpdateSuccess();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+                if (callback != null)
+                    callback.onError(e.getMessage());
+            }
+        });
+    }
 
     @Override
     public void listenUser(String userId, final Listen<UserModel> callback) {
@@ -147,13 +214,159 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 forget(callback);
             }
         });
-        listenUserEvent.setListener(valueEventListener);
+        listenUserEvent.setFirebaseListener(valueEventListener);
         listeners.add(listenUserEvent);
     }
 
-
     @Override
     public void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback) {
+
+    }
+
+    @Override
+    public void getGroupAndItsSessionNameList(String groupId, final Get<GroupStatisticsModel> callback) {
+
+        final GroupStatisticsModel group = new GroupStatisticsModel(null, null);
+
+        getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<String> groupp = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            groupp.add(ds.getKey());
+                        }
+                        group.setGroupMembers(groupp);
+                    }
+
+                    @Override
+                    synchronized public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        //  getReference(GroupEntry.KEY_SESSIONS).child(groupId).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
+        getReference(FirebaseContract.SessionEntry.KEY_THIS).orderByChild(FirebaseContract.SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addValueEventListener(new ValueEventListener() {
+            String SessionID;
+
+            @Override
+            synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+
+                final ArrayList<ArrayList<String>> sessionMem = new ArrayList<>();
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    SessionID = ds.getKey();
+                    // DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS).child(FirebaseContract.SessionEntry.KEY_NAMES_LIST);
+
+                    getReference(FirebaseContract.SessionEntry.KEY_THIS).child(SessionID).child(FirebaseContract.SessionEntry.KEY_NAMES_LIST).addListenerForSingleValueEvent(new SessionValueEvent(SessionID, sessionMem, dataSnapshot.getChildrenCount()));
+                }
+
+            }
+
+            @Override
+            synchronized public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+
+            class SessionValueEvent implements ValueEventListener {
+
+                String sessionID;
+                ArrayList<ArrayList<String>> sessionMem;
+                long count;
+
+                SessionValueEvent(String SessionID, ArrayList<ArrayList<String>> sessionMem, long count) {
+                    this.sessionID = SessionID;
+                    this.sessionMem = sessionMem;
+                    this.count = count;
+
+                }
+
+                @Override
+
+                synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+                    ArrayList<String> userIdList = new ArrayList<>();
+                    for (DataSnapshot dss : dataSnapshot.getChildren()) {
+                        userIdList.add(dss.getKey());
+                    }
+                    sessionMem.add(userIdList);
+
+                    if (sessionMem.size() == count) {
+                        group.setSessionMembers(sessionMem);
+                        callback.onDataFetched(group);
+                    }
+                }
+
+                @Override
+                synchronized public void onCancelled(DatabaseError databaseError) {
+                    callback.onError(databaseError.getMessage());
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void getGroupGrade(String groupId, final Get<ArrayList<UserGradeModel>> callback) {
+
+        getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+                        final ArrayList<UserGradeModel> users = new ArrayList<>();
+
+                        for (DataSnapshot ch : dataSnapshot.getChildren()) {
+                            HashMap<String, Object> ob = (HashMap<String, Object>) ch.getValue();
+                            //ob.clear();
+                            String UserId = ch.getKey();
+                            long num = (Long) ob.get(GroupEntry.KEY_NAMES_LIST_grade);
+                            String attendaceGrade = Long.toString(num);
+                            getUserRef(UserId).addListenerForSingleValueEvent(new UserValueEvent(attendaceGrade, users, dataSnapshot.getChildrenCount()));
+                        }
+                    }
+
+                    @Override
+                    synchronized public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                    class UserValueEvent implements ValueEventListener {
+
+                        String attendanceGrade;
+                        ArrayList<UserGradeModel> users;
+                        long count;
+
+                        UserValueEvent(String attendanceGrade, ArrayList<UserGradeModel> users, long count) {
+                            this.attendanceGrade = attendanceGrade;
+                            this.users = users;
+                            this.count = count;
+
+                        }
+
+                        @Override
+
+                        synchronized public void onDataChange(DataSnapshot userSnapshot) {
+                            if (!userSnapshot.exists()) {
+                                callback.onDataNotAvailable();
+                                return;
+                            }
+                            UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                            UserGradeModel userGradeModel = new UserGradeModel(userModel.getName(), userModel.getEmail(), userModel.getId(), attendanceGrade);
+                            users.add(userGradeModel);
+
+                            if (users.size() == count) {
+                                callback.onDataFetched(users);
+                            }
+                        }
+
+                        @Override
+                        synchronized public void onCancelled(DatabaseError databaseError) {
+                            callback.onError(databaseError.getMessage());
+                        }
+                    }
+
+                });
 
     }
 
@@ -202,8 +415,11 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     private void continueWithUserSnapshot(DataSnapshot userSnapshot) {
 
                         // insert the user into fetched group
+                        HashMap<String, Object> value = new HashMap<>();
+                        value.put(GroupEntry.KEY_NAMES_LIST_invite, false);
+                        value.put(GroupEntry.KEY_NAMES_LIST_grade, 0);
                         getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST)
-                                .child(userSnapshot.getKey()).setValue(false); // false mean not accepted yet
+                                .child(userSnapshot.getKey()).setValue(value); // false mean not accepted yet
 
                         // insert the group to the requested groups of the user
                         getUserRef(userSnapshot.getKey()).child(UserEntry.KEY_INVITATIONS)
@@ -229,6 +445,10 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 .child(groupId).setValue(true);
         getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST)
                 .child(userId).setValue(true);
+
+        // subscribe user to this group
+        FirebaseMessaging.getInstance().subscribeToTopic(groupId);
+
         callback.onUpdateSuccess();
     }
 
@@ -695,23 +915,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
 
-
-
-
-       /* mobjectiveRef.child(addedObjective.getmObjectiveID());
-        mobjectiveRef.child(addedObjective.getmObjectiveID()).child(FirebaseContract.ObjectiveEntry.KEY_DESC).setValue(addedObjective.getmObjectiveDescription());
-        mobjectiveRef.child(addedObjective.getmObjectiveID()).child(FirebaseContract.ObjectiveEntry.KEY_NUM_OF_USER_RATED).setValue(0);
-
-        mobjectiveRef.child(addedObjective.getmObjectiveID()).child(FirebaseContract.ObjectiveEntry.KEY_AVERAGERATING).setValue(0.0).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                    callback.onDataInserted(null);
-                else callback.onError(task.getException().getMessage());
-            }
-        });*/
-
-
     }
 
     @Override
@@ -798,7 +1001,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     }
                 }
         );
-//        eventWithRef.setListener(listener);
+//        eventWithRef.setFirebaseListener(firebaseListener);
 //        listeners.add(eventWithRef);
         return callback;
     }
@@ -872,8 +1075,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         callback.onError(task.getException().getMessage());
                 }
             });
-
-
         }
     }
 
@@ -946,6 +1147,130 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
+
+    public void getGroupInfoForExport(final String groupId, final Get<FileModel> callback) {
+        final FileModel result = new FileModel();
+        final ArrayList<SessionModel> groupSessions = new ArrayList<>();
+        final ArrayList<FileModel.GroupMember> groupMembers = new ArrayList<>();
+
+        getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            private boolean isLastSession = false;
+            private int sessionHandledCount = 0;
+            private int currMembersHandled = 0;
+
+            @Override
+            public void onDataChange(DataSnapshot groupSnapshot) {
+                GroupModel group = FirebaseSerializer.serializeGroup(groupSnapshot);
+                result.setGroup(group);
+                withGroupSnapshot(groupSnapshot);
+            }
+
+            private void withGroupSnapshot(DataSnapshot groupSnapshot) {
+                final DataSnapshot sessionsKeysSnapshot = groupSnapshot.child(GroupEntry.KEY_SESSIONS);
+
+                for (final DataSnapshot sessionKey : sessionsKeysSnapshot.getChildren()) {
+                    String currSessionId = sessionKey.getKey();
+                    getSessionRef(currSessionId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot sessionSnapshot) {
+                            SessionModel sessionModel = FirebaseSerializer.serializeSession(sessionSnapshot);
+                            groupSessions.add(sessionModel);
+
+                            if (++sessionHandledCount == sessionsKeysSnapshot.getChildrenCount())
+                                isLastSession = true;
+                            currMembersHandled = 0;
+                            withSessionMembersList(sessionKey.getKey(), sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST));
+
+                        }
+
+                    });
+                }
+            }
+
+            private void withSessionMembersList(final String sessionId, DataSnapshot sessionMembersSnapshot) {
+                long membersCount = sessionMembersSnapshot.getChildrenCount();
+                for (final DataSnapshot oneSessionMemberKeySnapshot : sessionMembersSnapshot.getChildren()) {
+                    String currMemberKey = oneSessionMemberKeySnapshot.getKey();
+                    FileModel.GroupMember existedGroupMember = findGroupMemberById(currMemberKey);
+                    if (existedGroupMember != null) {
+                        // add to this group member, this contribution (member model)
+                        boolean isAttend = ((boolean) oneSessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
+                        ArrayList<NoteModel> thisSessionMemberNotes = FirebaseSerializer.serializeNotes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        existedGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
+
+                        if (++currMembersHandled == membersCount)
+                            returnDataIfLastSession();
+                        continue; // continue and don't fetch the data again
+                    }
+                    withSessionMemberSnapshot(oneSessionMemberKeySnapshot, sessionId, currMemberKey, membersCount);
+                }
+
+            }
+
+            private void withSessionMemberSnapshot(final DataSnapshot sessionMemberKeySnapshot,
+                                                   final String sessionId,
+                                                   String currMemberKey,
+                                                   final long membersCount) {
+                getUser(currMemberKey, new Get<UserModel>() {
+                    @Override
+                    public void onDataFetched(UserModel thisUser) {
+                        final FileModel.GroupMember newGroupMember = new FileModel.GroupMember(thisUser);
+                        boolean isAttend = ((boolean) sessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
+                        ArrayList<NoteModel> thisSessionMemberNotes = FirebaseSerializer.serializeNotes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        newGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
+                        groupMembers.add(newGroupMember);
+
+                        if (++currMembersHandled == membersCount)
+                            returnDataIfLastSession();
+                    }
+                });
+            }
+
+            private void returnDataIfLastSession() {
+                if (!isLastSession)
+                    return;
+                result.setSessions(groupSessions);
+                result.setMembers(groupMembers);
+                callback.onDataFetched(result);
+            }
+
+            private FileModel.GroupMember findGroupMemberById(String memberId) {
+                for (FileModel.GroupMember groupMember : groupMembers)
+                    if (groupMember.getId().equals(memberId))
+                        return groupMember;
+                return null;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getSessionById(String sessionId, final Get<SessionModel> callback) {
+        getSessionRef(sessionId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot sessionSnapshot) {
+                if (!sessionSnapshot.exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
+                SessionModel session = FirebaseSerializer.serializeSession(sessionSnapshot);
+                callback.onDataFetched(session);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
+    }              
+
+
+
+
 
     @Override
     public void editSession(String sessionId, String sessionName, final boolean isOffline, final Update callback) {
@@ -1075,12 +1400,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 }
                 callback.onDataFetched(dataSnapshot.getValue(String.class));
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                callback.onError(databaseError.getMessage());
-
-            }
         });
     }
 
@@ -1109,8 +1428,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 callback.onError(databaseError.getMessage());
 
             }
-
-
         });
     }
 
@@ -1123,5 +1440,55 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         if (callback == null)
             return;
         callback.onDataInserted(new NoteModel(noteId, noteText));
+    }          
+
+    @Override
+    public Listen listenAttendanceStatus(String sessionId, final Listen<AttendanceStatus> callback) {
+//        listeners.add(callback);
+        DatabaseReference attendanceRef = getSessionRef(sessionId).child(SessionEntry.KEY_ATTENDANCE_STATUS);
+        ValueEventListener listener = attendanceRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot statusSnapshot) {
+                if (!statusSnapshot.exists())
+                    return;
+                AttendanceStatus status = AttendanceStatus.fromString(
+                        statusSnapshot.getValue(String.class));
+                callback.onDataReceived(status);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        addNewListener(callback, listener, attendanceRef);
+        return callback;
+    }
+
+    @Override
+    public void getGroupMessages(final String groupId, final Get<ArrayList<GroupMessageModel>> callback) {
+        getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot groupSnapshot) {
+                getGroupMessagesRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot messagesSnapshot) {
+                        ArrayList<GroupMessageModel> groupMessages = FirebaseSerializer.serializeGroupMessages(groupSnapshot, messagesSnapshot);
+                        if (groupMessages != null)
+                            callback.onDataFetched(groupMessages);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        callback.onError(databaseError.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
+

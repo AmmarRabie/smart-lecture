@@ -59,6 +59,8 @@ public interface StudentListContract {
         void handleOfflineStates();
 
         boolean getOfflineState();
+
+        void onExportSuccess();
     }
 
     interface Actions extends IBasePresenter {
@@ -81,6 +83,8 @@ public interface StudentListContract {
         void deleteStudent(String name);
 
         void end();
+
+        void exportExcel(String fileName);
     }
 
 }

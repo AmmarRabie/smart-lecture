@@ -12,6 +12,7 @@ public class UserModel implements Serializable{
     private String id;
     private String name;
     private String email;
+    private byte[] profileImage;
 
 
     public UserModel(String name, String email, String id) {
@@ -42,5 +43,13 @@ public class UserModel implements Serializable{
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setProfileImage(byte[] profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public byte[] getProfileImage() {
+        return profileImage;
     }
 }

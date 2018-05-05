@@ -38,6 +38,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/attendanceFrag_secretContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -64,10 +65,128 @@
             android:src="@drawable/change_black" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/attendanceFrag_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <Button
+        android:id="@+id/attendanceFrag_verifySecret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="@string/verify_secret" />
 
-    </ListView>
+    <RelativeLayout
+        android:id="@+id/attendanceFrag_instructionsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="8dp">
+
+
+        <ImageView
+            android:id="@+id/attendanceFrag_instruction1"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_above="@+id/tv2"
+            android:layout_toEndOf="@+id/tv2"
+            android:src="@drawable/ic_done"
+            android:tint="#007700"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/attendanceFrag_instruction2"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_above="@+id/tv3"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@+id/tv2"
+            android:src="@drawable/ic_done"
+            android:tint="#007700"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/attendanceFrag_instruction3"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_above="@+id/tv4"
+            android:layout_marginStart="11dp"
+            android:layout_toEndOf="@+id/tv3"
+            android:src="@drawable/ic_done"
+            android:tint="#007700"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/attendanceFrag_instruction4"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignTop="@+id/tv4"
+            android:layout_marginStart="11dp"
+            android:layout_toEndOf="@+id/tv4"
+            android:src="@drawable/ic_done"
+            android:tint="#007700"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+        <ImageView
+            android:id="@+id/attendanceFrag_instruction5"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignStart="@+id/attendanceFrag_instruction3"
+            android:layout_alignTop="@+id/tv5"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/ic_done"
+            android:tint="#007700"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="1- End Connection"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv1"
+            android:layout_marginTop="8dp"
+            android:text="2- Verify The Secret"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv2"
+            android:layout_marginTop="8dp"
+            android:text="3- Attendance Saved Locally"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv3"
+            android:layout_marginTop="8dp"
+            android:text="4- Wait till the attendance timer finished"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tv5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv4"
+            android:layout_marginTop="8dp"
+            android:text="5- Open your connection again"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+
+
+    </RelativeLayout>
+
 </LinearLayout>

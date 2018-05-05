@@ -2,14 +2,20 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
+
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
+import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
+import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
@@ -31,29 +37,13 @@ import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 public interface AppDataSource {
 
     void getUser(String userId, Get<UserModel> callback);
+    void getUserGrade(int Grade,String userId,Get<UserGradeModel> callback);
 
     void insertUser(UserModel userModel, Insert<Void> callback);
 
+    void updateGroupGrades(String groupId,ArrayList<String>ids,ArrayList<Integer>grade, final Update callback);
+
     void updateUserName(String userId, String newName, Update callback);
-
-    void listenUser(String userId, Listen<UserModel> callback);
-
-
-
-    /**
-     * return all sessions that passed user is a member in their groups filtered by flags
-     *
-     * @param userId        the user id you want to get sessions he is a member in
-     * @param callback      return the data on this callback
-     * @param withClosed    if false, the sessions returned will exclude closed ones
-     * @param withOpened    if false, the sessions returned will exclude opened ones
-     * @param withNotActive if false, the sessions returned will exclude not active ones
-     */
-/*    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
-            , boolean withClosed
-            , boolean withOpened
-            , boolean withNotActive);*/
-
 
     /**
      * return all sessions that passed user is a member in their groups
@@ -63,6 +53,26 @@ public interface AppDataSource {
      */
 //    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback); // for student
 
+
+    void updateUserProfileImage(String userId, byte[] newImageBytes, Update callback);
+
+
+    void listenUser(String userId, Listen<UserModel> callback);
+    /**
+     * return all sessions that passed user is a member in their groups filtered by flags
+     *
+     * @param userId        the user id you want to get sessions he is a member in
+     * @param callback      return the data on this callback
+     * @param withClosed    if false, the sessions returned will exclude closed ones
+     * @param withOpened    if false, the sessions returned will exclude opened ones
+     * @param withNotActive if false, the sessions returned will exclude not active ones
+     */
+
+
+/*    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
+            , boolean withClosed
+            , boolean withOpened
+            , boolean withNotActive);*/
 
     /**
      * return all sessions that passed user is a member in their groups filtered by flags <B><I>one by one</B>
@@ -88,12 +98,16 @@ public interface AppDataSource {
 
     /**
      * return all group invitations sent userId, doesn't return the groups he is actually in.
-     * @param userId the user id you want to get invited groups.
+     *
+     * @param userId   the user id you want to get invited groups.
      * @param callback return the data on this callback.
      */
     void getGroupInvitationsForUser(String userId, Get<GroupInvitationModel> callback);
 
     void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
+    void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback); // for lecturer
+
+    void getGroupGrade(String groupId, Get<ArrayList<UserGradeModel>> callback);
 
     void inviteUserToGroup(String email, String groupId, Insert<UserModel> callback); // add a new student
 
@@ -157,6 +171,14 @@ public interface AppDataSource {
 
     void getGroupsForUser(String userId, Get<ArrayList< GroupModel>> callback);
 
+    void getGroupInfoForExport(String groupId, Get<FileModel> callback);
+
+    void getSessionById(String sessionId, Get<SessionModel> callback);
+
+    Listen listenAttendanceStatus(String sessionId, Listen<AttendanceStatus> callback);
+
+    void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback);
+
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 
@@ -178,7 +200,6 @@ public interface AppDataSource {
     void insertNameInNamesList(String groupId, String userId, Insert<String> callback);
 
 
-    void getSessionById(String sessionId, Get<SessionModel> callback);
 
 
     void getAttendanceStatus(String sessionId, Get<AttendanceStatus> callback);
@@ -210,11 +231,6 @@ public interface AppDataSource {
             value = val;
         }
 
-
-        @Override
-        public String toString() {
-            return value;
-        }
         public static AttendanceStatus fromString(String value) {
             for (AttendanceStatus status : AttendanceStatus.values()) {
                 if (status.value.equalsIgnoreCase(value)) {
@@ -222,6 +238,11 @@ public interface AppDataSource {
                 }
             }
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return value;
         }
     }
 
