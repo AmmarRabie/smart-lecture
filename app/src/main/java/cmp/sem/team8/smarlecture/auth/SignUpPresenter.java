@@ -96,6 +96,11 @@ class SignUpPresenter implements SignUpContract.Actions {
             endTask();
             return;
         }
+        if(!ValidationUtils.userNameValidator(name)){
+            mView.showErrorMessage("Invalid UserName");
+            endTask();
+            return;
+        }
         if (!password.equals(confirmPassword)) {
             mView.showErrorMessage("two passwords are different");
             endTask();

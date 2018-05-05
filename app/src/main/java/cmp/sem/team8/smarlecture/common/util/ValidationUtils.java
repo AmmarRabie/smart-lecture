@@ -14,23 +14,16 @@ public class ValidationUtils {
      * @return true if email is valid false otherwise
      */
     public static boolean emailValidator(String email) {
-        Matcher matcher = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE).matcher(email);
-        return matcher.find();
+
+        Matcher matcher = Pattern.compile("^[A-Z._%+-]+[0-9]*+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE).matcher(email);
+        return (matcher.find());
     }
+
     public static boolean userNameValidator(String userName){
         Matcher matcher=Pattern.compile("^[A-Z]",Pattern.CASE_INSENSITIVE).matcher(userName);
-        return matcher.find();
+        return (matcher.find()&&(userName.length()<20)&&(userName.length()>=4));
     }
-    public static boolean sessionValidator(String sessionName){
 
-        return false;
-    }
-    public static boolean groupValidator(String groupName){
-        return false;
-    }
-    public static boolean objectiveValidator(String objectiveName){
-        return false;
-    }
 
 }
 

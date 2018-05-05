@@ -9,7 +9,7 @@ import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
  * Created by ramym on 3/17/2018.
  */
 
-public class MembersContract {
+public interface MembersContract {
 
     /**
      * views methods implemented by fragment
@@ -22,9 +22,13 @@ public class MembersContract {
         void showErrorMessage(String cause);
 
         /**
-         * called from presenter when the session status is not activated it 
+         * called from presenter when the session status is not activated
          */
         void showBeginAttendanceButton();
+
+        /**
+         * called when the session status is open or closed
+         */
 
         void hideBeginAttendanceButton();
 
@@ -39,14 +43,36 @@ public class MembersContract {
          */
         void showSecret(String secret);
 
+
         String getSecret();
 
+        /**
+         * called when the user wants to add a new member to the group
+         * @param newAttendee the member information that will be added to this group
+         */
         void addNewMember(MemberModel newAttendee);
 
+        /**
+         *this function  is called from the presenter after changing the state of his attendance
+         * in this session
+         * @param id the id of the student
+         * @param attend the  state if true means he attended the session false otherwise
+         */
         void updateMemberAttendance(String id, boolean attend);
+
+        /**
+         * called from the presenter when the addition of a note to a certain user is successful
+         * @param memberId the id of the member
+         * @param note the note description
+         */
 
         void onNoteAddedSuccess(String memberId, NoteModel note);
 
+        /**
+         * called from the presenter when the deletion of a note is successful
+         * @param memberId the id of the member
+         * @param noteDeleted the deleted note
+         */
         void onDeleteNoteSuccess(String memberId, NoteModel noteDeleted);
     }
 
@@ -65,6 +91,11 @@ public class MembersContract {
          */
         void BeginAttendance();
 
+        /**
+         * called when the user clicks on the attendance mark
+         * @param memberId
+         * @param attend
+         */
         void onAttendanceMarkChanged(String memberId, boolean attend);
 
         /**
@@ -74,8 +105,21 @@ public class MembersContract {
 
         void onDestroy();
 
+        /**
+         * called from the fragment when the user clicks on add note
+         * on succesfull addition the on onNoteAddedSuccess method is called
+         * @param memberIdShowing the id of the member that this note is about him
+         * @param noteText the text of the note
+         */
+
         void addNote(String memberIdShowing, String noteText);
 
+        /**
+         * called from the presenter when the user clicks on delete note
+         * on successful deletion the onNoteDeletedSuccess method is called
+         * @param memberIdShowing the id of the user that the note is about him
+         * @param noteId the id of the note
+         */
         void deleteNote(String memberIdShowing, String noteId);
     }
 }

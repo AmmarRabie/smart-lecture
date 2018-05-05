@@ -106,7 +106,7 @@ public interface AppDataSource {
 
 
     //check for session status
-    void listenForsessionStatus(String sessionID,Listen<String> callback);
+    void listenForSessionStatus(String sessionID, Listen<String> callback);
 
 
     //gets the objectives for a session
@@ -156,6 +156,7 @@ public interface AppDataSource {
     void getGroupId(String sessionId,Get<String >callback);
 
     void getGroupsForUser(String userId, Get<ArrayList< GroupModel>> callback);
+
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 
