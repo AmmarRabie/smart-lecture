@@ -7,6 +7,7 @@ import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.common.util.ValidationUtils;
 
 
 /**
@@ -87,6 +88,16 @@ class SignUpPresenter implements SignUpContract.Actions {
                 name == null || name.isEmpty() ||
                 confirmPassword == null || confirmPassword.isEmpty()) {
             mView.showErrorMessage("all fields can't be empty");
+            endTask();
+            return;
+        }
+        if(!ValidationUtils.emailValidator(email)){
+            mView.showErrorMessage("Invalid  Email Address");
+            endTask();
+            return;
+        }
+        if(!ValidationUtils.userNameValidator(name)){
+            mView.showErrorMessage("Invalid UserName");
             endTask();
             return;
         }

@@ -29,6 +29,7 @@ public class WriteAttendancePresenter implements WriteAttendanceContract.Actions
     private boolean mIsConnectionTimeOver = false;
     private boolean mIsAttendanceTimeOver = false;
 
+
     public WriteAttendancePresenter(WriteAttendanceContract.Views view, AppDataSource dataSource, AuthService authService, String sessionId) {
         this.mDataSource = dataSource;
         this.mView = view;

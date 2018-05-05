@@ -37,7 +37,7 @@ import cmp.sem.team8.smarlecture.session.PagerAdapter;
 
 public class ObjectivesFragment extends android.support.v4.app.Fragment implements
         ObjectivesContract.Views,
-        ObjectivesRecyclerAdapter.OnItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener{
+        ObjectivesRecyclerAdapter.OnItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
 
     Animator spruceAnimator;
 
@@ -325,8 +325,6 @@ public class ObjectivesFragment extends android.support.v4.app.Fragment implemen
         super.onPause();
         internetConnectivityReceiver.end(getContext());
     }
-
-
 
 
 }

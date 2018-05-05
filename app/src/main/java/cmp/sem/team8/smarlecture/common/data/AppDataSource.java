@@ -2,6 +2,9 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
+
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
@@ -117,7 +120,7 @@ public interface AppDataSource {
 
 
     //check for session status
-    void listenForsessionStatus(String sessionID,Listen<String> callback);
+    void listenForSessionStatus(String sessionID, Listen<String> callback);
 
 
     //gets the objectives for a session
@@ -126,7 +129,7 @@ public interface AppDataSource {
     //update new average rating of objective
     void updateObjectivesRating(String sessionID,String objectiveID,Float newObjectiveRating,Integer newNumberUsersRated,Update callback);
 
-    void insertObjective(String sessionID,ObjectiveModel addedObjective,Insert<Void> callback);
+    void insertObjective(String sessionID,String addedObjective,boolean isOffline,Insert<ObjectiveModel> callback);
 
     void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
@@ -146,6 +149,28 @@ public interface AppDataSource {
 
     void deleteNote(String sessionId, String memberId, String noteId, Delete callback);
 
+    void editObjective(String objectiveID,String sessionID,String objectiveDescription,boolean isOffline,Update callback);
+
+    void deleteObjective(String objectiveID,String sesisonID,boolean isOffline,Delete callback);
+
+    void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback);
+
+    void addSession(String groupId,String sessionId,String sessionName,Insert<Void> callback );
+
+    void editSession(String sessionId,String sessionName,boolean isOffline,Update callback);
+
+    void deleteSession(String sessoinId,boolean isOffline,Delete callback);
+
+    void deleteGroupById(String groupId, boolean isOffline,Delete callback);
+
+    void addGroup(String userId,String groupName,boolean isOffline,Insert<String>callback);
+
+    void updateGroup(String groupId,String groupName,boolean isOffline,Update callback);
+
+    void getGroupId(String sessionId,Get<String >callback);
+
+    void getGroupsForUser(String userId, Get<ArrayList< GroupModel>> callback);
+
     void getGroupInfoForExport(String groupId, Get<FileModel> callback);
 
     void getSessionById(String sessionId, Get<SessionModel> callback);
@@ -157,9 +182,8 @@ public interface AppDataSource {
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 
-    void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback);
 
-    void deleteGroupById(String groupId, Delete callback);
+
 
     void updateGroup(GroupModel updatingValues, Update callback);
 

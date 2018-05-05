@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.model.SessionModel;
+import cmp.sem.team8.smarlecture.common.data.model.*;
 
 
 /**
@@ -26,18 +26,21 @@ public class SessionListRecyclerAdapter extends RecyclerView.Adapter<SessionList
 
     private Context mContext;
 
-    public SessionListRecyclerAdapter(Context context,ArrayList<SessionModel> sessionsList,
-                                      OnItemClickListener onItemClickListener){
-        this(context,sessionsList);
-        mItemClickListener=onItemClickListener;
+    public SessionListRecyclerAdapter(Context context, ArrayList<SessionModel> sessionsList,
+                                      OnItemClickListener onItemClickListener) {
+        this(context, sessionsList);
+        mItemClickListener = onItemClickListener;
     }
-    public  SessionListRecyclerAdapter(Context context,ArrayList<SessionModel> sessionsList){
-        mContext=context;
-        mSessionList=sessionsList;
+
+    public SessionListRecyclerAdapter(Context context, ArrayList<SessionModel> sessionsList) {
+        mContext = context;
+        mSessionList = sessionsList;
     }
+
     public void setOnItemClickListener(SessionListRecyclerAdapter.OnItemClickListener onItemClickListener) {
         mItemClickListener = onItemClickListener;
     }
+
     @Override
     public SessionListRecyclerAdapter.SessionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -54,7 +57,7 @@ public class SessionListRecyclerAdapter extends RecyclerView.Adapter<SessionList
 
     @Override
     public int getItemCount() {
-        return  mSessionList.size();
+        return mSessionList.size();
     }
 
     public void swapList(ArrayList<SessionModel> sessionlist) {
@@ -74,10 +77,10 @@ public class SessionListRecyclerAdapter extends RecyclerView.Adapter<SessionList
 
         void onEditSessionClick(View view, int position);
 
-        void onItemClick(View view,int position);
+        void onItemClick(View view, int position);
     }
 
-    class SessionViewHolder extends RecyclerView.ViewHolder{
+    class SessionViewHolder extends RecyclerView.ViewHolder {
 
         private TextView nameTextView;
 
@@ -88,57 +91,55 @@ public class SessionListRecyclerAdapter extends RecyclerView.Adapter<SessionList
         private ImageView editImageView;
 
 
-
         private View containerView;
 
         public SessionViewHolder(View itemView) {
             super(itemView);
 
-            nameTextView=itemView.findViewById(R.id.sessionList_sessionName);
+            nameTextView = itemView.findViewById(R.id.sessionList_sessionName);
 
-            deleteImageView=itemView.findViewById(R.id.sessionlist_deletesession);
+            deleteImageView = itemView.findViewById(R.id.sessionlist_deletesession);
 
-            editImageView=itemView.findViewById(R.id.sessionList_editsession);
+            editImageView = itemView.findViewById(R.id.sessionList_editsession);
 
 
-            statusTextView=itemView.findViewById(R.id.sessionList_status);
+            statusTextView = itemView.findViewById(R.id.sessionList_status);
 
-            containerView=itemView;
+            containerView = itemView;
         }
 
-            void bind(final int position) {
+        void bind(final int position) {
 
-            SessionModel currSession=mSessionList.get(position);
-               // HashMap<String, Object> currSession = mSessionList.get(position);
+            SessionModel currSession = mSessionList.get(position);
 
-                nameTextView.setText(currSession.getmName());
-                statusTextView.setText(currSession.getmSessionStatus());
+            nameTextView.setText(currSession.getName());
+            statusTextView.setText(currSession.getSessionStatus().toString());
 
-                if (mItemClickListener == null)
-                    return;
+            if (mItemClickListener == null)
+                return;
 
-                // set listeners to the whole view, the startSession view and the deleteGroupView
+            // set listeners to the whole view, the startSession view and the deleteGroupView
 
-                deleteImageView
-                        .setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                mItemClickListener.onDeleteSessionClick(view, position);
-                            }
-                        });
-                editImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onEditSessionClick(view, position);
-                    }
-                });
-                containerView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onItemClick(view, position);
-                    }
-                });
+            deleteImageView
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mItemClickListener.onDeleteSessionClick(view, position);
+                        }
+                    });
+            editImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mItemClickListener.onEditSessionClick(view, position);
+                }
+            });
+            containerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mItemClickListener.onItemClick(view, position);
+                }
+            });
 
-            }
+        }
     }
 }

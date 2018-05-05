@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.common.data.mock;
 
+
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -430,7 +431,7 @@ public class MockRepo implements AppDataSource {
 
     @Override
 
-    public void listenForsessionStatus(String sessionID, Listen<String> callback) {
+    public void listenForSessionStatus(String sessionID, Listen<String> callback) {
 
     }
 
@@ -493,11 +494,66 @@ public class MockRepo implements AppDataSource {
     }
 
     @Override
-    public void insertObjective(String sessionID, ObjectiveModel addedObjective, Insert<Void> callback) {
+    public void insertObjective(String sessionID, String addedObjectiveDescription,boolean isOffline, Insert<ObjectiveModel> callback) {
     }
 
     @Override
     public void deleteNote(String sessionId, String memberId, String noteId, Delete callback) {
+    }
+
+    @Override
+    public void editObjective(String objectiveID, String sessionID,String objectiveDescription,boolean isOffline,Update callback) {
+
+    }
+
+    @Override
+    public void deleteObjective(String objectiveID, String sesisonID, boolean isOffline, Delete callback) {
+
+    }
+
+    @Override
+    public void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback) {
+
+    }
+
+    @Override
+    public void addSession(String groupId,String sessionId,String sessionName,Insert<Void> callback) {
+
+    }
+
+    @Override
+    public void editSession(String sessionId, String sessionName,boolean isOffline, Update callback) {
+
+    }
+
+    @Override
+    public void deleteSession(String sessoinId, boolean isOffline, Delete callback) {
+
+    }
+
+    @Override
+    public void deleteGroupById(String groupId, boolean isOffline,Delete callback) {
+
+    }
+
+    @Override
+    public void addGroup(String userId, String groupName,boolean isOffline, Insert<String> callback) {
+
+    }
+
+    @Override
+    public void updateGroup(String groupId, String groupName, boolean isOffline, Update callback) {
+
+    }
+
+    @Override
+    public void getGroupId(String sessionId, Get<String> callback) {
+
+    }
+
+    @Override
+    public void getGroupsForUser(String userId, Get<ArrayList<GroupModel>> callback) {
+
     }
 
     @Override
@@ -578,11 +634,5 @@ public class MockRepo implements AppDataSource {
     public void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback) {
 
     }
+
 }
-
-
-
-
-
-
-

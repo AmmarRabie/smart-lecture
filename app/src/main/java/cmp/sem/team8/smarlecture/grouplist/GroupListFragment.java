@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.willowtreeapps.spruce.Spruce;
 import com.willowtreeapps.spruce.animation.DefaultAnimations;
 import com.willowtreeapps.spruce.sort.CorneredSort;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.InternetConnectivityReceiver;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.group.GroupActivity;
 import cmp.sem.team8.smarlecture.joinsession.JoinedSession;
 import cmp.sem.team8.smarlecture.session.SessionActivity;
@@ -57,7 +59,7 @@ public class GroupListFragment extends Fragment implements
 
     private GroupListRecyclerAdapter mGroupListAdapter;
 
-    private ArrayList<HashMap<String, Object>> mGroupList;
+    private ArrayList<GroupModel> mGroupList;
 
     private View.OnClickListener mAddGroupClickListener = new View.OnClickListener() {
         @Override
@@ -223,7 +225,7 @@ public class GroupListFragment extends Fragment implements
     }
 
     @Override
-    public void showGroupList(ArrayList<HashMap<String, Object>> groupList) {
+    public void showGroupList(ArrayList<GroupModel> groupList) {
         if (groupList.equals(mGroupList))
             return;
 
@@ -241,7 +243,7 @@ public class GroupListFragment extends Fragment implements
 
         int position = 0;
 
-        while (!groupID.equals(mGroupList.get(position).get("id").toString())) {
+        while (!groupID.equals(mGroupList.get(position).getId())) {
 
             position++;
         }
@@ -259,24 +261,21 @@ public class GroupListFragment extends Fragment implements
 
         int position = 0;
 
-        while (!groupID.equals(mGroupList.get(position).get("id").toString())) {
+        while (!groupID.equals(mGroupList.get(position).getId())) {
 
             position++;
         }
 
-        mGroupList.get(position).put("name", newName);
+        mGroupList.get(position).setName(newName);
 
         mGroupListAdapter.notifyItemChanged(position, null);
     }
 
     @Override
-    public void onAddSuccess(String groupID, String newName) {
+    public void onAddSuccess(String groupID, String newName, String ownerId) {
 
-        HashMap<String, Object> newGroup = new HashMap<>();
+        GroupModel newGroup = new GroupModel(newName, groupID, ownerId);
 
-        newGroup.put("name", newName);
-
-        newGroup.put("id", groupID);
 
         mGroupList.add(newGroup);
 
@@ -385,11 +384,12 @@ public class GroupListFragment extends Fragment implements
     @Override
     public void onItemClick(View view, int position) {
 
-        HashMap<String, Object> groupClicked = mGroupList.get(position);
 
-        String groupId = groupClicked.get("id").toString();
+        GroupModel groupClicked = mGroupList.get(position);
 
-        String groupName = groupClicked.get("name").toString();
+        String groupId = groupClicked.getId();
+
+        String groupName = groupClicked.getName();
 
         Intent groupActivity = new Intent(getContext(), GroupActivity.class);
 
@@ -403,9 +403,10 @@ public class GroupListFragment extends Fragment implements
     @Override
     public void onDeleteGroupClick(View view, int position) {
 
-        HashMap<String, Object> groupClicked = mGroupList.get(position);
 
-        final String groupId = groupClicked.get("id").toString();
+        GroupModel groupClicked = mGroupList.get(position);
+
+        final String groupId = groupClicked.getId();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -441,11 +442,12 @@ public class GroupListFragment extends Fragment implements
     @Override
     public void onEditGroupClick(View view, final int position) {
 
-        HashMap<String, Object> groupClicked = mGroupList.get(position);
 
-        final String groupId = groupClicked.get("id").toString();
+        GroupModel groupClicked = mGroupList.get(position);
 
-        final String groupName = groupClicked.get("name").toString();
+        final String groupId = groupClicked.getId();
+
+        final String groupName = groupClicked.getName();
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
 
