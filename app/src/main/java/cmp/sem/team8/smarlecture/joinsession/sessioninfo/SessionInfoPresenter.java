@@ -2,16 +2,11 @@ package cmp.sem.team8.smarlecture.joinsession.sessioninfo;
 
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
-import cmp.sem.team8.smarlecture.session.sessioninfo.*;
 
 /**
  * Created by Loai Ali on 4/23/2018.
@@ -57,7 +52,7 @@ public class SessionInfoPresenter implements cmp.sem.team8.smarlecture.joinsessi
                 mView.showErrorMessage(cause);
             }
         });
-        mDataSource.listenForsessionStatus(sessionID, new AppDataSource.Listen<String>(1, 1) {
+        mDataSource.listenForSessionStatus(sessionID, new AppDataSource.Listen<String>(1, 1) {
             @Override
             public void onDataReceived(String dataSnapshot) {
                 if (dataSnapshot.equals(AppDataSource.SessionStatus.CLOSED.toString())) {

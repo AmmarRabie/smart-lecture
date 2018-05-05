@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 
 /**
  * when the presenter start he should look for the current user -unless it is passes earlier-
@@ -31,17 +32,48 @@ public interface GroupListContract {
      */
     interface Views extends IBaseView<Actions> {
 
+        /**
+         * called when an error happens in presenter
+         * @param cause cause of the error
+         */
         void showErrorMessage(String cause);
 
-        void showGroupList(ArrayList<HashMap<String, Object>> groupList);
+        /**
+         * called from the presenter when this fragment is created
+         * @param groupList groups made by this user
+         */
+        void showGroupList(ArrayList<GroupModel> groupList);
 
+        /**
+         * called on successful deletion
+         * @param groupID the id of the group that's deleted
+         */
         void onDeleteSuccess(String groupID);
-        void onEditSuccess(String groupID,String newName);
-        void onAddSuccess(String groupID,String newName);
 
+        /**
+         * called on successful edit of a group's name
+         * @param groupID the id of the group
+         * @param newName the new name of the group
+         */
+        void onEditSuccess(String groupID, String newName);
+
+        /**
+         *called on successful addition of a group
+         * @param groupID the id of the added group
+         * @param newName the name of the group
+         * @param OwnerId the owner of the group
+         */
+        void onAddSuccess(String groupID, String newName, String OwnerId);
+
+        /**
+         * called from the presenter  after  join session is pressed
+         * @param sessionId the id of the session
+         * @param groupId the id of the group that this session belongs to
+         */
         void startJoinSessionView(String sessionId, String groupId);
 
         void handleOfflineStates();
+
         boolean getOfflineState();
     }
 
@@ -51,12 +83,37 @@ public interface GroupListContract {
      */
     interface Actions extends IBasePresenter {
 
+        /**
+         * called from fragment when user clicks on delete button
+         * on successful deletion the onDeleteSuccess is called
+         * otherwise the showOnErrorMessage method is called
+         * @param groupID the id of the group to be deleted
+         */
         void deleteGroup(String groupID);
+
+        /**
+         * called from fragment when user clicks on add gorup button
+         * on successful addition the on addSuccess method is called
+         * otherwise the showOnErrorMessage method is called
+         * @param groupName the name of the group to be added
+         */
 
         void addGroup(String groupName);
 
+        /**
+         * called from the fragment when user clicks on edit group
+         * on successful edit the onEditSuccess is called
+         * otherwise the showOnErrorMessage is called
+         * @param groupID the id of the group that it's name will change
+         * @param newGroupName the new name of the group
+         */
+
         void editGroup(String groupID, String newGroupName);
 
+        /**
+         * called from fragment when the user clicks on join session
+         * @param sessionId the id of the session the user wants to join
+         */
         void joinSession(String sessionId);
     }
 }

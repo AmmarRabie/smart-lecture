@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 
 /**
  * Created by Loai Ali on 3/19/2018.
@@ -20,17 +21,17 @@ import cmp.sem.team8.smarlecture.R;
 class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAdapter.GroupListViewHolder> {
 
     private OnItemClickListener mItemClickListener = null;
-    private ArrayList<HashMap<String, Object>> mGroupList;
+    private ArrayList<GroupModel> mGroupList;
     private Context mContext;
 
-    public GroupListRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> groupList,
+    public GroupListRecyclerAdapter(Context context, ArrayList<GroupModel> groupList,
                                     OnItemClickListener onEditClickListener) {
         this(context, groupList);
         mItemClickListener = onEditClickListener;
     }
 
 
-    public GroupListRecyclerAdapter(Context context, ArrayList<HashMap<String, Object>> groupList) {
+    public GroupListRecyclerAdapter(Context context, ArrayList<GroupModel> groupList) {
         this.mContext = context;
         this.mGroupList = groupList;
     }
@@ -57,7 +58,7 @@ class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAda
         return mGroupList.size();
     }
 
-    public void swapList(ArrayList<HashMap<String, Object>> groupList) {
+    public void swapList(ArrayList<GroupModel> groupList) {
         if (mGroupList != null) {
             mGroupList.clear();
             mGroupList.addAll(groupList);
@@ -69,7 +70,7 @@ class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAda
 
     interface OnItemClickListener {
 
-       // void onStartSessionClick(View view, int position);
+        // void onStartSessionClick(View view, int position);
 
         void onDeleteGroupClick(View view, int position);
 
@@ -96,7 +97,7 @@ class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAda
         GroupListViewHolder(View itemView) {
             super(itemView);
             nameView = itemView.findViewById(R.id.groupList_groupName);
-          //  startSessionImageView = itemView.findViewById(R.id.grouplist_startSession);
+            //  startSessionImageView = itemView.findViewById(R.id.grouplist_startSession);
             deleteImageView = itemView.findViewById(R.id.grouplist_deleteGroup);
             editImageView = itemView.findViewById(R.id.grouplist_editGroup);
             containerView = itemView;
@@ -104,21 +105,14 @@ class GroupListRecyclerAdapter extends RecyclerView.Adapter<GroupListRecyclerAda
 
         void bind(final int position) {
 
-            HashMap<String, Object> currGroup = mGroupList.get(position);
+            GroupModel currGroup = mGroupList.get(position);
 
-            nameView.setText(currGroup.get("name").toString());
+            nameView.setText(currGroup.getName());
 
             if (mItemClickListener == null)
                 return;
 
-            // set listeners to the whole view, the startSession view and the deleteGroupView
-           /* startSessionImageView
-                    .setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mItemClickListener.onStartSessionClick(view, position);
-                        }
-                    });*/
+
             deleteImageView
                     .setOnClickListener(new View.OnClickListener() {
                         @Override

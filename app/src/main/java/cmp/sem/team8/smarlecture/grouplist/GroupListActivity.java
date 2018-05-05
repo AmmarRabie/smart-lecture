@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.grades.GradesActivity;
 import cmp.sem.team8.smarlecture.profile.ProfileActivity;
@@ -81,7 +82,7 @@ public class GroupListActivity extends AppCompatActivity {
                     ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                             grouplistfragment, R.id.contentFrame);
                 }
-                mGroupListPresenter = new GroupListPresenter(grouplistfragment);
+                mGroupListPresenter = new GroupListPresenter(grouplistfragment, FirebaseRepository.getInstance());
                 return;
         }
     }

@@ -27,11 +27,11 @@ public class JoinedSession extends AppCompatActivity {
         setContentView(R.layout.activity_joined__session);
 
         tabLayout = findViewById(R.id.joined_session_tablayout);
-
         viewPager = findViewById(R.id.joined_session_viewPager);
 
-        SessionId = "3740773";//getIntent().getStringExtra(getString(R.string.IKey_sessionId));
-        GroupID = "-LB2v1Jo4gA3cuggFIre";//getIntent().getStringExtra(getString(R.string.IKey_groupId));
+
+        SessionId = getIntent().getStringExtra(getString(R.string.IKey_sessionId));
+        GroupID = getIntent().getStringExtra(getString(R.string.IKey_groupId));
         boolean isMember = getIntent().getBooleanExtra(getString(R.string.IKey_isMember), true); // default is true
 
         pageAdapter = new JoinSessionPagerAdapter(getSupportFragmentManager(), 2, SessionId,GroupID);

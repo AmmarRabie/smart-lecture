@@ -17,7 +17,9 @@ public class SessionInfoContract {
         void showSessionId(String id);
 
         void closedSessionView();
+
         void openSessionView();
+
         void notActiveSessionView();
 
         //********** SendSessionToActivity ****************
@@ -36,8 +38,10 @@ public class SessionInfoContract {
         //1- generate unique id
         //2- add new session to database
         //3- send session id to SessionActivity.
-        void startSession( );
+        void startSession();
+
         void openSession();
+
         String getSessionStatus();
 
         //********** End Session ****************

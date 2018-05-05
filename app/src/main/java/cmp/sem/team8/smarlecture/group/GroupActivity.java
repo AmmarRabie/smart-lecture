@@ -23,7 +23,6 @@ public class GroupActivity extends AppCompatActivity {
     GroupPagerAdapter groupPagerAdapter;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +33,9 @@ public class GroupActivity extends AppCompatActivity {
         String groupId = getIntent().getStringExtra("group_id");
         String groupName = getIntent().getStringExtra("group_name");
 
-        groupPagerAdapter = new GroupPagerAdapter(getSupportFragmentManager(),groupId,groupName);
+        groupPagerAdapter = new GroupPagerAdapter(getSupportFragmentManager(), groupId, groupName);
         viewPager.setAdapter(groupPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     @Override
@@ -45,5 +43,4 @@ public class GroupActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.options_group, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 }

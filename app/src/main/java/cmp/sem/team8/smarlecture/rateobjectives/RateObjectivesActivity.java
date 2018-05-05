@@ -36,7 +36,7 @@ public class RateObjectivesActivity extends AppCompatActivity {
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                     rateObjectivesFragment, R.id.contentFrame);
         }
-        mRateObjectivesPresenter = new RateObjectivesPresenter(rateObjectivesFragment, sessionID,FirebaseRepository.getInstance());
+        mRateObjectivesPresenter = new RateObjectivesPresenter(rateObjectivesFragment, sessionID, FirebaseRepository.getInstance());
 
 
     }

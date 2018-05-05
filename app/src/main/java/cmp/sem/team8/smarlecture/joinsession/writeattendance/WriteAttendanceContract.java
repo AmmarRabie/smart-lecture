@@ -14,13 +14,17 @@ public class WriteAttendanceContract {
     interface Views extends IBaseView<WriteAttendanceContract.Actions> {
 
         void startAttendanceTimer(int seconds);
+
         void startConnectionTimer(int seconds);
 
         void stopAttendanceTimer();
+
         void stopConnectionTimer();
 
         void showErrorMessage(String cause);
+
         void showInfoMessage(String info);
+
         void showSuccessMessage(String successMes);
 
         void requestDisableConnection();
@@ -40,10 +44,12 @@ public class WriteAttendanceContract {
         boolean verifySecret(String secret);
 
         void onAttendanceTimeEnd();
+
         void onConnectionTimeEnd();
 
 
         void onConnectionLost();
+
         void onConnectionBack();
     }
 

@@ -29,19 +29,19 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
     private String SessionId;
     private SessionModel mSession;
 
-    public SessionInfoPresenter(SessionInfoContract.Views view, String groupId,String sessionID) {
+    public SessionInfoPresenter(SessionInfoContract.Views view, String groupId, String sessionID) {
         GROUP_ID = groupId;
         mView = view;
         mView.setPresenter(this);
         SessionId = sessionID;
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mSession=new SessionModel();
+        mSession = new SessionModel();
     }
 
 
     @Override
     public void start() {
-       startSession();
+        startSession();
 
         //mDatabase = FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionId);
 
@@ -62,8 +62,7 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
     public void startSession() {
 
 
-
-        mDatabase=FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionId);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionId);
 
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -73,14 +72,13 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
                 mSession.setmAttendanceStatus(dataSnapshot.child(SessionEntry.KEY_ATTENDANCE_STATUS).getValue(String.class));
                 mSession.setmSessionID(SessionId);
 
-                HashMap<String,String> hashedList=(HashMap<String, String>)dataSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
-               if(hashedList!=null) {
-                   ArrayList<String> students = new ArrayList<>(hashedList.values());
-                   mSession.setmStudentsList(students);
-               }
-               else{
-                   mSession.setmStudentsList(new ArrayList<String>());
-               }
+                HashMap<String, String> hashedList = (HashMap<String, String>) dataSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
+                if (hashedList != null) {
+                    ArrayList<String> students = new ArrayList<>(hashedList.values());
+                    mSession.setmStudentsList(students);
+                } else {
+                    mSession.setmStudentsList(new ArrayList<String>());
+                }
                 // mSession.setmStudentsList(dataSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
                 mSession.setmSessionStatus(dataSnapshot.child(SessionEntry.KEY_SESSION_STATUS).getValue(String.class));
                 mView.showSessionId(SessionId);
@@ -88,13 +86,13 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
 
 
                 //session closed
-                if(mSession.getmSessionStatus().equals(AppDataSource.SessionStatus.CLOSED.toString())){
+                if (mSession.getmSessionStatus().equals(AppDataSource.SessionStatus.CLOSED.toString())) {
                     mView.closedSessionView();
 
                 }
 
                 //session open
-                else if(mSession.getmSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString())){
+                else if (mSession.getmSessionStatus().equals(AppDataSource.SessionStatus.OPEN.toString())) {
                     mView.openSessionView();
 
                 }
@@ -134,7 +132,7 @@ public class SessionInfoPresenter implements SessionInfoContract.Actions {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref = ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_SESSION_STATUS);
         ref.setValue(AppDataSource.SessionStatus.CLOSED.toString());
-        ref=FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionEntry.KEY_ATTENDANCE_STATUS);
+        ref = FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionEntry.KEY_ATTENDANCE_STATUS);
         ref.setValue(AppDataSource.SessionStatus.CLOSED.toString());
         mSession.setmSessionStatus(AppDataSource.SessionStatus.CLOSED.toString());
         mView.closedSessionView();
