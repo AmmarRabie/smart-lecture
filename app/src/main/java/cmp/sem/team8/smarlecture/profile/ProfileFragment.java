@@ -29,7 +29,6 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.common.util.ProfileImageUtil;
 import es.dmoral.toasty.Toasty;
@@ -229,13 +228,11 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void showOnSignOutSuccess() {
-        // direct user to the log in screen
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        startActivity(intent);
-
-        // end this activity
-        if (getActivity() != null)
+        // ends this activity
+        if (getActivity() != null) {
+            getActivity().setResult(ProfileActivity.RESULT_SIGN_OUT);
             getActivity().finish();
+        }
     }
 
     @Override

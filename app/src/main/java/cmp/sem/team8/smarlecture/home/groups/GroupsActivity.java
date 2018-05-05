@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
+import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.grades.GradesActivity;
@@ -80,7 +81,7 @@ public class GroupsActivity extends AppCompatActivity {
                     ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                             grouplistfragment, R.id.contentFrame);
                 }
-                mGroupsPresenter = new GroupsPresenter(grouplistfragment, FirebaseRepository.getInstance());
+                mGroupsPresenter = new GroupsPresenter(FirebaseAuthService.getInstance(), grouplistfragment, FirebaseRepository.getInstance());
                 return;
         }
     }

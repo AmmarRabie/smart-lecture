@@ -78,6 +78,7 @@ public class FirebaseAuthService implements AuthService {
     @Override
     public void signOut() {
         FirebaseAuth.getInstance().signOut();
+        updateUser();
     }
 
 
