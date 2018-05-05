@@ -5,13 +5,11 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.data.mock.MockRepo;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
-import cmp.sem.team8.smarlecture.common.data.model.UserModel;
-import cmp.sem.team8.smarlecture.statistics.GroupStatisticsPresenter;
 
 import static java.lang.Math.round;
 
@@ -24,8 +22,8 @@ public class GradesPresenter implements  GradesContract.Actions{
     GradesContract.Views mView;
     ArrayList<UserGradeModel> mList;
 
-    AppDataSource mDataBase;
-    AppDataSource mTestDataBase;
+    DataService mDataBase;
+    DataService mTestDataBase;
 
     GradesPresenter (GradesContract.Views view)
     {
@@ -47,7 +45,7 @@ public class GradesPresenter implements  GradesContract.Actions{
     @Override
     public void getGroupGrade() {
 
-       mDataBase.getGroupGrade(mView.getGroupId(), new AppDataSource.Get<ArrayList<UserGradeModel>>() {
+       mDataBase.getGroupGrade(mView.getGroupId(), new DataService.Get<ArrayList<UserGradeModel>>() {
            @Override
            public void onDataFetched(ArrayList<UserGradeModel> data)
            {
@@ -74,7 +72,7 @@ public class GradesPresenter implements  GradesContract.Actions{
             }
 
 
-            mDataBase.getGroupAndItsSessionNameList(mView.getGroupId(), new AppDataSource.Get<GroupStatisticsModel>() {
+            mDataBase.getGroupAndItsSessionNameList(mView.getGroupId(), new DataService.Get<GroupStatisticsModel>() {
                 @Override
                 public void onDataFetched(GroupStatisticsModel data) {
 
@@ -109,7 +107,7 @@ public class GradesPresenter implements  GradesContract.Actions{
                         grades.add(mylist.get(i).element1);
                     }
 
-                    mDataBase.updateGroupGrades(mView.getGroupId(), ids, grades, new AppDataSource.Update() {
+                    mDataBase.updateGroupGrades(mView.getGroupId(), ids, grades, new DataService.Update() {
                         @Override
                         public void onUpdateSuccess() {
 

@@ -2,9 +2,7 @@ package cmp.sem.team8.smarlecture.notification;
 
 import java.util.ArrayList;
 
-import cmp.sem.team8.smarlecture.common.auth.AuthService;
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 
 /**
@@ -13,12 +11,12 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 
 public class GroupMessagesPresenter implements GroupMessagesContract.Actions {
 
-    private AppDataSource mDataSource;
+    private DataService mDataSource;
     private GroupMessagesContract.Views mView;
 
     private final String GROUP_ID;
 
-    public GroupMessagesPresenter(AppDataSource dataSource, GroupMessagesContract.Views groupMessagesView, String groupId) {
+    public GroupMessagesPresenter(DataService dataSource, GroupMessagesContract.Views groupMessagesView, String groupId) {
         mDataSource = dataSource;
         mView = groupMessagesView;
         GROUP_ID = groupId;
@@ -29,7 +27,7 @@ public class GroupMessagesPresenter implements GroupMessagesContract.Actions {
     @Override
     public void start() {
         // start fetching use active sessions
-        mDataSource.getGroupMessages(GROUP_ID, new AppDataSource.Get<ArrayList<GroupMessageModel>>() {
+        mDataSource.getGroupMessages(GROUP_ID, new DataService.Get<ArrayList<GroupMessageModel>>() {
             @Override
             public void onDataFetched(ArrayList<GroupMessageModel> groupMessages) {
                 mView.showGroupMessages(groupMessages);

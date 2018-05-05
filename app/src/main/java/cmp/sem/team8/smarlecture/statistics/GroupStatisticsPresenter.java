@@ -3,26 +3,15 @@ package cmp.sem.team8.smarlecture.statistics;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.data.mock.MockRepo;
 import cmp.sem.team8.smarlecture.common.data.model.GroupOfUsersModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
-import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
-import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
  * Created by ramym on 4/27/2018.
@@ -30,7 +19,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions{
 
-    AppDataSource mDatabase;
+    DataService mDatabase;
     GroupStatisticsContract.Views mView;
     GroupStatisticsModel data;
     MockRepo  mTestDatabase;
@@ -54,7 +43,7 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
     public void start() {
         mView.showProgressIndicator();
         String groupId=mView.getGroupID();
-        mDatabase.getGroupAndItsSessionNameList(groupId, new AppDataSource.Get<GroupStatisticsModel>() {
+        mDatabase.getGroupAndItsSessionNameList(groupId, new DataService.Get<GroupStatisticsModel>() {
             @Override
             public void onDataFetched(GroupStatisticsModel data_coming) {
                 data=data_coming;
@@ -118,7 +107,7 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
         {
             for (int i = 0; i <10; i++)
             {
-                    mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new AppDataSource.Get<UserGradeModel>()
+                    mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new DataService.Get<UserGradeModel>()
                     {
                         @Override
                         public void onDataFetched(UserGradeModel data) {
@@ -134,7 +123,7 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
 
             for (int i = mylist.size()-1; i>=mylist.size()-10; i--)
              {
-            mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new AppDataSource.Get<UserGradeModel>(){
+            mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new DataService.Get<UserGradeModel>(){
                 @Override
                 public void onDataFetched(UserGradeModel data) {
                     mostusers.add(data);
@@ -152,7 +141,7 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
         {
             for (int i = 0; i <mylist.size(); i++)
             {
-                    mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new AppDataSource.Get<UserGradeModel>(){
+                    mDatabase.getUserGrade(mylist.get(i).getElement1(),mylist.get(i).getElement0(), new DataService.Get<UserGradeModel>(){
                         @Override
                         public void onDataFetched(UserGradeModel data) {
                             worstusers.add(data);

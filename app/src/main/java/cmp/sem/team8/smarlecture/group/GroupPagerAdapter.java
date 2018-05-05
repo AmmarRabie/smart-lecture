@@ -5,10 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
-import cmp.sem.team8.smarlecture.group.sessionslist.SessionListFragment;
-import cmp.sem.team8.smarlecture.group.sessionslist.SessionListPresenter;
-import cmp.sem.team8.smarlecture.group.studentlist.StudentListFragment;
-import cmp.sem.team8.smarlecture.group.studentlist.StudentListPresenter;
+import cmp.sem.team8.smarlecture.group.members.MembersPresenter;
+import cmp.sem.team8.smarlecture.group.sessions.SessionListFragment;
+import cmp.sem.team8.smarlecture.group.sessions.SessionListPresenter;
+import cmp.sem.team8.smarlecture.group.members.MembersFragment;
 
 /**
  * Created by Loai Ali on 4/15/2018.
@@ -17,8 +17,8 @@ import cmp.sem.team8.smarlecture.group.studentlist.StudentListPresenter;
 public class GroupPagerAdapter extends FragmentPagerAdapter {
     private final String GROUP_ID;
     private final String GROUP_NAME;
-    StudentListFragment studentListFragment;
-    StudentListPresenter studentListPresenter;
+    MembersFragment membersFragment;
+    MembersPresenter membersPresenter;
     SessionListFragment sessionListFragment;
     SessionListPresenter sessionListPresenter;
 
@@ -27,7 +27,7 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
 
         GROUP_ID = groupID;
         GROUP_NAME = groupName;
-        studentListFragment = null;
+        membersFragment = null;
         sessionListFragment = null;
     }
 
@@ -35,10 +35,10 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                if (studentListFragment == null)
-                    studentListFragment = StudentListFragment.newInstance();
-                studentListPresenter = new StudentListPresenter(FirebaseRepository.getInstance(), studentListFragment, GROUP_ID, GROUP_NAME);
-                return studentListFragment;
+                if (membersFragment == null)
+                    membersFragment = MembersFragment.newInstance();
+                membersPresenter = new MembersPresenter(FirebaseRepository.getInstance(), membersFragment, GROUP_ID, GROUP_NAME);
+                return membersFragment;
 
             case 1:
                 if (sessionListFragment == null) {

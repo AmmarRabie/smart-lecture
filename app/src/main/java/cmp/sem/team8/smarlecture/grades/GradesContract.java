@@ -1,12 +1,10 @@
 package cmp.sem.team8.smarlecture.grades;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
-import cmp.sem.team8.smarlecture.grouplist.GroupListContract;
 
 /**
  * Created by ramym on 5/1/2018.

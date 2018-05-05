@@ -1,8 +1,6 @@
 package cmp.sem.team8.smarlecture.common.data.model;
 
-import java.util.ArrayList;
-
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 
 /**
  * Created by AmmarRabie on 02/03/2018.
@@ -11,12 +9,12 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 public class SessionModel {
     private String id;
     private String forGroup;
-    private AppDataSource.AttendanceStatus attendanceStatus;
-    private AppDataSource.SessionStatus sessionStatus;
+    private DataService.AttendanceStatus attendanceStatus;
+    private DataService.SessionStatus sessionStatus;
     private String name;
     private String secret;
 
-    public SessionModel(String id, String forGroup, AppDataSource.AttendanceStatus attendanceStatus, AppDataSource.SessionStatus sessionStatus, String name) {
+    public SessionModel(String id, String forGroup, DataService.AttendanceStatus attendanceStatus, DataService.SessionStatus sessionStatus, String name) {
         this.id = id;
         this.forGroup = forGroup;
         this.attendanceStatus = attendanceStatus;
@@ -51,19 +49,19 @@ public class SessionModel {
         this.secret = secret;
     }
 
-    public AppDataSource.AttendanceStatus getAttendanceStatus() {
+    public DataService.AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
     }
 
-    public void setAttendanceStatus(AppDataSource.AttendanceStatus attendanceStatus) {
+    public void setAttendanceStatus(DataService.AttendanceStatus attendanceStatus) {
         this.attendanceStatus = attendanceStatus;
     }
 
-    public AppDataSource.SessionStatus getSessionStatus() {
+    public DataService.SessionStatus getSessionStatus() {
         return sessionStatus;
     }
 
-    public void setSessionStatus(AppDataSource.SessionStatus sessionStatus) {
+    public void setSessionStatus(DataService.SessionStatus sessionStatus) {
         this.sessionStatus = sessionStatus;
     }
 

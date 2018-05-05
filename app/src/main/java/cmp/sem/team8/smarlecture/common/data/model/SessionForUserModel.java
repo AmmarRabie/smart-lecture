@@ -1,6 +1,6 @@
 package cmp.sem.team8.smarlecture.common.data.model;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 
 /**
  * Created by AmmarRabie on 23/04/2018.
@@ -8,8 +8,8 @@ import cmp.sem.team8.smarlecture.common.data.AppDataSource;
 
 public class SessionForUserModel {
     private String id;
-    private AppDataSource.SessionStatus status;
-    private AppDataSource.AttendanceStatus attendanceStatus;
+    private DataService.SessionStatus status;
+    private DataService.AttendanceStatus attendanceStatus;
     private String sessionName;
 
     private String forGroupId;
@@ -19,8 +19,8 @@ public class SessionForUserModel {
     private String ownerName;
 
     public SessionForUserModel(String id,
-                               AppDataSource.SessionStatus status,
-                               AppDataSource.AttendanceStatus attendanceStatus,
+                               DataService.SessionStatus status,
+                               DataService.AttendanceStatus attendanceStatus,
                                String sessionName,
                                String forGroupId,
                                String forGroupName,
@@ -40,11 +40,11 @@ public class SessionForUserModel {
         return id;
     }
 
-    public AppDataSource.SessionStatus getStatus() {
+    public DataService.SessionStatus getStatus() {
         return status;
     }
 
-    public AppDataSource.AttendanceStatus getAttendanceStatus() {
+    public DataService.AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
     }
 

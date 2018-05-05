@@ -3,7 +3,7 @@ package cmp.sem.team8.smarlecture.profile;
 
 import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
@@ -14,13 +14,13 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 class ProfilePresenter implements ProfileContract.Actions {
 
     private static final String TAG = "ProfilePresenter";
-    private AppDataSource mDataSource;
+    private DataService mDataSource;
 
     private AuthService mAuthService;
     private ProfileContract.Views mView;
     private AuthenticatedUser mCurrentUser;
 
-    public ProfilePresenter(AuthService authService, AppDataSource dataSource, ProfileContract.Views view) {
+    public ProfilePresenter(AuthService authService, DataService dataSource, ProfileContract.Views view) {
         this.mAuthService = authService;
         mDataSource = dataSource;
         mView = view;
@@ -79,7 +79,7 @@ class ProfilePresenter implements ProfileContract.Actions {
             return;
         }
 
-        mDataSource.updateUserName(mCurrentUser.getUserId(), newName, new AppDataSource.Update() {
+        mDataSource.updateUserName(mCurrentUser.getUserId(), newName, new DataService.Update() {
             @Override
             public void onUpdateSuccess() {
                 mView.showOnChangeNameSuccess();
@@ -110,7 +110,7 @@ class ProfilePresenter implements ProfileContract.Actions {
     private void getUserInfoAndUpdateView() {
         mView.showProgressIndicator("Loading your profile...");
         FirebaseRepository.getInstance()
-                .getUser(mCurrentUser.getUserId(), new AppDataSource.Get<UserModel>() {
+                .getUser(mCurrentUser.getUserId(), new DataService.Get<UserModel>() {
                     @Override
                     public void onDataFetched(UserModel user) {
                         mView.showUserInfo(user);

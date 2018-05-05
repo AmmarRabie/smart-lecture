@@ -44,7 +44,7 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:textAppearance="?android:textAppearanceMedium"
-            tools:text="Why should we user MVP over MVC in android ?" />
+            tools:text="Why should we use MVP over MVC in android ?" />
 
     </LinearLayout>
 </LinearLayout>

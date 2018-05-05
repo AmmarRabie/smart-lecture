@@ -20,7 +20,7 @@ public class ValidationUtils {
     }
 
     public static boolean userNameValidator(String userName){
-        Matcher matcher=Pattern.compile("^[A-Z]",Pattern.CASE_INSENSITIVE).matcher(userName);
+        Matcher matcher=Pattern.compile("[A-Z]",Pattern.CASE_INSENSITIVE).matcher(userName);
         return (matcher.find()&&(userName.length()<20)&&(userName.length()>=4));
     }
 

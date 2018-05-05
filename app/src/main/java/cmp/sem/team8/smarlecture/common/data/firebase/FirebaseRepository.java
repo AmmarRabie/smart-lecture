@@ -37,10 +37,10 @@ import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
-import cmp.sem.team8.smarlecture.model.ObjectiveModel;
+import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 /**
- * This is the implementation of the AppDataSource using firebase database
+ * This is the implementation of the DataService using firebase database
  * <p>
  */
 public class FirebaseRepository extends FirebaseRepoHelper {

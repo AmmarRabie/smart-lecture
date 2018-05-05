@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cmp.sem.team8.smarlecture.joinsession.JoinedSession">
+    tools:context="cmp.sem.team8.smarlecture.session.join.JoinSessionActivity">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/joined_session_tablayout"

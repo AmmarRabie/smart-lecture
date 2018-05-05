@@ -9,7 +9,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupMessagesEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
@@ -20,7 +20,7 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry
  * Created by AmmarRabie on 21/04/2018.
  */
 
-abstract class FirebaseRepoHelper implements AppDataSource {
+abstract class FirebaseRepoHelper implements DataService {
 
     protected ListenersList listeners;
     protected HashMap<Listen, ValueEventWithRef> listenersMap;
