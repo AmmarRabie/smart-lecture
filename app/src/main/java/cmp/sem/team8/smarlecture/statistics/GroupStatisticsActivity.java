@@ -8,7 +8,6 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupOfUsersModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
-import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -21,7 +20,7 @@ import java.util.List;
 public class GroupStatisticsActivity extends AppCompatActivity implements  GroupStatisticsContract.Views {
 
         // more efficient than HashMap for mapping integers to objects
-        ExpandpelAdapter adapter;
+        ExpandableAdapter adapter;
 
     private ProgressBar spinner;
 
@@ -48,7 +47,7 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
             Percentage_text.setVisibility(View.GONE);
             mPresenter=new GroupStatisticsPresenter(this);
 
-            adapter = new ExpandpelAdapter(this, mPresenter.getGroupsOfUsers());
+            adapter = new ExpandableAdapter(this, mPresenter.getGroupsOfUsers());
             mPresenter.start();
 
             mListView = (ExpandableListView) findViewById(R.id.group_statistics_list_view);

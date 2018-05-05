@@ -6,7 +6,7 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupMessagesEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
@@ -52,8 +52,8 @@ class FirebaseSerializer {
 
 
         SessionModel sessionModel = new SessionModel(sessionId, forGroupId,
-                AppDataSource.AttendanceStatus.fromString(attendanceStatus),
-                AppDataSource.SessionStatus.fromString(status),
+                DataService.AttendanceStatus.fromString(attendanceStatus),
+                DataService.SessionStatus.fromString(status),
                 name);
         if (sessionSnapshot.hasChild(SessionEntry.KEY_SECRET))
             sessionModel.setSecret(sessionSnapshot.child(SessionEntry.KEY_SECRET).getValue(String.class));

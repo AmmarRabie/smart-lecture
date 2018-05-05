@@ -7,34 +7,15 @@
 
     <application
         android:allowBackup="true"
+
+        android:configChanges="keyboardHidden|orientation"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".auth.LoginActivity" />
         <activity
-            android:name=".auth.SignUpActivity"
-            android:exported="true" />
-        <activity
-            android:name=".profile.ProfileActivity"
-            android:exported="true" />
-        <activity android:name=".session.SessionActivity" />
-        <activity android:name=".joinsession.JoinedSession" android:exported="true" />
-        <activity
-            android:name=".group.GroupActivity"
-            android:exported="true" />
-        <activity
-            android:name=".newsfeed.NewsFeedActivity"
-            android:exported="true" />
-        <activity
-            android:name=".invitations.InvitationsActivity"
-            android:exported="true" />
-        <activity
-            android:name=".rateobjectives.RateObjectivesActivity"
-            android:exported="true" />
-        <activity
-            android:name=".grouplist.GroupListActivity"
+            android:name=".home.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,21 +25,67 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".statistics.GroupStatisticsActivity"
-            android:label="@string/title_activity_group_statistics" />
-        <activity android:name=".grades.GradesActivity" />
+            android:name=".auth.LoginActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize" />
+        <activity
+            android:name=".auth.SignUpActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
 
-        <activity android:name=".notification.GroupMessagesActivity" />
+            android:exported="true" />
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
+
+            android:exported="true" />
+        <activity
+            android:name=".session.create.CreateSessionActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize" />
+        <activity
+            android:name=".session.join.JoinSessionActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
+            android:exported="true" />
+        <activity
+            android:name=".group.GroupActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="true" />
+        <activity
+            android:name=".home.newsfeed.NewsFeedActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
+            android:exported="true" />
+        <activity
+            android:name=".invitations.InvitationsActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
+            android:exported="true" />
+        <activity
+            android:name=".session.join.rateobjectives.RateObjectivesActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
+            android:exported="true" />
+        <activity
+            android:name=".home.groups.GroupsActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
+            android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".statistics.GroupStatisticsActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize"
+            android:label="@string/title_activity_group_statistics" />
+        <activity
+            android:name=".grades.GradesActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize" />
+
+        <activity
+            android:name=".notification.GroupMessagesActivity"
+            android:configChanges="keyboard|orientation|locale|fontScale|screenLayout|screenSize|uiMode|navigation|touchscreen|keyboardHidden|layoutDirection|smallestScreenSize" />
 
         <service
-            android:name=".joinsession.writeattendance.AttendanceMonitorService"
+            android:name=".session.join.attendance.AttendanceMonitorService"
             android:enabled="true"
             android:exported="true" />
 
-        <service
-            android:name=".notification.FirebaseMessagingService">
+        <service android:name=".notification.FirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
@@ -68,7 +95,8 @@
 
 
         <activity
-            android:name=".joinsession.writeattendance.WriteAttendanceActivity">
+            android:name=".session.join.attendance.AttendanceActivity"
+            android:configChanges="keyboardHidden|orientation">
 
         </activity>
     </application>

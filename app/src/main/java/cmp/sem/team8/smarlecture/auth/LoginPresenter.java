@@ -6,7 +6,7 @@ import android.util.Log;
 import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
 import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
@@ -19,11 +19,11 @@ class LoginPresenter implements LoginContract.Actions {
 
     private AuthService mAuthService;
     private LoginContract.Views mView;
-    private AppDataSource mDataSource;
+    private DataService mDataSource;
     private boolean mForceLogin;
     private boolean mFoundUser;
 
-    public LoginPresenter(AuthService authService, AppDataSource dataSource, LoginContract.Views view, boolean forceLogin) {
+    public LoginPresenter(AuthService authService, DataService dataSource, LoginContract.Views view, boolean forceLogin) {
         mAuthService = authService;
         mDataSource = dataSource;
         mView = view;
@@ -109,7 +109,7 @@ class LoginPresenter implements LoginContract.Actions {
 
         AuthenticatedUser currentUser = FirebaseAuthService.getInstance().getCurrentUser();
 
-        mDataSource.getUser(currentUser.getUserId(), new AppDataSource.Get<UserModel>() {
+        mDataSource.getUser(currentUser.getUserId(), new DataService.Get<UserModel>() {
             @Override
             public void onDataFetched(UserModel data) {
                 mView.showOnSuccess(data.getName());

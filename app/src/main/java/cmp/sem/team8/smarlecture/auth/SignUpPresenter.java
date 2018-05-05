@@ -5,7 +5,7 @@ import android.util.Log;
 
 import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.common.util.ValidationUtils;
 
@@ -18,14 +18,14 @@ class SignUpPresenter implements SignUpContract.Actions {
 
 
     private AuthService mAuthService;
-    private AppDataSource mDataSource;
+    private DataService mDataSource;
     private SignUpContract.Views mView;
     private boolean isInTask;
 
     private AuthenticatedUser.DeleteCallback deleteTaskListener;
 
 
-    public SignUpPresenter(AuthService authService, AppDataSource dataSource, SignUpContract.Views view) {
+    public SignUpPresenter(AuthService authService, DataService dataSource, SignUpContract.Views view) {
         mAuthService = authService;
         mDataSource = dataSource;
         mView = view;
@@ -127,7 +127,7 @@ class SignUpPresenter implements SignUpContract.Actions {
     private void insertUser(String id, String name, String email, byte[] profileImageBytes) {
         UserModel newUserModel = new UserModel(name, email, id);
         newUserModel.setProfileImage(profileImageBytes);
-        mDataSource.insertUser(newUserModel, new AppDataSource.Insert<Void>() {
+        mDataSource.insertUser(newUserModel, new DataService.Insert<Void>() {
             @Override
             public void onDataInserted(Void feedback) {
                 mView.showOnSuccess();

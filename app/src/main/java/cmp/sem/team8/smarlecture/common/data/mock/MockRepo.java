@@ -5,7 +5,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import cmp.sem.team8.smarlecture.common.data.AppDataSource;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
@@ -20,13 +20,13 @@ import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
-import cmp.sem.team8.smarlecture.model.ObjectiveModel;
+import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 /**
  * Created by AmmarRabie on 24/04/2018.
  */
 
-public class MockRepo implements AppDataSource {
+public class MockRepo implements DataService {
     private static final String TAG = "MockRepo";
 
     private static MockRepo INSTANCE = null;
