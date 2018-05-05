@@ -72,7 +72,7 @@ public class SessionActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                PagerAdapter.FragmentLifeCycle fragmentToShow=(PagerAdapter.FragmentLifeCycle)pageAdapter.getItem(position);
+                JoinSessionPagerAdapter.FragmentLifeCycle fragmentToShow=(JoinSessionPagerAdapter.FragmentLifeCycle)pageAdapter.getItem(position);
                 fragmentToShow.onResumeFragment();
             }
 

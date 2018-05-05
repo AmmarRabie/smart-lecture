@@ -13,6 +13,7 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
@@ -576,6 +577,16 @@ public class MockRepo implements AppDataSource {
 
     @Override
     public void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback) {
+
+    }
+
+    @Override
+    public void getSessionQuestions(String sessionID, Get<ArrayList<QuestionModel>> callback) {
+
+    }
+
+    @Override
+    public void addQuestionToSession(String sessionId, String askerId, String text, Insert<QuestionModel> callback) {
 
     }
 }

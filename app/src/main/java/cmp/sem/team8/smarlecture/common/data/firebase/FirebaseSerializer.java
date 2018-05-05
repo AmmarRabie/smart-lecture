@@ -17,6 +17,7 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
@@ -145,6 +146,13 @@ class FirebaseSerializer {
         return notes;
     }
 
+    static QuestionModel serializeQuestion(DataSnapshot questionSnapshot, DataSnapshot ownerSnapshot) {
+        String id = questionSnapshot.getKey();
+        String text = questionSnapshot.child(SessionEntry.KEY_QUESTION_TEXT).getValue(String.class);
+        UserModel owner = serializeUser(ownerSnapshot);
+        return new QuestionModel(id, owner, text);
+    }
+
     static ArrayList<String> getKeys(DataSnapshot dataSnapshot) {
         ArrayList<String> keys = new ArrayList<String>();
         for (DataSnapshot child : dataSnapshot.getChildren())
@@ -178,7 +186,7 @@ class FirebaseSerializer {
             String messageId = messageSnapshot.getKey();
             String title = messageSnapshot.child(GroupMessagesEntry.KEY_TITLE).getValue(String.class);
             String body = messageSnapshot.child(GroupMessagesEntry.KEY_BODY).getValue(String.class);
-            result.add(new GroupMessageModel(messageId,groupModel, body, title));
+            result.add(new GroupMessageModel(messageId, groupModel, body, title));
         }
         return result;
     }

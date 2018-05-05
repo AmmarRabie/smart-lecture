@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/inc_offlineview" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/addQuestionFrag_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        tools:listitem="@layout/item_question" />
+
+    <LinearLayout
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/addQuestionFrag_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="Your question" />
+
+        <ImageView
+            android:id="@+id/addQuestionFrag_send"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_send"
+            android:tint="#1565c0" />
+    </LinearLayout>
+
+
+</LinearLayout>
