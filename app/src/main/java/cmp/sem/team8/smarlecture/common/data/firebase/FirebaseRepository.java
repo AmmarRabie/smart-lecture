@@ -25,8 +25,6 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEn
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
-
-import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
@@ -38,7 +36,6 @@ import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
-import cmp.sem.team8.smarlecture.common.util.MapUtils;
 import cmp.sem.team8.smarlecture.model.ObjectiveModel;
 
 /**
@@ -1182,6 +1179,10 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                             withSessionMembersList(sessionKey.getKey(), sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST));
 
                         }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            callback.onError(databaseError.getMessage());
+                        }
 
                     });
                 }
@@ -1399,6 +1400,10 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     return;
                 }
                 callback.onDataFetched(dataSnapshot.getValue(String.class));
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
             }
         });
     }
