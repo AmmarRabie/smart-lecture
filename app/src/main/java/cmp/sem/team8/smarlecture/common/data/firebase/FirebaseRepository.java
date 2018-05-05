@@ -31,6 +31,7 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
@@ -1495,5 +1496,51 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
-}
 
+    @Override
+    public void getSessionQuestions(String sessionID, final Get<ArrayList<QuestionModel>> callback) {
+        final ArrayList<QuestionModel> result = new ArrayList<>();
+        getSessionRef(sessionID).child(SessionEntry.KEY_QUESTIONS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot questionsSnapshot) {
+                for (final DataSnapshot questionSnapshot : questionsSnapshot.getChildren()) {
+                    String currOwnerId = questionSnapshot.child(SessionEntry.KEY_QUESTION_OWNER).getValue(String.class);
+                    getUserRef(currOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot ownerSnapshot) {
+                            QuestionModel question = FirebaseSerializer.serializeQuestion(questionSnapshot, ownerSnapshot);
+                            result.add(question);
+                            if (result.size() == questionsSnapshot.getChildrenCount())
+                                callback.onDataFetched(result);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            callback.onError(databaseError.getMessage());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void addQuestionToSession(String sessionId, String userId, final String text, final Insert<QuestionModel> callback) {
+        final DatabaseReference questionRef = getSessionRef(sessionId).child(SessionEntry.KEY_QUESTIONS).push();
+        HashMap<String, String> values = new HashMap<>();
+        values.put(SessionEntry.KEY_QUESTION_TEXT, text);
+        values.put(SessionEntry.KEY_QUESTION_OWNER, userId);
+        questionRef.setValue(values);
+        getUser(userId, new Get<UserModel>() {
+            @Override
+            public void onDataFetched(UserModel owner) {
+                callback.onDataInserted(new QuestionModel(questionRef.getKey(),owner, text));
+            }
+        });
+    }
+}

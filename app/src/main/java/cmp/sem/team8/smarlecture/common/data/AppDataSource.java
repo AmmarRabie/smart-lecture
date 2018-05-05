@@ -12,6 +12,7 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
@@ -179,6 +180,10 @@ public interface AppDataSource {
 
     void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback);
 
+    // gets Question for a session
+    void getSessionQuestions(String sessionID, Get<ArrayList<QuestionModel>> callback);
+
+    void addQuestionToSession(String sessionId, String askerId, String text, Insert<QuestionModel> callback);
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 

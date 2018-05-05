@@ -52,6 +52,9 @@ public final class FirebaseContract {
         public static final String KEY_FOR_OBJECTIVES_LIST = "objectives";
         public static final String KEY_ATTEND = "attend";
         public static final String KEY_NOTES = "notes";
+        public static final String KEY_QUESTIONS = "questions";
+        public static final String KEY_QUESTION_OWNER = "owner_id";
+        public static final String KEY_QUESTION_TEXT = "text";
 
 
         public static String[] keySet;

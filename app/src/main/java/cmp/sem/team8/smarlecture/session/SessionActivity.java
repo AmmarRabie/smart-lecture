@@ -52,11 +52,9 @@ public class SessionActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-
                 pageAdapter.getItem(position).onResume();
                 pageAdapter.getItem(currposition).onResume();
                 currposition = position;
-
             }
 
             @Override
