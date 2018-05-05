@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,14 +21,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 import cmp.sem.team8.smarlecture.common.util.ProfileImageUtil;
 import es.dmoral.toasty.Toasty;
@@ -135,16 +132,16 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
         final AlertDialog.Builder changePasswordDialogBuilder = new AlertDialog.Builder(getActivity());
         changePasswordDialogBuilder.setTitle(getString(R.string.dTitle_changePass));
-        final LinearLayout rootView = buildDialogLayout();
+        final View rootView = getLayoutInflater().inflate(R.layout.dialog_change_password, null);
         changePasswordDialogBuilder.setView(rootView);
-
         changePasswordDialogBuilder.setPositiveButton(getString(R.string.dAction_change),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String newPass = ((EditText) rootView.getChildAt(0)).getText().toString();
-                        String confirmPass = ((EditText) rootView.getChildAt(1)).getText().toString();
-                        mAction.changePassword(newPass, confirmPass);
+                        String oldPass = ((EditText) rootView.findViewById(R.id.changePasswordDialog_oldPass)).getText().toString();
+                        String newPass = ((EditText) rootView.findViewById(R.id.changePasswordDialog_pass)).getText().toString();
+                        String confirmPass = ((EditText) rootView.findViewById(R.id.changePasswordDialog_confirmPass)).getText().toString();
+                        mAction.changePassword(oldPass, newPass, confirmPass);
                     }
                 });
 
@@ -229,13 +226,11 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
 
     @Override
     public void showOnSignOutSuccess() {
-        // direct user to the log in screen
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        startActivity(intent);
-
-        // end this activity
-        if (getActivity() != null)
+        // ends this activity
+        if (getActivity() != null) {
+            getActivity().setResult(ProfileActivity.RESULT_SIGN_OUT);
             getActivity().finish();
+        }
     }
 
     @Override
@@ -287,7 +282,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         }, 5000);*/
     }
 
-    private LinearLayout buildDialogLayout() {
+/*    private LinearLayout buildDialogLayout() {
         LinearLayout layout = new LinearLayout(getContext());
         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -309,9 +304,10 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         confirmPass.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
         confirmPass.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
 
+        layout.addView(confirmPass, 1);
         layout.addView(pass, 0);
         layout.addView(confirmPass, 1);
 
         return layout;
-    }
+    }*/
 }

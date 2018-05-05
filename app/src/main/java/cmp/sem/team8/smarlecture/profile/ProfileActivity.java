@@ -15,6 +15,8 @@ import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
  */
 public class ProfileActivity extends AppCompatActivity {
 
+    public static final int RESULT_SIGN_OUT = 256483;
+
     private ProfilePresenter mProfilePresenter;
 
     @Override
