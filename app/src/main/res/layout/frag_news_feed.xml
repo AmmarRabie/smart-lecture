@@ -2,12 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
 
     <include layout="@layout/inc_offlineview" />
 
     <android.support.v7.widget.RecyclerView
+        tools:listitem = "@layout/item_session_for_user"
         android:padding="8dp"
         android:id="@+id/sessionsFrag_list"
         android:layout_width="match_parent"

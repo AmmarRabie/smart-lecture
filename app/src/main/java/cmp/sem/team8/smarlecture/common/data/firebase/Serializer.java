@@ -71,15 +71,7 @@ class Serializer {
         GroupModel groupModel = group(groupRoot);
         SessionModel sessionModel = session(sessionRoot);
         UserModel userModel = user(userRoot);
-        return new SessionForUserModel(
-                sessionModel.getId()
-                , sessionModel.getSessionStatus()
-                , sessionModel.getAttendanceStatus()
-                , sessionModel.getName()
-                , groupModel.getId()
-                , groupModel.getName()
-                , userModel.getId()
-                , userModel.getName());
+        return new SessionForUserModel(sessionModel, groupModel, userModel);
     }
 
     static UserModel user(DataSnapshot userRoot) {

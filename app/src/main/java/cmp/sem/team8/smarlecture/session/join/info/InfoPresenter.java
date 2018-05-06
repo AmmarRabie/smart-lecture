@@ -35,7 +35,7 @@ public class InfoPresenter implements InfoContract.Actions {
         mDataSource.getJoinedSessionInfo(sessionID, groupID, new DataService.Get<SessionForUserModel>() {
             @Override
             public void onDataFetched(SessionForUserModel data) {
-                mView.showSessionInfo(sessionID, data.getOwnerName(), data.getForGroupName(), data.getSessionName());
+                mView.showSessionInfo(sessionID, data.getOwner().getName(), data.getGroup().getName(), data.getName());
             }
 
             @Override

@@ -105,7 +105,7 @@ public class NewsFeedFragment extends Fragment implements NewsFeedContract.Views
     public void onSessionClicked(View view, int position, String sessionId) {
         Intent sessionActivityIntent = new Intent(getContext(), JoinSessionActivity.class);
         sessionActivityIntent.putExtra(getString(R.string.IKey_sessionId), sessionId);
-        sessionActivityIntent.putExtra(getString(R.string.IKey_groupId), sessions.get(position).getForGroupId());
+        sessionActivityIntent.putExtra(getString(R.string.IKey_groupId), sessions.get(position).getForGroup());
         startActivity(sessionActivityIntent);
     }
 

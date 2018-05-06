@@ -64,6 +64,6 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     }
     @Override
     public int getCount() {
-        return numOfTabs;
+        return 2;
     }
 }

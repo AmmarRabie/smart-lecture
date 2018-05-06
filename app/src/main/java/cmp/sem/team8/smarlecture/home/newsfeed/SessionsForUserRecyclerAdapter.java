@@ -1,10 +1,13 @@
 package cmp.sem.team8.smarlecture.home.newsfeed;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -92,6 +95,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
         private TextView userNameView;
         private TextView sessionStatusView;
         private TextView attendanceStatusView;
+        private ImageView profileImageView;
 
         SessionViewHolder(View itemView) {
             super(itemView);
@@ -100,18 +104,26 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
             userNameView = itemView.findViewById(R.id.sessionsForUserItem_UName);
             sessionStatusView = itemView.findViewById(R.id.sessionsForUserItem_SStatus);
             attendanceStatusView = itemView.findViewById(R.id.sessionsForUserItem_AStatus);
+            profileImageView = itemView.findViewById(R.id.sessionsForUserItem_profileImage);
         }
 
         void bind(final int position) {
 
             SessionForUserModel currSession = mSessionsList.get(position);
 
-            sessionNameView.setText(currSession.getSessionName());
-            groupNameView.setText(currSession.getForGroupName());
-            userNameView.setText(currSession.getOwnerName());
-            sessionStatusView.setText(currSession.getStatus().name());
+            sessionNameView.setText(currSession.getName());
+            groupNameView.setText(currSession.getGroup().getName());
+            userNameView.setText(currSession.getOwner().getName());
+            sessionStatusView.setText(currSession.getSessionStatus().name());
             attendanceStatusView.setText(currSession.getAttendanceStatus().name());
 
+            byte[] imgByte = currSession.getOwner().getProfileImage();
+            if (imgByte != null) {
+                Bitmap imgBitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
+                imgBitmap = Bitmap.createScaledBitmap(imgBitmap, 50, 50, true);
+                profileImageView.setImageBitmap(imgBitmap);
+            }
+            
             if (mItemClickListener == null)
                 return;
 
@@ -127,7 +139,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
                 groupNameView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mItemClickListener.onGroupClicked(view, position, mSessionsList.get(position).getForGroupId());
+                        mItemClickListener.onGroupClicked(view, position, mSessionsList.get(position).getForGroup());
                     }
                 });
 
@@ -135,7 +147,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
                 userNameView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mItemClickListener.onUserClicked(view, position, mSessionsList.get(position).getOwnerId());
+                        mItemClickListener.onUserClicked(view, position, mSessionsList.get(position).getOwner().getId());
                     }
                 });
         }

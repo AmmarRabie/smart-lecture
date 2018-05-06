@@ -3,74 +3,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
+    android:layout_marginTop="12dp"
+    android:background="#eceff1"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingEnd="8dp">
 
-
-        <TextView
-            android:id="@+id/sessionsForUserItem_GName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:textAppearanceMedium"
-            tools:text="SEM-CMP2-Graphics" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/sessionsForUserItem_profileImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/user_item" />
 
         <TextView
             android:id="@+id/sessionsForUserItem_UName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/sessionsForUserItem_profileImage"
             android:textAppearance="?android:textAppearanceSmall"
             tools:text="Ahmed Hamdy" />
     </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/sessionsForUserItem_SName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAppearance="?android:textAppearanceMedium"
-        tools:text="@tools:sample/first_names" />
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/sessionsForUserItem_GName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Session Status: "
-            android:textAppearance="?android:textAppearanceSmall" />
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textStyle="bold"
+            tools:text="SEM-CMP2-Graphics" />
 
         <TextView
-            android:id="@+id/sessionsForUserItem_SStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:textAppearanceSmall"
-            tools:text="OPEN" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/sessionsForUserItem_SName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Attendance Status: "
-            android:textAppearance="?android:textAppearanceSmall" />
+            android:gravity="center"
+            android:textAppearance="?android:textAppearanceLarge"
+            tools:text="@tools:sample/first_names" />
 
-        <TextView
-            android:id="@+id/sessionsForUserItem_AStatus"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceSmall"
-            tools:text="NOT-ACTIVE" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Session Status: "
+                android:textAppearance="?android:textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/sessionsForUserItem_SStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:textAppearanceSmall"
+                tools:text="OPEN" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attendance Status: "
+                android:textAppearance="?android:textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/sessionsForUserItem_AStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceSmall"
+                tools:text="NOT-ACTIVE" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

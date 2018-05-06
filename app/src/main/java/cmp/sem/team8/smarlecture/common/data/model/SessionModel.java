@@ -22,9 +22,6 @@ public class SessionModel {
         this.name = name;
     }
 
-    public SessionModel() {
-    }
-
     public String getId() {
         return id;
     }
