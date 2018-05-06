@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.common.data.DataService;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.*;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 
 /**
  * Created by Loai Ali on 4/15/2018.
@@ -20,14 +20,12 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.*;
 
 public class SessionsPresenter implements SessionsContract.Actions {
     private static final String TAG = "SessionsPresenter";
-
-    private DatabaseReference mGroupRef;
-    private final String GROUP_ID;
-    private DataService mDataSource;
-    private SessionsContract.Views mView;
-
     private static final int minId = 0;
     private static final int maxId = 10000000;
+    private final String GROUP_ID;
+    private DatabaseReference mGroupRef;
+    private DataService mDataSource;
+    private SessionsContract.Views mView;
 
 
     public SessionsPresenter(SessionsContract.Views view, final String groupID, DataService dataSource) {
@@ -85,8 +83,10 @@ public class SessionsPresenter implements SessionsContract.Actions {
 
     @Override
     public void addSession(final String sessionName) {
-        if (sessionName == null || sessionName.isEmpty())
+        if (sessionName == null || sessionName.isEmpty()) {
             mView.showOnErrorMessage("Session can't have an empty name");
+            return;
+        }
 
         final String sessionID = generateUniqueId();
         mDataSource.addSession(GROUP_ID, sessionID, sessionName, new DataService.Insert<Void>() {
@@ -100,7 +100,6 @@ public class SessionsPresenter implements SessionsContract.Actions {
                 mView.showOnErrorMessage(cause);
             }
         });
-
     }
 
     @Override
