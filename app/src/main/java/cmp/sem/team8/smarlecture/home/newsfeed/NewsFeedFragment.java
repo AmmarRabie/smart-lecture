@@ -94,28 +94,18 @@ public class NewsFeedFragment extends Fragment implements NewsFeedContract.Views
 
     @Override
     public void addSession(SessionForUserModel session) {
+       sessions.clear();
         sessions.add(session);
         sessionsForUserRecyclerAdapter.notifyItemInserted(sessions.size());
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-    }
-
-    @Override
-    public void onSessionClicked(View view, int position, String sessionId) {
+    public void onItemClick(View view, int position,String sessionId,String groupId) {
         Intent sessionActivityIntent = new Intent(getContext(), JoinSessionActivity.class);
         sessionActivityIntent.putExtra(getString(R.string.IKey_sessionId), sessionId);
+        sessionActivityIntent.putExtra(getString(R.string.IKey_groupId),groupId);
         startActivity(sessionActivityIntent);
-    }
-
-    @Override
-    public void onGroupClicked(View view, int position, String groupId) {
 
     }
 
-    @Override
-    public void onUserClicked(View view, int position, String userId) {
-
-    }
 }
