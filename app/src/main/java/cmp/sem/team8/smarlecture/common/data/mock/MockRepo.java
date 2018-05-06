@@ -247,11 +247,6 @@ public class MockRepo implements DataService {
 
 
     @Override
-    public void listenUser(String userId, final Listen<UserModel> callback) {
-
-    }
-
-    @Override
     public void getSessionsForUser(String userId, Get<SessionForUserModel> callback, boolean withClosed, boolean withOpened, boolean withNotActive) {
 
     }
@@ -637,8 +632,8 @@ public class MockRepo implements DataService {
     }
 
     @Override
-    public void getSessionQuestions(String sessionID, Get<ArrayList<QuestionModel>> callback) {
-
+    public Listen ListenSessionQuestions(String sessionID, Listen<QuestionModel> callback) {
+        return null;
     }
 
     @Override

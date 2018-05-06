@@ -2,22 +2,21 @@ package cmp.sem.team8.smarlecture.common.data;
 
 import java.util.ArrayList;
 
-
-import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
-import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.FileModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupInvitationModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupMessageModel;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
-import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 /**
  * Main entry point for accessing app data.
@@ -37,11 +36,12 @@ import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 public interface DataService {
 
     void getUser(String userId, Get<UserModel> callback);
-    void getUserGrade(int Grade,String userId,Get<UserGradeModel> callback);
+
+    void getUserGrade(int Grade, String userId, Get<UserGradeModel> callback);
 
     void insertUser(UserModel userModel, Insert<Void> callback);
 
-    void updateGroupGrades(String groupId,ArrayList<String>ids,ArrayList<Integer>grade, final Update callback);
+    void updateGroupGrades(String groupId, ArrayList<String> ids, ArrayList<Integer> grade, final Update callback);
 
     void updateUserName(String userId, String newName, Update callback);
 
@@ -57,7 +57,6 @@ public interface DataService {
     void updateUserProfileImage(String userId, byte[] newImageBytes, Update callback);
 
 
-    void listenUser(String userId, Listen<UserModel> callback);
     /**
      * return all sessions that passed user is a member in their groups filtered by flags
      *
@@ -67,8 +66,6 @@ public interface DataService {
      * @param withOpened    if false, the sessions returned will exclude opened ones
      * @param withNotActive if false, the sessions returned will exclude not active ones
      */
-
-
 /*    void getSessionsForUser(String userId, Get<ArrayList<SessionForUserModel>> callback
             , boolean withClosed
             , boolean withOpened
@@ -105,6 +102,7 @@ public interface DataService {
     void getGroupInvitationsForUser(String userId, Get<GroupInvitationModel> callback);
 
     void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback); // for lecturer
+
     void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback); // for lecturer
 
     void getGroupGrade(String groupId, Get<ArrayList<UserGradeModel>> callback);
@@ -116,7 +114,7 @@ public interface DataService {
     void refuseFollowingGroup(String userId, String groupId, Update callback);
 
     //get session name and group owner for the session id to be viewed for the student when he joins a session
-    void getJoinedSessionInfo(String sessionID,String groupID,Get<SessionForUserModel> callback);
+    void getJoinedSessionInfo(String sessionID, String groupID, Get<SessionForUserModel> callback);
 
 
     //check for session status
@@ -127,9 +125,9 @@ public interface DataService {
     void getObjectives(String sessionID, Get<ArrayList<ObjectiveModel>> callback);
 
     //update new average rating of objective
-    void updateObjectivesRating(String sessionID,String objectiveID,Float newObjectiveRating,Integer newNumberUsersRated,Update callback);
+    void updateObjectivesRating(String sessionID, String objectiveID, Float newObjectiveRating, Integer newNumberUsersRated, Update callback);
 
-    void insertObjective(String sessionID,String addedObjective,boolean isOffline,Insert<ObjectiveModel> callback);
+    void insertObjective(String sessionID, String addedObjective, boolean isOffline, Insert<ObjectiveModel> callback);
 
     void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
@@ -149,27 +147,27 @@ public interface DataService {
 
     void deleteNote(String sessionId, String memberId, String noteId, Delete callback);
 
-    void editObjective(String objectiveID,String sessionID,String objectiveDescription,boolean isOffline,Update callback);
+    void editObjective(String objectiveID, String sessionID, String objectiveDescription, boolean isOffline, Update callback);
 
-    void deleteObjective(String objectiveID,String sesisonID,boolean isOffline,Delete callback);
+    void deleteObjective(String objectiveID, String sesisonID, boolean isOffline, Delete callback);
 
     void getGroupSessions(String groupId, Get<ArrayList<SessionModel>> callback);
 
-    void addSession(String groupId,String sessionId,String sessionName,Insert<Void> callback );
+    void addSession(String groupId, String sessionId, String sessionName, Insert<Void> callback);
 
-    void editSession(String sessionId,String sessionName,boolean isOffline,Update callback);
+    void editSession(String sessionId, String sessionName, boolean isOffline, Update callback);
 
-    void deleteSession(String sessoinId,boolean isOffline,Delete callback);
+    void deleteSession(String sessoinId, boolean isOffline, Delete callback);
 
-    void deleteGroupById(String groupId, boolean isOffline,Delete callback);
+    void deleteGroupById(String groupId, boolean isOffline, Delete callback);
 
-    void addGroup(String userId,String groupName,boolean isOffline,Insert<String>callback);
+    void addGroup(String userId, String groupName, boolean isOffline, Insert<String> callback);
 
-    void updateGroup(String groupId,String groupName,boolean isOffline,Update callback);
+    void updateGroup(String groupId, String groupName, boolean isOffline, Update callback);
 
-    void getGroupId(String sessionId,Get<String >callback);
+    void getGroupId(String sessionId, Get<String> callback);
 
-    void getGroupsForUser(String userId, Get<ArrayList< GroupModel>> callback);
+    void getGroupsForUser(String userId, Get<ArrayList<GroupModel>> callback);
 
     void getGroupInfoForExport(String groupId, Get<FileModel> callback);
 
@@ -180,7 +178,7 @@ public interface DataService {
     void getGroupMessages(String groupId, Get<ArrayList<GroupMessageModel>> callback);
 
     // gets Question for a session
-    void getSessionQuestions(String sessionID, Get<ArrayList<QuestionModel>> callback);
+    Listen ListenSessionQuestions(String sessionID, Listen<QuestionModel> callback);
 
     void addQuestionToSession(String sessionId, String askerId, String text, Insert<QuestionModel> callback);
 /*    //

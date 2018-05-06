@@ -71,7 +71,7 @@ public class CreateSessionActivity extends AppCompatActivity {
     // 3-
     @Override
     public void onBackPressed() {
-        InfoPresenter infoPresenter = pageAdapter.getmInfoPresenter();
+        InfoPresenter infoPresenter = pageAdapter.infoPresenter;
         if (infoPresenter != null) {
             if (infoPresenter.getSessionStatus().equals(DataService.SessionStatus.OPEN.toString())) {
 
@@ -82,7 +82,7 @@ public class CreateSessionActivity extends AppCompatActivity {
                 mAlertBuilder.setPositiveButton("End Session", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        pageAdapter.getSessionPresenter().endSession();
+                        pageAdapter.infoPresenter.endSession();
                         CreateSessionActivity.super.onBackPressed();
                     }
                 });

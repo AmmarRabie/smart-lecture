@@ -111,9 +111,8 @@ public class QuestionsFragment extends Fragment implements
     }
 
     @Override
-    public void showQuestions(ArrayList<QuestionModel> questions) {
+    public void clearAllQuestions() {
         mQuestionsList.clear();
-        mQuestionsList.addAll(questions);
         mQuestionsRecyclerAdapter.notifyDataSetChanged();
     }
 

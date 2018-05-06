@@ -3,76 +3,51 @@ package cmp.sem.team8.smarlecture.session.create;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
 
 import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
-import cmp.sem.team8.smarlecture.session.questions.QuestionsPresenter;
-import cmp.sem.team8.smarlecture.session.questions.QuestionsFragment;
+import cmp.sem.team8.smarlecture.session.create.info.InfoFragment;
+import cmp.sem.team8.smarlecture.session.create.info.InfoPresenter;
 import cmp.sem.team8.smarlecture.session.create.members.MembersFragment;
 import cmp.sem.team8.smarlecture.session.create.members.MembersPresenter;
 import cmp.sem.team8.smarlecture.session.create.objectives.ObjectivesFragment;
 import cmp.sem.team8.smarlecture.session.create.objectives.ObjectivesPresenter;
-
-import cmp.sem.team8.smarlecture.session.create.info.InfoFragment;
-import cmp.sem.team8.smarlecture.session.create.info.InfoPresenter;
+import cmp.sem.team8.smarlecture.session.questions.QuestionsFragment;
+import cmp.sem.team8.smarlecture.session.questions.QuestionsPresenter;
 
 /**
  * Created by ramym on 3/25/2018.
  */
 
-public class CreateSessionPagerAdapter extends FragmentPagerAdapter {
+class CreateSessionPagerAdapter extends FragmentPagerAdapter {
 
+    private final int NUM_TABS;
+    private final String GROUP_ID;
+    private final String SESSION_ID;
     InfoFragment infoFragment;
-    InfoPresenter mInfoPresenter;
-    ObjectivesFragment mObjectivesFragment;
-    ObjectivesPresenter mObjectivesPresenter;
+    InfoPresenter infoPresenter;
+    ObjectivesFragment objectivesFragment;
+    ObjectivesPresenter objectivesPresenter;
     MembersFragment membersFragment;
-    MembersPresenter mMembersPresenter;
+    MembersPresenter membersPresenter;
     QuestionsFragment questionsFragment;
     QuestionsPresenter questionsPresenter;
-    private int numOfTabs;
-    private String mGroupId = null;
-    private String mSessionID = null;
 
     public CreateSessionPagerAdapter(FragmentManager fm, int numOfTabs, String groupId, String sessionID) {
-
         super(fm);
-
-        this.numOfTabs = numOfTabs;
-
-        mMembersPresenter = null;
-
-        mInfoPresenter = null;
-
-        infoFragment = null;
-
-        membersFragment = null;
-
-        mObjectivesFragment = null;
-
-        mObjectivesPresenter = null;
-
-        mGroupId = groupId;
-
-        mSessionID = sessionID;
-        questionsFragment = null;
-        questionsPresenter = null;
-    }
-
-    public InfoPresenter getSessionPresenter() {
-        return mInfoPresenter;
+        this.NUM_TABS = numOfTabs;
+        GROUP_ID = groupId;
+        SESSION_ID = sessionID;
     }
 
     @Override
     public Fragment getItem(int position) {
-
         switch (position) {
             case 0:
                 infoFragment = infoFragment == null ?
                         InfoFragment.newInstance() : infoFragment;
-                if (mInfoPresenter == null)
-                    mInfoPresenter = new InfoPresenter(infoFragment, mGroupId, mSessionID);
+                if (infoPresenter == null)
+                    infoPresenter = new InfoPresenter(infoFragment, GROUP_ID, SESSION_ID);
                 return infoFragment;
 
             case 1:
@@ -80,113 +55,51 @@ public class CreateSessionPagerAdapter extends FragmentPagerAdapter {
                 membersFragment = membersFragment == null ?
                         MembersFragment.newInstance() : membersFragment;
 
-                if (mMembersPresenter == null)
-                    mMembersPresenter = new MembersPresenter(FirebaseRepository.getInstance(), membersFragment, mSessionID);
-                else mMembersPresenter.start();
+                if (membersPresenter == null)
+                    membersPresenter = new MembersPresenter(FirebaseRepository.getInstance(), membersFragment, SESSION_ID);
+                else membersPresenter.start();
 
                 return membersFragment;
             case 2:
 
-                if (mObjectivesFragment == null)
+                if (objectivesFragment == null)
 
-                    mObjectivesFragment = ObjectivesFragment.newInstance();
+                    objectivesFragment = ObjectivesFragment.newInstance();
 
-                mObjectivesPresenter = new ObjectivesPresenter(mObjectivesFragment, mSessionID, FirebaseRepository.getInstance());
+                objectivesPresenter = new ObjectivesPresenter(objectivesFragment, SESSION_ID, FirebaseRepository.getInstance());
 
-                return mObjectivesFragment;
+                return objectivesFragment;
 
             case 3:
                 if (questionsFragment == null)
                     questionsFragment = QuestionsFragment.newInstance();
                 questionsPresenter = new QuestionsPresenter(FirebaseRepository.getInstance(),
-                        FirebaseAuthService.getInstance(), questionsFragment, mSessionID, true);
+                        FirebaseAuthService.getInstance(), questionsFragment, SESSION_ID, true);
                 return questionsFragment;
 
-
             default:
-
                 return null;
         }
-    }
-
-    public InfoPresenter getmInfoPresenter() {
-        return mInfoPresenter;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-
-        if (position == 0)
-
-            return "Info";
-
-        else if (position == 1) {
-
-            return "Members";
-
-        } else if (position == 2) {
-
-            return "Objectives";
-
-        } else {
-            return "Questions";
-        }
-
-
-    }
-
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
         switch (position) {
             case 0:
-                infoFragment = infoFragment == null ?
-                        InfoFragment.newInstance() : infoFragment;
-                if (mInfoPresenter == null)
-                    mInfoPresenter = new InfoPresenter(infoFragment, mGroupId, mSessionID);
-                return infoFragment;
-
+                return "Info";
             case 1:
-
-                membersFragment = membersFragment == null ?
-                        MembersFragment.newInstance() : membersFragment;
-
-                if (mMembersPresenter == null)
-                    mMembersPresenter = new MembersPresenter(FirebaseRepository.getInstance(), membersFragment, mSessionID);
-
-                return membersFragment;
+                return "Members";
             case 2:
-
-                if (mObjectivesFragment == null)
-
-                    mObjectivesFragment = ObjectivesFragment.newInstance();
-
-                mObjectivesPresenter = new ObjectivesPresenter(mObjectivesFragment, mSessionID, FirebaseRepository.getInstance());
-
-                return mObjectivesFragment;
-
+                return "Objectives";
             case 3:
-                if (questionsFragment == null)
-                    questionsFragment = QuestionsFragment.newInstance();
-                questionsPresenter = new QuestionsPresenter(FirebaseRepository.getInstance(),
-                        FirebaseAuthService.getInstance(), questionsFragment, mSessionID, true);
-                return questionsFragment;
-
-
-            default:
-
-                return null;
+                return "Questions";
         }
+        return "";
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return NUM_TABS;
     }
 
-    /*public interface FragmentLifeCycle {
-        void onPauseFragment();
-
-        void onResumeFragment();
-    }*/
 }
