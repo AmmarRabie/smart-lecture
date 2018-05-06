@@ -9,34 +9,39 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
-import cmp.sem.team8.smarlecture.grades.GradesActivity;
-import cmp.sem.team8.smarlecture.home.groups.GroupsFragment;
+import cmp.sem.team8.smarlecture.auth.LoginActivity;
+import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
+import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
+import cmp.sem.team8.smarlecture.home.groups.GroupsPresenter;
+import cmp.sem.team8.smarlecture.home.newsfeed.NewsFeedPresenter;
+import cmp.sem.team8.smarlecture.invitations.InvitationsActivity;
 import cmp.sem.team8.smarlecture.profile.ProfileActivity;
-import cmp.sem.team8.smarlecture.statistics.GroupStatisticsActivity;
 
 /**
  * Created by Loai Ali on 5/5/2018.
  */
 
-public class HomeActivity extends AppCompatActivity  {
+public class HomeActivity extends AppCompatActivity {
+    private static final int INTENT_REQUEST_LOGIN = 1;
+    private static final int INTENT_REQUEST_PROFILE = 2;
     ViewPager viewPager;
     TabLayout tabLayout;
     HomePagerAdapter homePagerAdapter;
 
-    private static final int INTENT_REQUEST_LOGIN = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        tabLayout = (TabLayout) findViewById(R.id.tablayout);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tablayout);
+        viewPager = findViewById(R.id.viewPager);
 
-        homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager(),2);
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivityForResult(loginIntent, INTENT_REQUEST_LOGIN);
+
+/*        homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), 2);
         viewPager.setAdapter(homePagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);*/
     }
-
 
 
     @Override
@@ -48,23 +53,14 @@ public class HomeActivity extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.optionGroupList_joinSession:
-                return false; // make the fragment handle this instead
-            case R.id.optionGroupList_profile:
+            case R.id.optionHome_profile:
                 Intent profileActivity = new Intent(this, ProfileActivity.class);
-                startActivity(profileActivity);
+                startActivityForResult(profileActivity, INTENT_REQUEST_PROFILE);
                 return true;
-            case R.id.optionGroupList_statistics:
-                Intent GroupStatis = new Intent(this, GroupStatisticsActivity.class);
-                GroupStatis.putExtra("GroupID","-LBCAWGxSUtyqoeNIMYC");
-                startActivity(GroupStatis);
+            case R.id.optionHome_invitations:
+                Intent invitationsIntent = new Intent(this, InvitationsActivity.class);
+                startActivity(invitationsIntent);
                 return true;
-            case R.id.optionGroupList_grades:
-                Intent Grade = new Intent(this, GradesActivity.class);
-                Grade.putExtra("GroupID","-LBCAWGxSUtyqoeNIMYC");
-                startActivity(Grade);
-                return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -80,15 +76,26 @@ public class HomeActivity extends AppCompatActivity  {
                     finish();
                     return;
                 }
-                GroupsFragment grouplistfragment = (GroupsFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.contentFrame);
-
-                if (grouplistfragment == null) {
-                    grouplistfragment = GroupsFragment.newInstance();
-                    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                            grouplistfragment, R.id.contentFrame);
+                if (homePagerAdapter == null) {
+                    homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), 2);
+                    viewPager.setAdapter(homePagerAdapter);
+                    tabLayout.setupWithViewPager(viewPager);
                 }
-                return;
+                else
+                {
+                    FirebaseAuthService auth = FirebaseAuthService.getInstance();
+                    FirebaseRepository repo = FirebaseRepository.getInstance();
+                    homePagerAdapter.groupsPresenter = new GroupsPresenter(auth, homePagerAdapter.groupsFragment, repo);
+                    homePagerAdapter.newsFeedPresenter = new NewsFeedPresenter(auth, repo, homePagerAdapter.newsFeedFragment);
+                }
+                break;
+            case INTENT_REQUEST_PROFILE:
+                if (resultCode == ProfileActivity.RESULT_SIGN_OUT) {
+                    Intent loginIntent = new Intent(this, LoginActivity.class);
+                    loginIntent.putExtra(getString(R.string.IKey_forceLogin), true);
+                    startActivityForResult(loginIntent, INTENT_REQUEST_LOGIN);
+                }
+                break;
         }
     }
 

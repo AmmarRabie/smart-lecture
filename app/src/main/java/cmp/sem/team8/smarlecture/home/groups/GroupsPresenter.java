@@ -3,17 +3,11 @@ package cmp.sem.team8.smarlecture.home.groups;
 
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
 
+import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.data.DataService;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
-import cmp.sem.team8.smarlecture.common.data.model.*;
+import cmp.sem.team8.smarlecture.common.data.model.GroupModel;
 
 /**
  * Created by Loai Ali on 3/19/2018.
@@ -23,17 +17,17 @@ public class GroupsPresenter implements GroupsContract.Actions {
 
     private static final String TAG = "GroupsPresenter";
 
-    private FirebaseUser mCurrentUser;
+    private String USER_ID;
 
     private GroupsContract.Views mView;
     private DataService mDataSource;
 
 
-    public GroupsPresenter(GroupsContract.Views grouplistView, DataService dataSource) {
+    public GroupsPresenter(AuthService authService, GroupsContract.Views grouplistView, DataService dataSource) {
         mView = grouplistView;
         mView.setPresenter(this);
         mDataSource = dataSource;
-        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        USER_ID = authService.getCurrentUser().getUserId();
     }
 
     @Override
@@ -56,20 +50,19 @@ public class GroupsPresenter implements GroupsContract.Actions {
 
     @Override
     public void addGroup(final String groupName) {
-        if (mCurrentUser == null) {
+        if (USER_ID == null) {
             mView.showErrorMessage("can't find a user, try to re-login");
             Log.e(TAG, "addGroup: can't find current user");
             return;
         }
-        final String userID = mCurrentUser.getUid();
         if (groupName == null || groupName.isEmpty()) {
             mView.showErrorMessage("Group Must Have a Name");
             return;
         }
-        mDataSource.addGroup(userID, groupName, mView.getOfflineState(), new DataService.Insert<String>() {
+        mDataSource.addGroup(USER_ID, groupName, mView.getOfflineState(), new DataService.Insert<String>() {
             @Override
             public void onDataInserted(String feedback) {
-                mView.onAddSuccess(feedback, groupName, userID);
+                mView.onAddSuccess(feedback, groupName, USER_ID);
             }
 
             @Override
@@ -81,7 +74,7 @@ public class GroupsPresenter implements GroupsContract.Actions {
 
     @Override
     public void editGroup(final String groupID, final String newGroupName) {
-        if (mCurrentUser == null) {
+        if (USER_ID == null) {
             mView.showErrorMessage("can't find a user, try to re-login");
             Log.e(TAG, "addGroup: can't find current user");
             return;
@@ -150,13 +143,12 @@ public class GroupsPresenter implements GroupsContract.Actions {
         mView.handleOfflineStates();
 
         // fetch the all groups name of this user
-        if (mCurrentUser == null) {
+        if (USER_ID == null) {
             mView.showErrorMessage("can't find a user, try to re-login");
             Log.e(TAG, "addGroup: can't find current user");
             return;
         }
-        String id = mCurrentUser.getUid();
-        mDataSource.getGroupsForUser(id, new DataService.Get<ArrayList<GroupModel>>() {
+        mDataSource.getGroupsForUser(USER_ID, new DataService.Get<ArrayList<GroupModel>>() {
             @Override
             public void onDataFetched(ArrayList<GroupModel> data) {
                 mView.showGroupList(data);
@@ -170,12 +162,4 @@ public class GroupsPresenter implements GroupsContract.Actions {
 
     }
 
-
-    private DatabaseReference getGroupRef(String groupID) {
-        return FirebaseDatabase.getInstance().getReference(GroupEntry.KEY_THIS).child(groupID);
-    }
-
-    private DatabaseReference getSessionRef(String groupID) {
-        return FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS).child(groupID);
-    }
 }

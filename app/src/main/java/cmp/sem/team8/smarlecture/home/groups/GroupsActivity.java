@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
+import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.util.ActivityUtils;
 import cmp.sem.team8.smarlecture.grades.GradesActivity;
@@ -40,21 +41,9 @@ public class GroupsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.optionGroupList_joinSession:
-                return false; // make the fragment handle this instead
-            case R.id.optionGroupList_profile:
+            case R.id.optionHome_profile:
                 Intent profileActivity = new Intent(this, ProfileActivity.class);
                 startActivity(profileActivity);
-                return true;
-            case R.id.optionGroupList_statistics:
-                Intent GroupStatis = new Intent(this, GroupStatisticsActivity.class);
-                GroupStatis.putExtra("GroupID","-LBCAWGxSUtyqoeNIMYC");
-                startActivity(GroupStatis);
-                return true;
-            case R.id.optionGroupList_grades:
-                Intent Grade = new Intent(this, GradesActivity.class);
-                Grade.putExtra("GroupID","-LBCAWGxSUtyqoeNIMYC");
-                startActivity(Grade);
                 return true;
 
         }
@@ -80,7 +69,7 @@ public class GroupsActivity extends AppCompatActivity {
                     ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                             grouplistfragment, R.id.contentFrame);
                 }
-                mGroupsPresenter = new GroupsPresenter(grouplistfragment, FirebaseRepository.getInstance());
+                mGroupsPresenter = new GroupsPresenter(FirebaseAuthService.getInstance(), grouplistfragment, FirebaseRepository.getInstance());
                 return;
         }
     }

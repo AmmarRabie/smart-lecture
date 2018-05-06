@@ -40,7 +40,7 @@ class ProfilePresenter implements ProfileContract.Actions {
 
 
     @Override
-    public void changePassword(String pass, String confirmPass) {
+    public void changePassword(String oldPass, String pass, String confirmPass) {
         if (mCurrentUser == null) {
             mView.showErrorMessage("You are not logged in, try to re-login");
             return;
@@ -54,7 +54,7 @@ class ProfilePresenter implements ProfileContract.Actions {
             mView.showErrorMessage("two password are different");
             return;
         }
-        mCurrentUser.changePass(pass, new AuthenticatedUser.UpdatePassCallback() {
+        mCurrentUser.changePass(oldPass, pass, new AuthenticatedUser.UpdatePassCallback() {
             @Override
             public void onSuccess() {
                 mView.showOnChangePassSuccess();

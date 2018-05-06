@@ -57,13 +57,6 @@ public class NewsFeedFragment extends Fragment implements NewsFeedContract.Views
         sessionsRecyclerView = root.findViewById(R.id.sessionsFrag_list);
         sessionsRecyclerView.setHasFixedSize(true);
 
-
-        sessions = new ArrayList<>();
-
-        sessionsForUserRecyclerAdapter = new SessionsForUserRecyclerAdapter(getContext(),
-                sessions, this);
-
-        sessionsRecyclerView.setAdapter(sessionsForUserRecyclerAdapter);
         sessionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -83,6 +76,12 @@ public class NewsFeedFragment extends Fragment implements NewsFeedContract.Views
     @Override
     public void onResume() {
         super.onResume();
+        if (sessions != null)
+            sessions.clear();
+        sessions = new ArrayList<>();
+        sessionsForUserRecyclerAdapter = new SessionsForUserRecyclerAdapter(getContext(),
+                sessions, this);
+        sessionsRecyclerView.setAdapter(sessionsForUserRecyclerAdapter);
         mAction.start();
         if (spruceAnimator != null) spruceAnimator.start();
     }
@@ -103,7 +102,9 @@ public class NewsFeedFragment extends Fragment implements NewsFeedContract.Views
     public void onItemClick(View view, int position,String sessionId,String groupId) {
         Intent sessionActivityIntent = new Intent(getContext(), JoinSessionActivity.class);
         sessionActivityIntent.putExtra(getString(R.string.IKey_sessionId), sessionId);
+
         sessionActivityIntent.putExtra(getString(R.string.IKey_groupId),groupId);
+
         startActivity(sessionActivityIntent);
 
     }

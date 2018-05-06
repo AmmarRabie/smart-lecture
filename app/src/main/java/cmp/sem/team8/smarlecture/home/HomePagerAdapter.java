@@ -16,10 +16,10 @@ import cmp.sem.team8.smarlecture.home.newsfeed.NewsFeedPresenter;
  */
 
 public class HomePagerAdapter extends FragmentPagerAdapter {
-NewsFeedFragment newsFeedFragment;
-NewsFeedPresenter newsFeedPresenter;
-GroupsFragment groupsFragment;
-GroupsPresenter groupsPresenter;
+    NewsFeedFragment newsFeedFragment;
+    NewsFeedPresenter newsFeedPresenter;
+    GroupsFragment groupsFragment;
+    GroupsPresenter groupsPresenter;
 
 
     private int numOfTabs;
@@ -35,21 +35,21 @@ GroupsPresenter groupsPresenter;
 
     @Override
     public Fragment getItem(int position) {
-       switch (position) {
-           case 0:
-               if (groupsFragment == null)
-                   groupsFragment = GroupsFragment.newInstance();
-               groupsPresenter = new GroupsPresenter(groupsFragment, FirebaseRepository.getInstance());
-               return groupsFragment;
+        switch (position) {
+            case 0:
+                if (groupsFragment == null)
+                    groupsFragment = GroupsFragment.newInstance();
+                groupsPresenter = new GroupsPresenter(FirebaseAuthService.getInstance(), groupsFragment, FirebaseRepository.getInstance());
+                return groupsFragment;
 
-           case 1:
-               if(newsFeedFragment==null)
-                   newsFeedFragment=NewsFeedFragment.newInstance();
-               newsFeedPresenter=new NewsFeedPresenter(FirebaseAuthService.getInstance(),FirebaseRepository.getInstance(),newsFeedFragment);
-               return newsFeedFragment;
-               default:
-                   return null;
-       }
+            case 1:
+                if(newsFeedFragment==null)
+                    newsFeedFragment=NewsFeedFragment.newInstance();
+                newsFeedPresenter=new NewsFeedPresenter(FirebaseAuthService.getInstance(),FirebaseRepository.getInstance(),newsFeedFragment);
+                return newsFeedFragment;
+            default:
+                return null;
+        }
 
     }
 

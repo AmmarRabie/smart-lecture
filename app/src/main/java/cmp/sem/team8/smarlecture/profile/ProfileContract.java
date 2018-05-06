@@ -37,7 +37,7 @@ interface ProfileContract {
      * Actions methods implemented by presenter
      */
     interface Actions extends IBasePresenter {
-        void changePassword(String pass, String confirmPass);
+        void changePassword(String oldPass, String pass, String confirmPass);
 
         void changeName(String newName);
 

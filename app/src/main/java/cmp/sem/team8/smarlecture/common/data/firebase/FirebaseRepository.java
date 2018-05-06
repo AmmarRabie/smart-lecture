@@ -20,6 +20,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -31,13 +32,13 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
-import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 /**
  * This is the implementation of the DataService using firebase database
@@ -46,7 +47,6 @@ import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 public class FirebaseRepository extends FirebaseRepoHelper {
 
     private static FirebaseRepository INSTANCE = null;
-    private ListenersList listeners;
 
     public static FirebaseRepository getInstance() {
         if (INSTANCE == null) {
@@ -66,7 +66,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onDataNotAvailable();
                     return;
                 }
-                UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                UserModel userModel = Serializer.user(userSnapshot);
                 setProfileImage(userModel);
             }
 
@@ -102,7 +102,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onDataNotAvailable();
                     return;
                 }
-                UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                UserModel userModel = Serializer.user(userSnapshot);
                 UserGradeModel model = new UserGradeModel(userModel.getName(), userModel.getEmail(), userModel.getId(), Integer.toString(Grade));
                 callback.onDataFetched(model);
             }
@@ -191,29 +191,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onError(e.getMessage());
             }
         });
-    }
-
-    @Override
-    public void listenUser(String userId, final Listen<UserModel> callback) {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(userId);
-        final ValueEventWithRef listenUserEvent = new ValueEventWithRef(userRef);
-        final ValueEventListener valueEventListener = userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (isDead(callback)) return;
-                if (true /*validate your conditions that data received success fully*/) {
-                    callback.onDataReceived(new UserModel("", "", ""));
-                    callback.increment();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                forget(callback);
-            }
-        });
-        listenUserEvent.setFirebaseListener(valueEventListener);
-        listeners.add(listenUserEvent);
     }
 
     @Override
@@ -349,7 +326,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                 callback.onDataNotAvailable();
                                 return;
                             }
-                            UserModel userModel = FirebaseSerializer.serializeUser(userSnapshot);
+                            UserModel userModel = Serializer.user(userSnapshot);
                             UserGradeModel userGradeModel = new UserGradeModel(userModel.getName(), userModel.getEmail(), userModel.getId(), attendanceGrade);
                             users.add(userGradeModel);
 
@@ -424,7 +401,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                 .child(groupId)
                                 .setValue(false);  // false mean not accepted (following) yet
 
-                        callback.onDataInserted(FirebaseSerializer.serializeUser(userSnapshot));
+                        callback.onDataInserted(Serializer.user(userSnapshot));
                     }
 
                     @Override
@@ -481,7 +458,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onDataNotAvailable();
                     return;
                 }
-                ArrayList<String> groupsKeys = FirebaseSerializer.getKeys(groupsKeysSnapshot);
+                ArrayList<String> groupsKeys = Serializer.getKeys(groupsKeysSnapshot);
                 for (final String oneGroupKey : groupsKeys) {
 
                     getGroupRef(oneGroupKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -490,15 +467,15 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                             getUserRef(oneGroupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(final DataSnapshot userSnapshot) {
-                                    final ArrayList<String> sessionsKeys = FirebaseSerializer.getKeys(oneGroupSnapshot.child(GroupEntry.KEY_SESSIONS));
+                                    final ArrayList<String> sessionsKeys = Serializer.getKeys(oneGroupSnapshot.child(GroupEntry.KEY_SESSIONS));
                                     for (final String oneSessionKey : sessionsKeys) {
                                         getSessionRef(oneSessionKey).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot oneSessionSnapshot) {
                                                 if (!isValid(SessionStatus.fromString(oneSessionSnapshot.child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS).getValue(String.class))))
                                                     return;
-                                                SessionForUserModel sessionForUserModel = FirebaseSerializer
-                                                        .serializeSessionForUser
+                                                SessionForUserModel sessionForUserModel = Serializer
+                                                        .sessionForUser
                                                                 (userSnapshot, oneSessionSnapshot, oneGroupSnapshot);
 //                                                resultList.add(sessionForUserModel);
                                                 callback.onDataFetched(sessionForUserModel);
@@ -566,7 +543,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onDataNotAvailable();
                     return;
                 }
-                for (String groupKey : FirebaseSerializer.getKeys(invitationsKeysSnapshot)) {
+                for (String groupKey : Serializer.getKeys(invitationsKeysSnapshot)) {
                     getGroupRef(groupKey).addListenerForSingleValueEvent(new GroupValueEvent());
                 }
             }
@@ -598,8 +575,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
                 @Override
                 public void onDataChange(DataSnapshot userSnapshot) {
-                    callback.onDataFetched(
-                            FirebaseSerializer.serializeGroupInvitation(groupSnapshot, userSnapshot));
+                    callback.onDataFetched(Serializer.groupInvitation(groupSnapshot, userSnapshot));
                 }
 
                 @Override
@@ -622,7 +598,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot userSnapshot) {
-                            InvitedUserModel newInvitedUser = FirebaseSerializer.serializeInvitedUser(oneGroupUserKey, userSnapshot);
+                            InvitedUserModel newInvitedUser = Serializer.invitedUser(oneGroupUserKey, userSnapshot);
                             result.add(newInvitedUser);
                             if (groupUsersKeysSnapshot.getChildrenCount() == result.size())
                                 callback.onDataFetched(result);
@@ -667,6 +643,13 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 callback.onError(databaseError.getMessage());
             }
         });
+    }
+
+    @Override
+    public void setSessionStatus(String sessionId, SessionStatus status, Insert<Void> callback) {
+        getSessionRef(sessionId).child(SessionEntry.KEY_SESSION_STATUS).setValue(status.toString());
+        if (callback != null)
+            callback.onDataInserted(null);
     }
 
 
@@ -988,7 +971,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot userSnapshot) {
-                                MemberModel newAttendee = FirebaseSerializer.serializeAttendee(attendeeSnapshot, userSnapshot);
+                                MemberModel newAttendee = Serializer.attendee(attendeeSnapshot, userSnapshot);
                                 callback.onDataReceived(newAttendee);
                             }
 
@@ -999,8 +982,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     }
                 }
         );
-//        eventWithRef.setFirebaseListener(firebaseListener);
-//        listeners.add(eventWithRef);
+        addNewListener(callback, listener,  namesListRef);
         return callback;
     }
 
@@ -1090,7 +1072,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 for (DataSnapshot session : dataSnapshot.getChildren()) {
                     if (!session.exists())
                         continue;
-                    SessionModel addedSession = FirebaseSerializer.serializeSession(session);
+                    SessionModel addedSession = Serializer.session(session);
                     sessionsList.add(addedSession);
 
 
@@ -1158,7 +1140,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
             @Override
             public void onDataChange(DataSnapshot groupSnapshot) {
-                GroupModel group = FirebaseSerializer.serializeGroup(groupSnapshot);
+                GroupModel group = Serializer.group(groupSnapshot);
                 result.setGroup(group);
                 withGroupSnapshot(groupSnapshot);
             }
@@ -1171,7 +1153,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     getSessionRef(currSessionId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot sessionSnapshot) {
-                            SessionModel sessionModel = FirebaseSerializer.serializeSession(sessionSnapshot);
+                            SessionModel sessionModel = Serializer.session(sessionSnapshot);
                             groupSessions.add(sessionModel);
 
                             if (++sessionHandledCount == sessionsKeysSnapshot.getChildrenCount())
@@ -1180,6 +1162,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                             withSessionMembersList(sessionKey.getKey(), sessionSnapshot.child(SessionEntry.KEY_NAMES_LIST));
 
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             callback.onError(databaseError.getMessage());
@@ -1197,7 +1180,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     if (existedGroupMember != null) {
                         // add to this group member, this contribution (member model)
                         boolean isAttend = ((boolean) oneSessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
-                        ArrayList<NoteModel> thisSessionMemberNotes = FirebaseSerializer.serializeNotes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.serializeNotes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
                         existedGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
 
                         if (++currMembersHandled == membersCount)
@@ -1218,7 +1201,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     public void onDataFetched(UserModel thisUser) {
                         final FileModel.GroupMember newGroupMember = new FileModel.GroupMember(thisUser);
                         boolean isAttend = ((boolean) sessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
-                        ArrayList<NoteModel> thisSessionMemberNotes = FirebaseSerializer.serializeNotes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.serializeNotes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
                         newGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
                         groupMembers.add(newGroupMember);
 
@@ -1259,7 +1242,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onDataNotAvailable();
                     return;
                 }
-                SessionModel session = FirebaseSerializer.serializeSession(sessionSnapshot);
+                SessionModel session = Serializer.session(sessionSnapshot);
                 callback.onDataFetched(session);
             }
 
@@ -1268,10 +1251,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 callback.onError(databaseError.getMessage());
             }
         });
-    }              
-
-
-
+    }
 
 
     @Override
@@ -1402,6 +1382,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 }
                 callback.onDataFetched(dataSnapshot.getValue(String.class));
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 callback.onError(databaseError.getMessage());
@@ -1421,7 +1402,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 for (DataSnapshot groupSnapShot : dataSnapshot.getChildren()) {
                     if (!dataSnapshot.exists())
                         continue;
-                    GroupModel groupModel = FirebaseSerializer.serializeGroup(groupSnapShot);
+                    GroupModel groupModel = Serializer.group(groupSnapShot);
 
 
                     list.add(groupModel);
@@ -1446,7 +1427,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         if (callback == null)
             return;
         callback.onDataInserted(new NoteModel(noteId, noteText));
-    }          
+    }
 
     @Override
     public Listen listenAttendanceStatus(String sessionId, final Listen<AttendanceStatus> callback) {
@@ -1478,7 +1459,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 getGroupMessagesRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot messagesSnapshot) {
-                        ArrayList<GroupMessageModel> groupMessages = FirebaseSerializer.serializeGroupMessages(groupSnapshot, messagesSnapshot);
+                        ArrayList<GroupMessageModel> groupMessages = Serializer.groupMessages(groupSnapshot, messagesSnapshot);
                         if (groupMessages != null)
                             callback.onDataFetched(groupMessages);
                     }
@@ -1498,35 +1479,47 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void getSessionQuestions(String sessionID, final Get<ArrayList<QuestionModel>> callback) {
-        final ArrayList<QuestionModel> result = new ArrayList<>();
-        getSessionRef(sessionID).child(SessionEntry.KEY_QUESTIONS).addListenerForSingleValueEvent(new ValueEventListener() {
+    public Listen ListenSessionQuestions(String sessionID, final Listen<QuestionModel> callback) {
+        DatabaseReference questionsRef = getSessionRef(sessionID).child(SessionEntry.KEY_QUESTIONS);
+        ChildEventListener childEventListener = questionsRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(final DataSnapshot questionsSnapshot) {
-                for (final DataSnapshot questionSnapshot : questionsSnapshot.getChildren()) {
-                    String currOwnerId = questionSnapshot.child(SessionEntry.KEY_QUESTION_OWNER).getValue(String.class);
-                    getUserRef(currOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot ownerSnapshot) {
-                            QuestionModel question = FirebaseSerializer.serializeQuestion(questionSnapshot, ownerSnapshot);
-                            result.add(question);
-                            if (result.size() == questionsSnapshot.getChildrenCount())
-                                callback.onDataFetched(result);
-                        }
+            public void onChildAdded(final DataSnapshot newQuestionSnapshot, String s) {
+                String ownerId = newQuestionSnapshot.child(SessionEntry.KEY_QUESTION_OWNER).getValue(String.class);
+                getUserRef(ownerId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot ownerSnapshot) {
+                        QuestionModel question = Serializer.question(newQuestionSnapshot, ownerSnapshot);
+                        callback.onDataReceived(question);
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            callback.onError(databaseError.getMessage());
-                        }
-                    });
-                }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                callback.onError(databaseError.getMessage());
+
             }
         });
+        addNewListener(callback, childEventListener, questionsRef);
+        return callback;
     }
 
     @Override
@@ -1539,7 +1532,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         getUser(userId, new Get<UserModel>() {
             @Override
             public void onDataFetched(UserModel owner) {
-                callback.onDataInserted(new QuestionModel(questionRef.getKey(),owner, text));
+                if (callback != null)
+                    callback.onDataInserted(new QuestionModel(questionRef.getKey(), owner, text));
             }
         });
     }

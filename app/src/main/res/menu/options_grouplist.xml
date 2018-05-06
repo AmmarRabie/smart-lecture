@@ -5,27 +5,16 @@
     <group>
 
         <item
-            android:id="@+id/optionGroupList_profile"
-            android:orderInCategory="1"
+            android:id="@+id/optionHome_invitations"
+            android:title="invitations"
+            android:icon="@drawable/ic_invitations"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/optionHome_profile"
             android:title="Profile"
             app:showAsAction="never" />
 
-        <item
-            android:id="@+id/optionGroupList_grades"
-            android:icon="@drawable/ic_join_colored"
-            android:orderInCategory="4"
-            android:title="grades"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/optionGroupList_statistics"
-            android:orderInCategory="3"
-            android:title="statistics"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/optionGroupList_joinSession"
-            android:icon="@drawable/ic_join_colored"
-            android:orderInCategory="2"
-            android:title="Join session"
-            app:showAsAction="always" />
+
     </group>
 </menu>

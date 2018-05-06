@@ -1,12 +1,12 @@
 package cmp.sem.team8.smarlecture.common.data.firebase;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import cmp.sem.team8.smarlecture.common.data.DataService;
@@ -22,11 +22,9 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry
 
 abstract class FirebaseRepoHelper implements DataService {
 
-    protected ListenersList listeners;
-    protected HashMap<Listen, ValueEventWithRef> listenersMap;
+    protected HashMap<Listen, EventWithRefBase> listenersMap;
 
     FirebaseRepoHelper() {
-        listeners = new ListenersList();
         listenersMap = new HashMap<>();
     }
 
@@ -57,74 +55,23 @@ abstract class FirebaseRepoHelper implements DataService {
     }
 
 
-    // helper methods and nested classes for handling forgetting Listen callbacks
-    protected boolean isDead(Listen callback) {
-        if (!callback.shouldListen()) {
-            listeners.remove(callback);
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void forget(Listen listener) {
-        ValueEventWithRef target = listenersMap.get(listener);
+        EventWithRefBase target = listenersMap.get(listener);
         if (target != null) {
             listenersMap.remove(listener); // remove from the map
             target.forget();
-            return;
-        }
-        for (int i = 0; i < listeners.size(); i++) {
-            if (listeners.get(i).firebaseListener.equals(listener)) {
-                listeners.get(i).forget();
-            }
         }
     }
 
-    protected void addNewListener(Listen callback, ValueEventListener listener, DatabaseReference reference)
-    {
-        ValueEventWithRef valueEventWithRef = new ValueEventWithRef(listener, reference);
+    protected void addNewListener(Listen callback, ValueEventListener listener, DatabaseReference reference) {
+        EventWithRefBase valueEventWithRef = new ValueEventWithRef(reference, listener);
         listenersMap.put(callback, valueEventWithRef);
     }
 
-    protected static final class ListenersList extends ArrayList<ValueEventWithRef> {
-        @Override
-        public ValueEventWithRef remove(int index) {
-            this.get(index).forget();
-            return super.remove(index);
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            ((ValueEventWithRef) o).forget();
-            return super.remove(o);
-        }
+    protected void addNewListener(Listen callback, ChildEventListener listener, DatabaseReference reference) {
+        EventWithRefBase valueEventWithRef = new ChildEventWithRef(reference, listener);
+        listenersMap.put(callback, valueEventWithRef);
     }
 
-    protected static final class ValueEventWithRef {
-        ValueEventListener firebaseListener;
-        DatabaseReference reference;
-
-        public ValueEventWithRef(ValueEventListener listener, DatabaseReference reference) {
-            this.firebaseListener = listener;
-            this.reference = reference;
-        }
-
-        ValueEventWithRef(DatabaseReference reference) {
-            this.reference = reference;
-        }
-
-        void forget() {
-            if (reference == null || firebaseListener == null)
-                return;
-            reference.removeEventListener(firebaseListener);
-            reference = null;
-            firebaseListener = null;
-        }
-
-        public void setFirebaseListener(ValueEventListener firebaseListener) {
-            this.firebaseListener = firebaseListener;
-        }
-
-    }
 }

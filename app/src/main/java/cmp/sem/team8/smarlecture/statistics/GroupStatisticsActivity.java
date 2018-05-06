@@ -35,7 +35,7 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_group_statistics);
 
-            groupID=this.getIntent().getExtras().getString("GroupID");
+            groupID=this.getIntent().getExtras().getString(getString(R.string.IKey_groupId));
             ImageView imageView = (ImageView) findViewById(R.id.group_statistics_list_view_icon);
 
             spinner = (ProgressBar)findViewById(R.id.group_statistics_progress_bar);
