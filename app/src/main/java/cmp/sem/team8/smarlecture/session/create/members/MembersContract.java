@@ -30,7 +30,7 @@ public interface MembersContract {
          * called when the session status is open or closed
          */
 
-        void hideBeginAttendanceButton();
+        void hideBeginAttendanceButton(boolean disableOnly);
 
         /**
          * to show the timer of the attendance in the fragment;
@@ -74,6 +74,9 @@ public interface MembersContract {
          * @param noteDeleted the deleted note
          */
         void onDeleteNoteSuccess(String memberId, NoteModel noteDeleted);
+
+        void clearMembersList();
+
     }
 
 
@@ -121,5 +124,7 @@ public interface MembersContract {
          * @param noteId the id of the note
          */
         void deleteNote(String memberIdShowing, String noteId);
+
+        void updateView(Views views);
     }
 }

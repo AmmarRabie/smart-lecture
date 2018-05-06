@@ -15,9 +15,6 @@
         app:tabSelectedTextColor="#FFFFFF"
         app:tabTextColor="#c3ffffff"
         app:tabIndicatorColor="#FFFFFF">
-
-
-
     </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager

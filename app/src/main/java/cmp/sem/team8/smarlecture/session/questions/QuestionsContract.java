@@ -14,7 +14,7 @@ public interface QuestionsContract {
     interface Views extends IBaseView<Actions> {
         void showOnErrorMessage(String cause);
 
-        void showQuestions(ArrayList<QuestionModel> questions);
+        void clearAllQuestions();
 
         void hideQuestionTextBox();
 

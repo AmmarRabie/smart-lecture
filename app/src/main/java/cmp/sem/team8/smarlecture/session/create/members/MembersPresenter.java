@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 
 /**
  * Created by ramym on 3/17/2018.
@@ -31,24 +32,47 @@ public class MembersPresenter implements MembersContract.Actions {
         members = new ArrayList<>();
 
         mView.setPresenter(this);
-      //  start();
+        //  start();
     }
 
     @Override
     public void start() {
-        mDataSource.getSessionStatus(SESSION_ID, new DataService.Get<DataService.SessionStatus>() {
+        mDataSource.getSessionById(SESSION_ID, new DataService.Get<SessionModel>() {
             @Override
-            public void onDataFetched(DataService.SessionStatus status) {
-                if (status.equals(DataService.SessionStatus.OPEN)) {
-                    mView.showBeginAttendanceButton();
-                    mView.showSecret(generateRandomSecret());
-                } else {
-                    mView.hideBeginAttendanceButton();
+            public void onDataFetched(SessionModel session) {
+                // set a random secret if this session have no secret
+                String secret = session.getSecret();
+                if (secret == null) {
+                    secret = generateRandomSecret();
+                    mDataSource.setSessionSecret(SESSION_ID, secret, null);
                 }
+                DataService.AttendanceStatus attendanceStatus = session.getAttendanceStatus();
+                DataService.SessionStatus sessionStatus = session.getSessionStatus();
+                if (sessionStatus.equals(DataService.SessionStatus.OPEN)) {
+                    mView.showBeginAttendanceButton();
+                    mView.showSecret(secret);
+                    switch (attendanceStatus) {
+                        case CLOSED:
+                        case NOT_ACTIVATED:
+                            mView.showBeginAttendanceButton();
+                            break;
+                        case OPEN:
+                            mView.hideBeginAttendanceButton(false);
+                            break;
+                    }
+                    return;
+                }
+                // the session is closed, show only the members
+                mView.hideBeginAttendanceButton(true);
             }
         });
-        if (membersListener != null)
-            return;
+        if (membersListener != null) {
+            mDataSource.forget(membersListener);
+            membersListener = null;
+            mView.clearMembersList();
+            members.clear();
+        }
+
         membersListener = mDataSource.ListenSessionMembers(SESSION_ID, new DataService.Listen<MemberModel>() {
             @Override
             public void onDataReceived(MemberModel changedMember) {
@@ -179,5 +203,12 @@ public class MembersPresenter implements MembersContract.Actions {
     @Override
     public void onDestroy() {
         mDataSource.forget(membersListener);
+        membersListener = null;
+    }
+
+    @Override
+    public void updateView(MembersContract.Views views) {
+        mView = views;
+        mView.setPresenter(this);
     }
 }
