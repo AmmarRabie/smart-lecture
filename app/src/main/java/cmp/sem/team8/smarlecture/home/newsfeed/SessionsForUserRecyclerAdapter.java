@@ -78,25 +78,22 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
          * @param view     the view clicked
          * @param position its position in the list
          */
-        void onItemClick(View view, int position);
+        void onItemClick(View view, int position,String sessionId,String groupId);
 
-        void onSessionClicked(View view, int position, String sessionId);
 
-        void onGroupClicked(View view, int position, String groupId);
-
-        void onUserClicked(View view, int position, String userId);
 
     }
 
     class SessionViewHolder extends RecyclerView.ViewHolder {
 
+        private View itemView;
         private TextView sessionNameView;
         private TextView groupNameView;
         private TextView userNameView;
         private TextView sessionStatusView;
         private TextView attendanceStatusView;
         private ImageView profileImageView;
-
+      
         SessionViewHolder(View itemView) {
             super(itemView);
             sessionNameView = itemView.findViewById(R.id.sessionsForUserItem_SName);
@@ -105,6 +102,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
             sessionStatusView = itemView.findViewById(R.id.sessionsForUserItem_SStatus);
             attendanceStatusView = itemView.findViewById(R.id.sessionsForUserItem_AStatus);
             profileImageView = itemView.findViewById(R.id.sessionsForUserItem_profileImage);
+            this.itemView=itemView;
         }
 
         void bind(final int position) {
@@ -150,6 +148,14 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
                         mItemClickListener.onUserClicked(view, position, mSessionsList.get(position).getOwner().getId());
                     }
                 });
+          
+        if(!itemView.hasOnClickListeners()){
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(v,position,mSessionsList.get(position).getId(),mSessionsList.get(position).getForGroupId());
+                }
+            });
         }
     }
 }
