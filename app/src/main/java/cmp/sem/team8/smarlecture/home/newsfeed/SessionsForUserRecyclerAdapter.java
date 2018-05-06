@@ -75,13 +75,9 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
          * @param view     the view clicked
          * @param position its position in the list
          */
-        void onItemClick(View view, int position);
+        void onItemClick(View view, int position,String sessionId,String groupId);
 
-        void onSessionClicked(View view, int position, String sessionId);
 
-        void onGroupClicked(View view, int position, String groupId);
-
-        void onUserClicked(View view, int position, String userId);
 
     }
 
@@ -93,6 +89,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
         private TextView sessionStatusView;
         private TextView attendanceStatusView;
 
+        private View itemView;
         SessionViewHolder(View itemView) {
             super(itemView);
             sessionNameView = itemView.findViewById(R.id.sessionsForUserItem_SName);
@@ -100,6 +97,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
             userNameView = itemView.findViewById(R.id.sessionsForUserItem_UName);
             sessionStatusView = itemView.findViewById(R.id.sessionsForUserItem_SStatus);
             attendanceStatusView = itemView.findViewById(R.id.sessionsForUserItem_AStatus);
+            this.itemView=itemView;
         }
 
         void bind(final int position) {
@@ -115,29 +113,14 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
             if (mItemClickListener == null)
                 return;
 
-            if (!sessionNameView.hasOnClickListeners())
-                sessionNameView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onSessionClicked(view, position, mSessionsList.get(position).getId());
-                    }
-                });
-
-            if (!groupNameView.hasOnClickListeners())
-                groupNameView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onGroupClicked(view, position, mSessionsList.get(position).getForGroupId());
-                    }
-                });
-
-            if (!userNameView.hasOnClickListeners())
-                userNameView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onUserClicked(view, position, mSessionsList.get(position).getOwnerId());
-                    }
-                });
+        if(!itemView.hasOnClickListeners()){
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(v,position,mSessionsList.get(position).getId(),mSessionsList.get(position).getForGroupId());
+                }
+            });
+        }
         }
     }
 }
