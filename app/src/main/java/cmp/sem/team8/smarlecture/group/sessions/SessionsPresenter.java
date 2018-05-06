@@ -18,19 +18,19 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.*;
  * Created by Loai Ali on 4/15/2018.
  */
 
-public class SessionListPresenter implements SessionListContract.Actions {
-    private static final String TAG = "SessionListPresenter";
+public class SessionsPresenter implements SessionsContract.Actions {
+    private static final String TAG = "SessionsPresenter";
 
     private DatabaseReference mGroupRef;
     private final String GROUP_ID;
     private DataService mDataSource;
-    private SessionListContract.Views mView;
+    private SessionsContract.Views mView;
 
     private static final int minId = 0;
     private static final int maxId = 10000000;
 
 
-    public SessionListPresenter(SessionListContract.Views view, final String groupID, DataService dataSource) {
+    public SessionsPresenter(SessionsContract.Views view, final String groupID, DataService dataSource) {
         mView = view;
         mDataSource = dataSource;
         GROUP_ID = groupID;

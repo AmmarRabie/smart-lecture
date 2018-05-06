@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.group.members.MembersPresenter;
-import cmp.sem.team8.smarlecture.group.sessions.SessionListFragment;
-import cmp.sem.team8.smarlecture.group.sessions.SessionListPresenter;
+import cmp.sem.team8.smarlecture.group.sessions.SessionsFragment;
+import cmp.sem.team8.smarlecture.group.sessions.SessionsPresenter;
 import cmp.sem.team8.smarlecture.group.members.MembersFragment;
 
 /**
@@ -19,8 +19,8 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
     private final String GROUP_NAME;
     MembersFragment membersFragment;
     MembersPresenter membersPresenter;
-    SessionListFragment sessionListFragment;
-    SessionListPresenter sessionListPresenter;
+    SessionsFragment sessionsFragment;
+    SessionsPresenter sessionsPresenter;
 
     public GroupPagerAdapter(FragmentManager fm, String groupID, String groupName) {
         super(fm);
@@ -28,7 +28,7 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
         GROUP_ID = groupID;
         GROUP_NAME = groupName;
         membersFragment = null;
-        sessionListFragment = null;
+        sessionsFragment = null;
     }
 
     @Override
@@ -41,10 +41,10 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
                 return membersFragment;
 
             case 1:
-                if (sessionListFragment == null) {
-                    sessionListFragment = SessionListFragment.newInstance();
-                    sessionListPresenter = new SessionListPresenter(sessionListFragment, GROUP_ID, FirebaseRepository.getInstance());
-                    return sessionListFragment;
+                if (sessionsFragment == null) {
+                    sessionsFragment = SessionsFragment.newInstance();
+                    sessionsPresenter = new SessionsPresenter(sessionsFragment, GROUP_ID, FirebaseRepository.getInstance());
+                    return sessionsFragment;
                 }
             default:
                 return null;

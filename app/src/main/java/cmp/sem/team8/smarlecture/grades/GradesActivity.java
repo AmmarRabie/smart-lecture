@@ -116,7 +116,7 @@ public class GradesActivity extends AppCompatActivity implements GradesContract.
     }
 
     public String getGroupId(){
-        return this.getIntent().getExtras().getString("GroupID");
+        return this.getIntent().getExtras().getString(getString(R.string.IKey_groupId));
     }
 
 }

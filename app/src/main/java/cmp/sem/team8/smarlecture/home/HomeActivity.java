@@ -12,12 +12,10 @@ import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.auth.LoginActivity;
 import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
-import cmp.sem.team8.smarlecture.grades.GradesActivity;
 import cmp.sem.team8.smarlecture.home.groups.GroupsPresenter;
-import cmp.sem.team8.smarlecture.home.newsfeed.NewsFeedFragment;
 import cmp.sem.team8.smarlecture.home.newsfeed.NewsFeedPresenter;
+import cmp.sem.team8.smarlecture.invitations.InvitationsActivity;
 import cmp.sem.team8.smarlecture.profile.ProfileActivity;
-import cmp.sem.team8.smarlecture.statistics.GroupStatisticsActivity;
 
 /**
  * Created by Loai Ali on 5/5/2018.
@@ -55,23 +53,14 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.optionGroupList_joinSession:
-                return false; // make the fragment handle this instead
-            case R.id.optionGroupList_profile:
+            case R.id.optionHome_profile:
                 Intent profileActivity = new Intent(this, ProfileActivity.class);
                 startActivityForResult(profileActivity, INTENT_REQUEST_PROFILE);
                 return true;
-            case R.id.optionGroupList_statistics:
-                Intent GroupStatis = new Intent(this, GroupStatisticsActivity.class);
-                GroupStatis.putExtra("GroupID", "-LBCAWGxSUtyqoeNIMYC");
-                startActivity(GroupStatis);
+            case R.id.optionHome_invitations:
+                Intent invitationsIntent = new Intent(this, InvitationsActivity.class);
+                startActivity(invitationsIntent);
                 return true;
-            case R.id.optionGroupList_grades:
-                Intent Grade = new Intent(this, GradesActivity.class);
-                Grade.putExtra("GroupID", "-LBCAWGxSUtyqoeNIMYC");
-                startActivity(Grade);
-                return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
