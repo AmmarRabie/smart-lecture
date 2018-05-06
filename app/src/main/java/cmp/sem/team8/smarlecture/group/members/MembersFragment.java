@@ -1,6 +1,8 @@
 package cmp.sem.team8.smarlecture.group.members;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ import es.dmoral.toasty.Toasty;
  * A simple {@link Fragment} subclass.
  */
 public class MembersFragment extends android.support.v4.app.Fragment implements
-        MembersListContract.Views,
+        MembersContract.Views,
         MembersRecyclerAdapter.onItemClickListener, InternetConnectivityReceiver.OnInternetConnectionChangeListener {
 
-    private MembersListContract.Actions mPresenter;
+    private MembersContract.Actions mPresenter;
 
     private RecyclerView mStudentListRecyclerView;
     private View mOfflineView;
@@ -48,7 +48,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void setPresenter(MembersListContract.Actions presenter) {
+    public void setPresenter(MembersContract.Actions presenter) {
         mPresenter = presenter;
     }
 
@@ -104,7 +104,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void onDeleteSuccess(String UID) {
+    public void onRemoveSuccess(String UID) {
         int position = 0;
         while (!(UID.equals(mNamesList.get(position).getId()))) {
             position++;
@@ -123,7 +123,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public void onExportSuccess() {
-        Toasty.success(getContext(), "Exported successfully", Toast.LENGTH_SHORT,true).show();
+        Toasty.success(getContext(), "Exported successfully", Toast.LENGTH_SHORT, true).show();
     }
 
     @Override
@@ -136,33 +136,55 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     public void onPause() {
         super.onPause();
         mPresenter.end();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         if (internetConnectivityReceiver != null)
             internetConnectivityReceiver.end(getContext());
     }
 
     @Override
-    public void onCancelInvitationClick(View view, String userId, int position) {
+    public void onCancelInvitationClick(View view, final String userId, int position) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        dialogBuilder.setTitle("Cancel Invitation")
+                .setMessage("Are you sure you want to cancel the invitation. You can invite him again")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mPresenter.cancelInvitation(userId);
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
+            }
+        }).show();
     }
 
     @Override
-    public void onRemoveMemberClick(View view, String userId, int position) {
+    public void onRemoveMemberClick(View view, final String userId, int position) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        dialogBuilder.setTitle("Remove Member")
+                .setMessage("This user will not be included in upcoming sessions in this group.\nYou have to invite him again if you proceed")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mPresenter.removeMember(userId);
 
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        }).show();
     }
 
     @Override
     public void onSaveItemClick(View v, String name, int position) {
         mPresenter.addStudent(name);
-    }
-
-    private EditText buildEditTextDialogView(String name) {
-        EditText input = new EditText(getContext());
-        input.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-        input.setText(name);
-        input.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
-        return input;
     }
 
     @Override

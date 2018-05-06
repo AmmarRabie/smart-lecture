@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
+import cmp.sem.team8.smarlecture.common.util.ProfileImageUtil;
 
 /**
  * Created by Loai Ali on 3/19/2018.
@@ -113,13 +114,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
             userNameView.setText(currSession.getOwner().getName());
             sessionStatusView.setText(currSession.getSessionStatus().name());
             attendanceStatusView.setText(currSession.getAttendanceStatus().name());
-
-            byte[] imgByte = currSession.getOwner().getProfileImage();
-            if (imgByte != null) {
-                Bitmap imgBitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
-                imgBitmap = Bitmap.createScaledBitmap(imgBitmap, 50, 50, true);
-                profileImageView.setImageBitmap(imgBitmap);
-            }
+            ProfileImageUtil.setProfileImage(currSession.getOwner().getProfileImage(),profileImageView, 50);
 
             if (mItemClickListener == null)
                 return;

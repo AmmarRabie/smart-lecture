@@ -239,10 +239,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         mEmailView.setText(user.getEmail());
         if (user.getProfileImage() == null) // do nothing if the user is and old user with no image
             return;
-        byte[] imgByte = user.getProfileImage();
-        Bitmap imgBitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
-        imgBitmap = Bitmap.createScaledBitmap(imgBitmap, 250, 250, true);
-        mProfileImageView.setImageBitmap(imgBitmap);
+        ProfileImageUtil.setProfileImage(user.getProfileImage(), mProfileImageView,250);
     }
 
     @Override

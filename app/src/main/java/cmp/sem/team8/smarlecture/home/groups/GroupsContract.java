@@ -85,7 +85,7 @@ public interface GroupsContract {
 
         /**
          * called from fragment when user clicks on delete button
-         * on successful deletion the onDeleteSuccess is called
+         * on successful deletion the onRemoveSuccess is called
          * otherwise the showOnErrorMessage method is called
          * @param groupID the id of the group to be deleted
          */

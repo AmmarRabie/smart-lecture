@@ -17,17 +17,17 @@ import cmp.sem.team8.smarlecture.common.io.excel.ExcelExportStrategy;
  * Created by Loai Ali on 3/16/2018.
  */
 
-public class MembersPresenter implements MembersListContract.Actions {
+public class MembersPresenter implements MembersContract.Actions {
     private static final String TAG = "MembersPresenter";
 
     private final String GROUP_ID;
     private final String GROUP_NAME;
 
-    private MembersListContract.Views mView;
+    private MembersContract.Views mView;
 
     private DataService mDataSource;
 
-    public MembersPresenter(DataService dataSource, MembersListContract.Views view, final String groupId, final String groupName) {
+    public MembersPresenter(DataService dataSource, MembersContract.Views view, final String groupId, final String groupName) {
         mDataSource = dataSource;
         mView = view;
         GROUP_ID = groupId;
@@ -56,13 +56,22 @@ public class MembersPresenter implements MembersListContract.Actions {
     }
 
     @Override
-    public void deleteStudent(final String studentKey) {
-        mDataSource.refuseFollowingGroup(studentKey, GROUP_ID, new DataService.Update() {
+    public void cancelInvitation(final String memberId) {
+        final boolean offlineStateAtRequestTime = mView.getOfflineState();
+        if (offlineStateAtRequestTime)
+            mView.onRemoveSuccess(memberId);
+        mDataSource.refuseFollowingGroup(memberId, GROUP_ID, new DataService.Update() {
             @Override
             public void onUpdateSuccess() {
-                mView.onDeleteSuccess(studentKey);
+                if (!offlineStateAtRequestTime)
+                    mView.onRemoveSuccess(memberId);
             }
         });
+    }
+
+    @Override
+    public void removeMember(final String memberId) {
+        cancelInvitation(memberId);
     }
 
     @Override

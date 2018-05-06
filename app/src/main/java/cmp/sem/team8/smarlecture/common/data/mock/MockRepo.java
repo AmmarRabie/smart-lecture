@@ -14,13 +14,12 @@ import cmp.sem.team8.smarlecture.common.data.model.GroupStatisticsModel;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
+import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
-import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
-import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 /**
  * Created by AmmarRabie on 24/04/2018.
@@ -33,6 +32,23 @@ public class MockRepo implements DataService {
     private ArrayList<UserModel> users;
     private ArrayList<SessionModel> sessions;
     private ArrayList<GroupModel> groups;
+
+    private MockRepo() {
+        users = new ArrayList<>();
+        sessions = new ArrayList<>();
+        groups = new ArrayList<>();
+        insertDummyUsers();
+        insertDummyGroups();
+        insertDummySessions();
+    }
+
+    public static MockRepo getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new MockRepo();
+        }
+        return INSTANCE;
+    }
+
     private void insertDummySessions() {
         sessions.add(new SessionModel(
                 "L4-1",
@@ -196,23 +212,6 @@ public class MockRepo implements DataService {
                 "15"
         ));
     }
-
-    private MockRepo() {
-        users = new ArrayList<>();
-        sessions = new ArrayList<>();
-        groups = new ArrayList<>();
-        insertDummyUsers();
-        insertDummyGroups();
-        insertDummySessions();
-    }
-
-    public static MockRepo getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new MockRepo();
-        }
-        return INSTANCE;
-    }
-
 
     @Override
     public void getUser(final String userId, final Get<UserModel> callback) {
@@ -409,11 +408,6 @@ public class MockRepo implements DataService {
     }
 
     @Override
-    public void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {
-
-    }
-
-    @Override
     public void getSessionStatus(String sessionId, Get<SessionStatus> callback) {
     }
 
@@ -495,7 +489,7 @@ public class MockRepo implements DataService {
     }
 
     @Override
-    public void insertObjective(String sessionID, String addedObjectiveDescription,boolean isOffline, Insert<ObjectiveModel> callback) {
+    public void insertObjective(String sessionID, String addedObjectiveDescription, boolean isOffline, Insert<ObjectiveModel> callback) {
     }
 
     @Override
@@ -503,7 +497,7 @@ public class MockRepo implements DataService {
     }
 
     @Override
-    public void editObjective(String objectiveID, String sessionID,String objectiveDescription,boolean isOffline,Update callback) {
+    public void editObjective(String objectiveID, String sessionID, String objectiveDescription, boolean isOffline, Update callback) {
 
     }
 
@@ -518,12 +512,12 @@ public class MockRepo implements DataService {
     }
 
     @Override
-    public void addSession(String groupId,String sessionId,String sessionName,Insert<Void> callback) {
+    public void addSession(String groupId, String sessionId, String sessionName, Insert<Void> callback) {
 
     }
 
     @Override
-    public void editSession(String sessionId, String sessionName,boolean isOffline, Update callback) {
+    public void editSession(String sessionId, String sessionName, boolean isOffline, Update callback) {
 
     }
 
@@ -533,12 +527,12 @@ public class MockRepo implements DataService {
     }
 
     @Override
-    public void deleteGroupById(String groupId, boolean isOffline,Delete callback) {
+    public void deleteGroupById(String groupId, boolean isOffline, Delete callback) {
 
     }
 
     @Override
-    public void addGroup(String userId, String groupName,boolean isOffline, Insert<String> callback) {
+    public void addGroup(String userId, String groupName, boolean isOffline, Insert<String> callback) {
 
     }
 
@@ -583,26 +577,26 @@ public class MockRepo implements DataService {
         UserModel randUser = users.get(0);
         FileModel.GroupMember tempMember = new FileModel.GroupMember(randUser.getName(), randUser.getEmail(), randUser.getId());
         ArrayList<FileModel.SessionMember> inSessions = new ArrayList<>();
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), true, dummyNotes.subList(0,1)));
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), false, dummyNotes.subList(1,2)));
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), true, dummyNotes.subList(1,1)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), true, dummyNotes.subList(0, 1)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), false, dummyNotes.subList(1, 2)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), true, dummyNotes.subList(1, 1)));
         tempMember.setInSessions(inSessions);
         members.add(tempMember);
 
         randUser = users.get(1);
         tempMember = new FileModel.GroupMember(randUser.getName(), randUser.getEmail(), randUser.getId());
         inSessions = new ArrayList<>();
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), false, dummyNotes.subList(0,1)));
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), true, dummyNotes.subList(1,2)));
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), false, dummyNotes.subList(1,1)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), false, dummyNotes.subList(0, 1)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), true, dummyNotes.subList(1, 2)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), false, dummyNotes.subList(1, 1)));
         tempMember.setInSessions(inSessions);
         members.add(tempMember);
 
         randUser = users.get(2);
         tempMember = new FileModel.GroupMember(randUser.getName(), randUser.getEmail(), randUser.getId());
         inSessions = new ArrayList<>();
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), true, dummyNotes.subList(3,3)));
-        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), false, dummyNotes.subList(2,3)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(0).getId(), true, dummyNotes.subList(3, 3)));
+        inSessions.add(new FileModel.SessionMember(groupSessions.get(1).getId(), false, dummyNotes.subList(2, 3)));
         inSessions.add(new FileModel.SessionMember(groupSessions.get(2).getId(), true, dummyNotes));
         tempMember.setInSessions(inSessions);
         members.add(tempMember);
@@ -643,6 +637,11 @@ public class MockRepo implements DataService {
 
     @Override
     public void addQuestionToSession(String sessionId, String askerId, String text, Insert<QuestionModel> callback) {
+
+    }
+
+    @Override
+    public void deleteGroupMember(String groupId, String memberId, Delete callback) {
 
     }
 }
