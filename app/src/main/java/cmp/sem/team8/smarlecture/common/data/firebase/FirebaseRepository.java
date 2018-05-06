@@ -17,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -477,8 +478,23 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                                 SessionForUserModel sessionForUserModel = Serializer
                                                         .sessionForUser
                                                                 (userSnapshot, oneSessionSnapshot, oneGroupSnapshot);
-//                                                resultList.add(sessionForUserModel);
-                                                callback.onDataFetched(sessionForUserModel);
+                                                setProfileImage(sessionForUserModel);
+                                            }
+
+                                            private void setProfileImage(final SessionForUserModel sessionForUserModel) {
+                                                getProfileImageRef(sessionForUserModel.getOwner().getId()).getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                    @Override
+                                                    public void onSuccess(byte[] bytes) {
+                                                        sessionForUserModel.getOwner().setProfileImage(bytes) ;
+                                                        callback.onDataFetched(sessionForUserModel);
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        e.printStackTrace();
+                                                        callback.onDataFetched(sessionForUserModel);
+                                                    }
+                                                });
                                             }
 
                                             @Override
@@ -660,35 +676,29 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         DatabaseReference mSessionRef = mRef.child(FirebaseContract.SessionEntry.KEY_THIS).child(sessionID);
         mSessionRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
+            public void onDataChange(final DataSnapshot sessionSnapshot) {
+                if (!sessionSnapshot.exists()) {
                     callback.onDataNotAvailable();
                     return;
                 }
-                final String sessionName = dataSnapshot.child(FirebaseContract.SessionEntry.KEY_FOR_SESSION_NAME_).getValue(String.class);
                 DatabaseReference mGroupRef = mRef.child(GroupEntry.KEY_THIS).child(groupID);
                 mGroupRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (!dataSnapshot.exists()) {
+                    public void onDataChange(final DataSnapshot groupSnapshot) {
+                        if (!groupSnapshot.exists()) {
                             callback.onDataNotAvailable();
                             return;
                         }
-                        final String groupName = dataSnapshot.child(GroupEntry.KEY_NAME).getValue(String.class);
-                        final String ownerID = dataSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
+                        final String ownerID = groupSnapshot.child(GroupEntry.KEY_OWNER_ID).getValue(String.class);
                         DatabaseReference mUserRef = mRef.child(UserEntry.KEY_THIS).child(ownerID);
                         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (!dataSnapshot.exists()) {
+                            public void onDataChange(DataSnapshot ownerSnapshot) {
+                                if (!ownerSnapshot.exists()) {
                                     callback.onDataNotAvailable();
                                     return;
                                 }
-                                String OwnerName = dataSnapshot.child(UserEntry.KEY_NAME).getValue(String.class);
-                                SessionForUserModel sessionInfo = new SessionForUserModel(sessionID, SessionStatus.OPEN, AttendanceStatus.CLOSED, sessionName, groupID, groupName, ownerID, OwnerName);
-                                callback.onDataFetched(sessionInfo);
-
-
+                                callback.onDataFetched(Serializer.sessionForUser(ownerSnapshot, sessionSnapshot, groupSnapshot));
                             }
 
                             @Override
