@@ -20,6 +20,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -656,12 +657,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
-
-    @Override
-    public void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback) {
-
-    }
-
 
     @Override
     public void getSessionStatus(String sessionId, final Get<SessionStatus> callback) {
@@ -1568,5 +1563,12 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onDataInserted(new QuestionModel(questionRef.getKey(), owner, text));
             }
         });
+    }
+
+    @Override
+    public void deleteGroupMember(String groupId, String memberId, Delete callback) {
+        getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).child(memberId).removeValue();
+        getUserRef(memberId).child(UserEntry.KEY_INVITATIONS).child(groupId).removeValue();
+        callback.onDeleted();
     }
 }

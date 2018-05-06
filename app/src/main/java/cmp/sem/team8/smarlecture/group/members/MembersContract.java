@@ -12,7 +12,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * Created by Loai Ali on 3/16/2018.
  */
 
-public interface MembersListContract {
+public interface MembersContract {
 
     interface Views extends IBaseView<Actions> {
         /**
@@ -28,8 +28,7 @@ public interface MembersListContract {
          *
          * @param UID the id of the student
          */
-
-        void onDeleteSuccess(String UID);
+        void onRemoveSuccess(String UID);
 
         /**
          * called on successful addition of a student to the current group
@@ -76,10 +75,12 @@ public interface MembersListContract {
          * on successfull deletion the onDelteSuccess is called
          * on unSunccessfull deletion the onErrorMessage is valed
          *
-         * @param name the name of the student to be deleted
+         * @param memberId the name of the student to be deleted
          */
 
-        void deleteStudent(String name);
+        void cancelInvitation(String memberId);
+
+        void removeMember(String memberId);
 
         void end();
 

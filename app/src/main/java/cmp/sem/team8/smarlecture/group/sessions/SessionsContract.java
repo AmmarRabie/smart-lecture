@@ -71,7 +71,7 @@ public interface SessionsContract {
 
         /**
          * @param sessionID the id of the session
-         *                  on successful deletion the onDeleteSuccess method is called
+         *                  on successful deletion the onRemoveSuccess method is called
          *                  on unSuccessful deletion the onErrorMessage method is called
          */
 

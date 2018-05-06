@@ -131,8 +131,6 @@ public interface DataService {
 
     void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
-    void getUsersListOfGroupTemp(String groupId, Get<ArrayList<UserAttendanceModel>> callback);
-
     void getSessionStatus(String sessionId, Get<SessionStatus> callback);
 
     void setSessionStatus(String sessionId, SessionStatus status, Insert<Void> callback);
@@ -181,42 +179,12 @@ public interface DataService {
 
     // gets Question for a session
     Listen ListenSessionQuestions(String sessionID, Listen<QuestionModel> callback);
+
     void addQuestionToSession(String sessionId, String askerId, String text, Insert<QuestionModel> callback);
 
-/*    //
-    void getGroupById(String groupId, Get<GroupModel> callback);
+    void deleteGroupMember(String groupId, String memberId, Delete callback);
 
 
-
-
-    void updateGroup(GroupModel updatingValues, Update callback);
-
-    void updateGroupById(String groupId, String newGroupName, Update callback);
-
-
-    //
-    void deleteNamesList(String groupId, Delete callback); // not used
-
-    void deleteNameOfNamesList(String groupId, String nameId, Delete callback);
-
-    void updateNameOfNamesList(String groupId, String nameId, String newName, Update callback);
-
-    void insertNameInNamesList(String groupId, String userId, Insert<String> callback);
-
-
-
-
-    void getAttendanceStatus(String sessionId, Get<AttendanceStatus> callback);
-
-
-    //
-    void updateSession(SessionModel sessionModel, Update callback);
-
-    void updateSessionStatus(String sessionId, SessionStatus status, Update callback);
-
-    void updateAttendanceStatus(String sessionId, AttendanceStatus status, Update callback);
-
-    void updateSessionSecret(String sessionId, String secret, Update callback);*/
 
     /**
      * @param listener
