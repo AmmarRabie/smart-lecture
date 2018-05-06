@@ -78,8 +78,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
          * @param view     the view clicked
          * @param position its position in the list
          */
-        void onItemClick(View view, int position,String sessionId,String groupId);
-
+        void onItemClick(View view, int position, String sessionId, String groupId);
 
 
     }
@@ -93,7 +92,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
         private TextView sessionStatusView;
         private TextView attendanceStatusView;
         private ImageView profileImageView;
-      
+
         SessionViewHolder(View itemView) {
             super(itemView);
             sessionNameView = itemView.findViewById(R.id.sessionsForUserItem_SName);
@@ -102,7 +101,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
             sessionStatusView = itemView.findViewById(R.id.sessionsForUserItem_SStatus);
             attendanceStatusView = itemView.findViewById(R.id.sessionsForUserItem_AStatus);
             profileImageView = itemView.findViewById(R.id.sessionsForUserItem_profileImage);
-            this.itemView=itemView;
+            this.itemView = itemView;
         }
 
         void bind(final int position) {
@@ -121,41 +120,18 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
                 imgBitmap = Bitmap.createScaledBitmap(imgBitmap, 50, 50, true);
                 profileImageView.setImageBitmap(imgBitmap);
             }
-            
+
             if (mItemClickListener == null)
                 return;
 
-            if (!sessionNameView.hasOnClickListeners())
-                sessionNameView.setOnClickListener(new View.OnClickListener() {
+            if (!itemView.hasOnClickListeners()) {
+                itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onSessionClicked(view, position, mSessionsList.get(position).getId());
+                    public void onClick(View v) {
+                        mItemClickListener.onItemClick(v, position, mSessionsList.get(position).getId(), mSessionsList.get(position).getForGroup());
                     }
                 });
-
-            if (!groupNameView.hasOnClickListeners())
-                groupNameView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onGroupClicked(view, position, mSessionsList.get(position).getForGroup());
-                    }
-                });
-
-            if (!userNameView.hasOnClickListeners())
-                userNameView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mItemClickListener.onUserClicked(view, position, mSessionsList.get(position).getOwner().getId());
-                    }
-                });
-          
-        if(!itemView.hasOnClickListeners()){
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemClickListener.onItemClick(v,position,mSessionsList.get(position).getId(),mSessionsList.get(position).getForGroupId());
-                }
-            });
+            }
         }
     }
 }
