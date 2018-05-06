@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/groupContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="12dp"
+    android:background="#eceff1"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/groupMemberItem_profileImage"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="8dp"
+        android:src="@mipmap/user_item" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="10"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/groupMemberItem_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textStyle="bold"
+            tools:text="Ammar Alsayed" />
+
+        <TextView
+            android:id="@+id/groupMemberItem_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceSmall"
+            tools:text="ammaralsayed55@gmail.com" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/groupMemberItem_actionParent"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingEnd="8dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/groupMemberItem_actionImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:tint="@color/blue"
+            android:src="@drawable/ic_cross" />
+
+        <TextView
+            android:id="@+id/groupMemberItem_actionText"
+            android:layout_width="wrap_content"
+            android:textColor="@color/blue"
+            android:text="@string/invited"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</LinearLayout>

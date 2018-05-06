@@ -11,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.widget.ImageView;
 
 import java.util.Random;
 
@@ -31,6 +32,14 @@ public class ProfileImageUtil {
         Bitmap original = BitmapFactory.decodeResource(context.getResources(), R.drawable.kaleidoscope_source);
         Bitmap bitmap = ProfileImageUtil.createProfileImage(original, foregroundColor, backgroundColor);
         return Bitmap.createScaledBitmap(bitmap, width, height, true);
+    }
+
+    public static void setProfileImage(byte[] image, ImageView imageView, int dstSquareLength){
+        if (image != null) {
+            Bitmap imgBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            imgBitmap = Bitmap.createScaledBitmap(imgBitmap, dstSquareLength, dstSquareLength, true);
+            imageView.setImageBitmap(imgBitmap);
+        }
     }
 
     /**

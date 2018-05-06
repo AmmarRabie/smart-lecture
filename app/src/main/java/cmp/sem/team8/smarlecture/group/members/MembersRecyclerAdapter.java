@@ -1,6 +1,7 @@
 package cmp.sem.team8.smarlecture.group.members;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.model.InvitedUserModel;
+import cmp.sem.team8.smarlecture.common.util.ProfileImageUtil;
 
 /**
  * Created by Loai Ali on 3/17/2018.
@@ -23,7 +25,7 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
     private final static int VIEW_TYPE_CELL = 0;
     private final static int VIEW_TYPE_FOOTER = 1;
     private onItemClickListener mItemClickListener = null;
-    private ArrayList<InvitedUserModel> mNamesList;
+    private ArrayList<InvitedUserModel> mMembersList;
     private Context mContext;
 
     public MembersRecyclerAdapter(Context context, ArrayList<InvitedUserModel> nameList,
@@ -35,7 +37,7 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
 
     public MembersRecyclerAdapter(Context context, ArrayList<InvitedUserModel> namesList) {
         this.mContext = context;
-        this.mNamesList = namesList;
+        this.mMembersList = namesList;
     }
 
     public void setOnItemClickListener(onItemClickListener onItemClickListener) {
@@ -46,7 +48,7 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
     public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_CELL) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_group, parent, false);
+                    .inflate(R.layout.item_group_member, parent, false);
             return new GroupViewHolder(view, VIEW_TYPE_CELL);
 
         } else if (viewType == VIEW_TYPE_FOOTER) {
@@ -59,7 +61,7 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
 
     @Override
     public void onBindViewHolder(GroupViewHolder holder, int position) {
-        if (position == mNamesList.size()) {
+        if (position == mMembersList.size()) {
             holder.bindLastView(position);
             return;
         }
@@ -68,27 +70,30 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
 
     @Override
     public int getItemCount() {
-        return mNamesList.size() + 1;
+        return mMembersList.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return (position == mNamesList.size()) ? VIEW_TYPE_FOOTER : VIEW_TYPE_CELL;
+        return (position == mMembersList.size()) ? VIEW_TYPE_FOOTER : VIEW_TYPE_CELL;
     }
 
     interface onItemClickListener {
-        void onEditItemClick(View v, int position);
-
-        void onDeleteItemClick(View v, int position);
-
         void onSaveItemClick(View v, String name, int position);
+
+        void onCancelInvitationClick(View view, String userId, int position);
+
+        void onRemoveMemberClick(View view, String userId, int position);
     }
 
     class GroupViewHolder extends RecyclerView.ViewHolder {
 
         private TextView nameTextView;
-        private View deleteImageView;
-        private View editImageView;
+        private TextView emailView;
+        private ImageView profileImageView;
+        private View actionParentView;
+        private TextView actionTextView;
+        private ImageView actionImageView;
 
         private EditText newNameView;
         private ImageView saveImageView;
@@ -96,9 +101,12 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
         GroupViewHolder(View itemView, int type) {
             super(itemView);
             if (type == VIEW_TYPE_CELL) {
-                nameTextView = itemView.findViewById(R.id.group_studentName);
-                deleteImageView = itemView.findViewById(R.id.group_deletename);
-                editImageView = itemView.findViewById(R.id.group_editname);
+                nameTextView = itemView.findViewById(R.id.groupMemberItem_name);
+                emailView = itemView.findViewById(R.id.groupMemberItem_email);
+                profileImageView = itemView.findViewById(R.id.groupMemberItem_profileImage);
+                actionParentView = itemView.findViewById(R.id.groupMemberItem_actionParent);
+                actionTextView = itemView.findViewById(R.id.groupMemberItem_actionText);
+                actionImageView = itemView.findViewById(R.id.groupMemberItem_actionImage);
                 return;
             }
             newNameView = itemView.findViewById(R.id.groupNewName_name);
@@ -106,27 +114,41 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
         }
 
         void bind(final int position) {
+            final InvitedUserModel currMember = mMembersList.get(position);
 
-            InvitedUserModel currName = mNamesList.get(position);
+            nameTextView.setText(currMember.getName());
+            emailView.setText(currMember.getEmail());
+            ProfileImageUtil.setProfileImage(currMember.getProfileImage(), profileImageView, 70);
 
-            nameTextView.setText(currName.getUser().getName());
-
-            if (mItemClickListener == null)
-                return;
-
-            editImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemClickListener.onEditItemClick(v, position);
-                }
-            });
-            deleteImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemClickListener.onDeleteItemClick(v, position);
-                }
-            });
-
+            if (currMember.isAccept()) {
+                // put the view of accepted member
+                actionImageView.setImageResource(R.drawable.ic_done);
+                actionImageView.setColorFilter(ContextCompat.getColor(mContext, R.color.blue), android.graphics.PorterDuff.Mode.SRC_IN);
+                actionTextView.setText(R.string.member);
+                actionTextView.setTextColor(ContextCompat.getColor(mContext, R.color.blue));
+                if (mItemClickListener == null)
+                    return;
+                actionParentView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mItemClickListener.onRemoveMemberClick(view, currMember.getId(), position);
+                    }
+                });
+            } else {
+                // set the view of invited member use
+                actionImageView.setImageResource(R.drawable.ic_cross);
+                actionImageView.setColorFilter(ContextCompat.getColor(mContext, android.R.color.holo_red_dark), android.graphics.PorterDuff.Mode.SRC_IN);
+                actionTextView.setText(R.string.invited);
+                actionTextView.setTextColor(ContextCompat.getColor(mContext, android.R.color.holo_red_dark));
+                if (mItemClickListener == null)
+                    return;
+                actionParentView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mItemClickListener.onCancelInvitationClick(view, currMember.getId(), position);
+                    }
+                });
+            }
         }
 
         void bindLastView(final int position) {

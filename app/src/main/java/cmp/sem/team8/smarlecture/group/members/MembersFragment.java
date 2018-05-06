@@ -106,7 +106,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onDeleteSuccess(String UID) {
         int position = 0;
-        while (!(UID.equals(mNamesList.get(position).getUser().getId()))) {
+        while (!(UID.equals(mNamesList.get(position).getId()))) {
             position++;
         }
         mNamesList.remove(position);
@@ -141,14 +141,13 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void onEditItemClick(View v, int position) {
+    public void onCancelInvitationClick(View view, String userId, int position) {
 
     }
 
     @Override
-    public void onDeleteItemClick(View v, int position) {
-        String key = mNamesList.get(position).getUser().getId();
-        mPresenter.deleteStudent(key);
+    public void onRemoveMemberClick(View view, String userId, int position) {
+
     }
 
     @Override

@@ -17,11 +17,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -401,8 +399,19 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         getUserRef(userSnapshot.getKey()).child(UserEntry.KEY_INVITATIONS)
                                 .child(groupId)
                                 .setValue(false);  // false mean not accepted (following) yet
-
-                        callback.onDataInserted(Serializer.user(userSnapshot));
+                        final UserModel user = Serializer.user(userSnapshot);
+                        getProfileImageRef(user.getId()).getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                            @Override
+                            public void onSuccess(byte[] bytes) {
+                                user.setProfileImage(bytes);
+                                callback.onDataInserted(user);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                callback.onDataInserted(user);
+                            }
+                        });
                     }
 
                     @Override
@@ -485,7 +494,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                                 getProfileImageRef(sessionForUserModel.getOwner().getId()).getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                                                     @Override
                                                     public void onSuccess(byte[] bytes) {
-                                                        sessionForUserModel.getOwner().setProfileImage(bytes) ;
+                                                        sessionForUserModel.getOwner().setProfileImage(bytes);
                                                         callback.onDataFetched(sessionForUserModel);
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {
@@ -614,10 +623,23 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot userSnapshot) {
-                            InvitedUserModel newInvitedUser = Serializer.invitedUser(oneGroupUserKey, userSnapshot);
-                            result.add(newInvitedUser);
-                            if (groupUsersKeysSnapshot.getChildrenCount() == result.size())
-                                callback.onDataFetched(result);
+                            final InvitedUserModel newInvitedUser = Serializer.invitedUser(oneGroupUserKey, userSnapshot);
+                            getProfileImageRef(newInvitedUser.getId()).getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    newInvitedUser.setProfileImage(bytes);
+                                    result.add(newInvitedUser);
+                                    if (groupUsersKeysSnapshot.getChildrenCount() == result.size())
+                                        callback.onDataFetched(result);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    result.add(newInvitedUser);
+                                    if (groupUsersKeysSnapshot.getChildrenCount() == result.size())
+                                        callback.onDataFetched(result);
+                                }
+                            });
                         }
 
                         @Override
@@ -992,7 +1014,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     }
                 }
         );
-        addNewListener(callback, listener,  namesListRef);
+        addNewListener(callback, listener, namesListRef);
         return callback;
     }
 
