@@ -418,6 +418,11 @@ public class MockRepo implements DataService {
     }
 
     @Override
+    public void setSessionStatus(String sessionId, SessionStatus status, Insert<Void> callback) {
+
+    }
+
+    @Override
     public void getJoinedSessionInfo(String sessionID, String groupID, Get<SessionForUserModel> callback) {
     }
 

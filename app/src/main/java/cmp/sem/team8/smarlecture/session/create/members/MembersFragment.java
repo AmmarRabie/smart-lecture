@@ -147,10 +147,17 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
     }
 
     @Override
-    public void hideBeginAttendanceButton() {
+    public void hideBeginAttendanceButton(boolean disableOnly) {
+        if (disableOnly)
+        {
+            startAttendanceView.setEnabled(false);
+            changeSecretView.setEnabled(false);
+            attendanceTimerParentView.setEnabled(false);
+            return;
+        }
         startAttendanceView.setVisibility(View.GONE);
         secretParentView.setVisibility(View.GONE);
-        attendanceTimerParentView.setVisibility(View.GONE);
+//        attendanceTimerParentView.setVisibility(View.GONE);
     }
 
     @Override
@@ -184,6 +191,12 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
     public void addNewMember(MemberModel newAttendee) {
         membersList.add(newAttendee);
         membersAdapter.notifyItemInserted(membersList.size());
+    }
+
+    @Override
+    public void clearMembersList() {
+        membersList.clear();
+        membersAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -237,4 +250,6 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
         if (memberNotesDialogView.isAdded())
             memberNotesDialogView.deleteNote(noteDeleted.getId());
     }
+
+
 }

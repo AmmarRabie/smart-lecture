@@ -20,6 +20,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -644,6 +645,13 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         });
     }
 
+    @Override
+    public void setSessionStatus(String sessionId, SessionStatus status, Insert<Void> callback) {
+        getSessionRef(sessionId).child(SessionEntry.KEY_SESSION_STATUS).setValue(status.toString());
+        if (callback != null)
+            callback.onDataInserted(null);
+    }
+
 
     @Override
     public void getJoinedSessionInfo(final String sessionID, final String groupID, final Get<SessionForUserModel> callback) {
@@ -974,8 +982,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     }
                 }
         );
-//        eventWithRef.setFirebaseListener(firebaseListener);
-//        listeners.add(eventWithRef);
+        addNewListener(callback, listener,  namesListRef);
         return callback;
     }
 

@@ -135,6 +135,8 @@ public interface DataService {
 
     void getSessionStatus(String sessionId, Get<SessionStatus> callback);
 
+    void setSessionStatus(String sessionId, SessionStatus status, Insert<Void> callback);
+
     void setAttendanceStatus(String sessionId, AttendanceStatus status, Update callback);
 
     void setSessionSecret(String sessionId, String secret, Update callback);
@@ -179,8 +181,8 @@ public interface DataService {
 
     // gets Question for a session
     Listen ListenSessionQuestions(String sessionID, Listen<QuestionModel> callback);
-
     void addQuestionToSession(String sessionId, String askerId, String text, Insert<QuestionModel> callback);
+
 /*    //
     void getGroupById(String groupId, Get<GroupModel> callback);
 

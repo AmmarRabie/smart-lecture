@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +27,14 @@ public class InfoFragment extends Fragment implements InfoContract.Views {
     private TextView status;
     private TextView startEndSession;
 
+    public static InfoFragment newInstance() {
+        return new InfoFragment();
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.frag_session_info_owner, container, false);
         id = root.findViewById(R.id.session_id);
-        mPresenter.startSession();
 
         endStartSessionButton = root.findViewById(R.id.frag_sessioninfo_startendsession);
         startEndSession = root.findViewById(R.id.sessionAction);
@@ -42,11 +44,10 @@ public class InfoFragment extends Fragment implements InfoContract.Views {
             public void onClick(View v) {
 
 
-                if (mPresenter.getSessionStatus().equals(DataService.SessionStatus.OPEN.toString()))
+                if (mPresenter.getSessionStatus().equals(DataService.SessionStatus.OPEN))
                     getActivity().onBackPressed();
                 else {
                     mPresenter.openSession();
-
                 }
             }
         });
@@ -107,12 +108,6 @@ public class InfoFragment extends Fragment implements InfoContract.Views {
     public void sendSessioIdToActivity(String Id) {
         getActivity().getIntent().putExtra("SessionId", Id);
     }
-
-
-    public static InfoFragment newInstance() {
-        return new InfoFragment();
-    }
-
 
     @Override
     public void onResume() {

@@ -161,10 +161,7 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
             }
         });
         if (mObjectiveRef == null)
-
             return;
-
-
     }
 
     @Override

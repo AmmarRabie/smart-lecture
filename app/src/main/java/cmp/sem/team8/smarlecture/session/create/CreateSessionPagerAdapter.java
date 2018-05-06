@@ -47,36 +47,29 @@ class CreateSessionPagerAdapter extends FragmentPagerAdapter {
                 infoFragment = infoFragment == null ?
                         InfoFragment.newInstance() : infoFragment;
                 if (infoPresenter == null)
-                    infoPresenter = new InfoPresenter(infoFragment, GROUP_ID, SESSION_ID);
+                    infoPresenter = new InfoPresenter(FirebaseRepository.getInstance(), infoFragment, GROUP_ID, SESSION_ID);
                 return infoFragment;
-
             case 1:
-
-                membersFragment = membersFragment == null ?
-                        MembersFragment.newInstance() : membersFragment;
-
-                if (membersPresenter == null)
-                    membersPresenter = new MembersPresenter(FirebaseRepository.getInstance(), membersFragment, SESSION_ID);
-                else membersPresenter.start();
-
+                if (membersFragment == null) {
+                    membersFragment = MembersFragment.newInstance();
+                    if (membersPresenter == null)
+                        membersPresenter = new MembersPresenter(FirebaseRepository.getInstance(), membersFragment, SESSION_ID);
+                    else
+                        membersPresenter.updateView(membersFragment);
+                }
                 return membersFragment;
             case 2:
-
                 if (objectivesFragment == null)
-
                     objectivesFragment = ObjectivesFragment.newInstance();
-
                 objectivesPresenter = new ObjectivesPresenter(objectivesFragment, SESSION_ID, FirebaseRepository.getInstance());
-
                 return objectivesFragment;
-
             case 3:
-                if (questionsFragment == null)
+                if (questionsFragment == null) {
                     questionsFragment = QuestionsFragment.newInstance();
-                questionsPresenter = new QuestionsPresenter(FirebaseRepository.getInstance(),
-                        FirebaseAuthService.getInstance(), questionsFragment, SESSION_ID, true);
+                    questionsPresenter = new QuestionsPresenter(FirebaseRepository.getInstance(),
+                            FirebaseAuthService.getInstance(), questionsFragment, SESSION_ID, true);
+                }
                 return questionsFragment;
-
             default:
                 return null;
         }

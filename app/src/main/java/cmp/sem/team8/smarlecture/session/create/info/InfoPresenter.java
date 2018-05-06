@@ -1,15 +1,8 @@
 package cmp.sem.team8.smarlecture.session.create.info;
 
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
 import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
@@ -21,120 +14,62 @@ import cmp.sem.team8.smarlecture.model.SessionModel;
 
 public class InfoPresenter implements InfoContract.Actions {
 
-    private static final int minId = 0;
-    private static final int maxId = 10000000;
     private final String GROUP_ID;
     InfoContract.Views mView;
-    private DatabaseReference mDatabase;
-    private String SessionId;
-    private SessionModel mSession;
+    private DataService dataService;
+    private String SESSION_ID;
+    private DataService.SessionStatus crrSessionStatus;
 
-    public InfoPresenter(InfoContract.Views view, String groupId, String sessionID) {
+    public InfoPresenter(DataService dataService, InfoContract.Views view, String groupId, String sessionID) {
         GROUP_ID = groupId;
+        SESSION_ID = sessionID;
+        this.dataService = dataService;
         mView = view;
         mView.setPresenter(this);
-        SessionId = sessionID;
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mSession = new SessionModel();
     }
 
 
     @Override
     public void start() {
         startSession();
-
-        //mDatabase = FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionId);
-
     }
 
-    private Integer generateUniqueId() {
-        Random rand = new Random(System.currentTimeMillis());
-        //get the range, casting to long to avoid overflow problems
-        long range = (long) maxId - (long) minId + 1;
-        // compute a fraction of the range, 0 <= frac < range
-        long fraction = (long) (range * rand.nextDouble());
-        Integer randomNumber = (int) (fraction + minId);
-
-        return randomNumber;
-    }
-
-    @Override
-    public void startSession() {
-
-
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionId);
-
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void startSession() {
+        dataService.getSessionById(SESSION_ID, new DataService.Get<cmp.sem.team8.smarlecture.common.data.model.SessionModel>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mSession.setmName(dataSnapshot.child(SessionEntry.KEY_FOR_SESSION_NAME_).getValue(String.class));
-                mSession.setmGroupID(dataSnapshot.child(SessionEntry.KEY_FOR_GROUP_ID).getValue(String.class));
-                mSession.setmAttendanceStatus(dataSnapshot.child(SessionEntry.KEY_ATTENDANCE_STATUS).getValue(String.class));
-                mSession.setmSessionID(SessionId);
-
-                HashMap<String, String> hashedList = (HashMap<String, String>) dataSnapshot.child(SessionEntry.KEY_NAMES_LIST.toString()).getValue();
-                if (hashedList != null) {
-                    ArrayList<String> students = new ArrayList<>(hashedList.values());
-                    mSession.setmStudentsList(students);
-                } else {
-                    mSession.setmStudentsList(new ArrayList<String>());
+            public void onDataFetched(cmp.sem.team8.smarlecture.common.data.model.SessionModel session) {
+                mView.showSessionId(SESSION_ID);
+                switch (session.getSessionStatus()) {
+                    case CLOSED:
+                        mView.closedSessionView();
+                        break;
+                    case NOT_ACTIVATED:
+                        mView.notActiveSessionView();
+                        break;
+                    case OPEN:
+                        mView.openSessionView();
+                        break;
                 }
-                // mSession.setmStudentsList(dataSnapshot.child(SessionEntry.KEY_NAMES_LIST).getValue(ArrayList.class));
-                mSession.setmSessionStatus(dataSnapshot.child(SessionEntry.KEY_SESSION_STATUS).getValue(String.class));
-                mView.showSessionId(SessionId);
-                mView.sendSessioIdToActivity(SessionId);
-
-
-                //session closed
-                if (mSession.getmSessionStatus().equals(DataService.SessionStatus.CLOSED.toString())) {
-                    mView.closedSessionView();
-
-                }
-
-                //session open
-                else if (mSession.getmSessionStatus().equals(DataService.SessionStatus.OPEN.toString())) {
-                    mView.openSessionView();
-
-                }
-
-                //session not activated
-                else {
-                    mView.notActiveSessionView();
-
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
     }
 
     @Override
     public void openSession() {
-        mDatabase.child(SessionEntry.KEY_SESSION_STATUS).setValue(DataService.SessionStatus.OPEN.toString());
-        mSession.setmSessionStatus(DataService.SessionStatus.OPEN.toString());
+        dataService.setSessionStatus(SESSION_ID, DataService.SessionStatus.OPEN, null);
         mView.openSessionView();
     }
 
     @Override
-    public String getSessionStatus() {
-        return mSession.getmSessionStatus();
+    public DataService.SessionStatus getSessionStatus() {
+        return crrSessionStatus;
     }
 
 
     @Override
     public void endSession() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref = ref.child(SessionEntry.KEY_THIS).child(SessionId).child(SessionEntry.KEY_SESSION_STATUS);
-        ref.setValue(DataService.SessionStatus.CLOSED.toString());
-        ref = FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(SessionEntry.KEY_ATTENDANCE_STATUS);
-        ref.setValue(DataService.SessionStatus.CLOSED.toString());
-        mSession.setmSessionStatus(DataService.SessionStatus.CLOSED.toString());
+        dataService.setSessionStatus(SESSION_ID, DataService.SessionStatus.CLOSED, null);
+        dataService.setAttendanceStatus(SESSION_ID, DataService.AttendanceStatus.CLOSED, null);
         mView.closedSessionView();
     }
 

@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.session.create.info;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 
 /**
  * Created by ramym on 3/15/2018.
@@ -33,19 +34,19 @@ public class InfoContract {
      */
     interface Actions extends IBasePresenter {
 
-        //********** Start Session  ****************
+        // on start
         // steps
-        //1- generate unique id
-        //2- add new session to database
-        //3- send session id to CreateSessionActivity.
-        void startSession();
+        // 1- generate unique id
+        // 2- add new session to database
+        // 3- send session id to CreateSessionActivity.
 
         void openSession();
 
-        String getSessionStatus();
+        DataService.SessionStatus getSessionStatus();
 
-        //********** End Session ****************
-        //mark (session.flag=closed)in database;
+        /**
+         * mark (session.flag=closed)in database;
+         */
         void endSession();
 
     }
