@@ -46,5 +46,7 @@
     <string name="refresh">refresh</string>
     <string name="statistics">statistics</string>
     <string name="attendance_grade">attendance grade</string>
+    <string name="invited">Invited</string>
+    <string name="member">member</string>
 
 </resources>
