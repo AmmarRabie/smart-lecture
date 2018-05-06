@@ -44,5 +44,7 @@
     <string name="export_to_excel">Export to excel</string>
     <string name="verify_secret">Verify Secret</string>
     <string name="refresh">refresh</string>
+    <string name="statistics">statistics</string>
+    <string name="attendance_grade">attendance grade</string>
 
 </resources>

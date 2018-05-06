@@ -18,7 +18,7 @@ import cmp.sem.team8.smarlecture.common.data.model.*;
  * Created by Loai Ali on 4/15/2018.
  */
 
-public class SessionListRecyclerAdapter extends RecyclerView.Adapter<SessionListRecyclerAdapter.SessionViewHolder> {
+public class SessionsRecyclerAdapter extends RecyclerView.Adapter<SessionsRecyclerAdapter.SessionViewHolder> {
 
     private OnItemClickListener mItemClickListener = null;
 
@@ -26,31 +26,31 @@ public class SessionListRecyclerAdapter extends RecyclerView.Adapter<SessionList
 
     private Context mContext;
 
-    public SessionListRecyclerAdapter(Context context, ArrayList<SessionModel> sessionsList,
-                                      OnItemClickListener onItemClickListener) {
+    public SessionsRecyclerAdapter(Context context, ArrayList<SessionModel> sessionsList,
+                                   OnItemClickListener onItemClickListener) {
         this(context, sessionsList);
         mItemClickListener = onItemClickListener;
     }
 
-    public SessionListRecyclerAdapter(Context context, ArrayList<SessionModel> sessionsList) {
+    public SessionsRecyclerAdapter(Context context, ArrayList<SessionModel> sessionsList) {
         mContext = context;
         mSessionList = sessionsList;
     }
 
-    public void setOnItemClickListener(SessionListRecyclerAdapter.OnItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(SessionsRecyclerAdapter.OnItemClickListener onItemClickListener) {
         mItemClickListener = onItemClickListener;
     }
 
     @Override
-    public SessionListRecyclerAdapter.SessionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SessionsRecyclerAdapter.SessionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_session, parent, false);
 
-        return new SessionListRecyclerAdapter.SessionViewHolder(view);
+        return new SessionsRecyclerAdapter.SessionViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(SessionListRecyclerAdapter.SessionViewHolder holder, int position) {
+    public void onBindViewHolder(SessionsRecyclerAdapter.SessionViewHolder holder, int position) {
 
         holder.bind(position);
     }

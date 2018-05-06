@@ -32,15 +32,15 @@ import cmp.sem.team8.smarlecture.session.create.CreateSessionActivity;
  * Created by Loai Ali on 4/15/2018.
  */
 
-public class SessionListFragment extends android.support.v4.app.Fragment implements
-        SessionListContract.Views,
+public class SessionsFragment extends android.support.v4.app.Fragment implements
+        SessionsContract.Views,
         InternetConnectivityReceiver.OnInternetConnectionChangeListener,
-        SessionListRecyclerAdapter.OnItemClickListener {
+        SessionsRecyclerAdapter.OnItemClickListener {
 
 
     Animator spruceAnimator;
 
-    private SessionListContract.Actions mPresenter;
+    private SessionsContract.Actions mPresenter;
 
     private FloatingActionButton mAddSession;
 
@@ -48,7 +48,7 @@ public class SessionListFragment extends android.support.v4.app.Fragment impleme
 
     private View mOfflineView;
 
-    private SessionListRecyclerAdapter mSessionListRecyclerAdapter;
+    private SessionsRecyclerAdapter mSessionsRecyclerAdapter;
 
     private ArrayList<SessionModel> mSessionslist;
 
@@ -96,11 +96,11 @@ public class SessionListFragment extends android.support.v4.app.Fragment impleme
     private InternetConnectivityReceiver internetConnectivityReceiver;
     private boolean isInEmptyView = false;
 
-    public SessionListFragment() {
+    public SessionsFragment() {
     }
 
-    public static SessionListFragment newInstance() {
-        return new SessionListFragment();
+    public static SessionsFragment newInstance() {
+        return new SessionsFragment();
     }
 
 
@@ -123,10 +123,10 @@ public class SessionListFragment extends android.support.v4.app.Fragment impleme
 
         mSessionslist = new ArrayList<>();
 
-        mSessionListRecyclerAdapter = new SessionListRecyclerAdapter(getContext(),
+        mSessionsRecyclerAdapter = new SessionsRecyclerAdapter(getContext(),
                 mSessionslist, this);
 
-        mSessionListRecyclerView.setAdapter(mSessionListRecyclerAdapter);
+        mSessionListRecyclerView.setAdapter(mSessionsRecyclerAdapter);
         mSessionListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -146,7 +146,7 @@ public class SessionListFragment extends android.support.v4.app.Fragment impleme
     }
 
 
-    public void setPresenter(SessionListContract.Actions presenter) {
+    public void setPresenter(SessionsContract.Actions presenter) {
         mPresenter = presenter;
 
     }
@@ -162,7 +162,7 @@ public class SessionListFragment extends android.support.v4.app.Fragment impleme
 
         mSessionslist.clear();
         mSessionslist.addAll(sessionslist);
-        mSessionListRecyclerAdapter.notifyDataSetChanged();
+        mSessionsRecyclerAdapter.notifyDataSetChanged();
         mSessionListRecyclerView.setVisibility(View.VISIBLE);
 
     }
@@ -176,14 +176,14 @@ public class SessionListFragment extends android.support.v4.app.Fragment impleme
             position++;
         }
         mSessionslist.remove(position);
-        mSessionListRecyclerAdapter.notifyDataSetChanged();
+        mSessionsRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void OnAddSuccess(SessionModel addedSessionName) {
 
         mSessionslist.add(addedSessionName);
-        mSessionListRecyclerAdapter.notifyItemInserted(mSessionslist.size());
+        mSessionsRecyclerAdapter.notifyItemInserted(mSessionslist.size());
         mSessionListRecyclerView.setVisibility(View.VISIBLE);
 
     }
@@ -199,7 +199,7 @@ public class SessionListFragment extends android.support.v4.app.Fragment impleme
 
         mSessionslist.get(position).setName(sessionName);
 
-        mSessionListRecyclerAdapter.notifyItemChanged(position, null);
+        mSessionsRecyclerAdapter.notifyItemChanged(position, null);
 
 
     }

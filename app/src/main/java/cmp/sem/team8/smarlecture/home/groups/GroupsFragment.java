@@ -306,22 +306,6 @@ public class GroupsFragment extends Fragment implements
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.optionGroupList_joinSession:
-
-                joinSession();
-
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-
-    }
-
     void joinSession() {
         View view = (LayoutInflater.from(getContext())).inflate(R.layout.dialog, null);
 

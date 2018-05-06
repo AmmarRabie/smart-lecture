@@ -10,8 +10,8 @@ import cmp.sem.team8.smarlecture.common.data.model.*;
  * Created by Loai Ali on 4/15/2018.
  */
 
-public interface SessionListContract {
-    interface Views extends IBaseView<SessionListContract.Actions> {
+public interface SessionsContract {
+    interface Views extends IBaseView<SessionsContract.Actions> {
         /**
          * @param cause error to be shown
          */
