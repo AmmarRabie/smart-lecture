@@ -9,9 +9,7 @@ import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
  * Created by Loai Ali on 4/23/2018.
  */
 
-/**
- * @deprecated
- */
+
 public class InfoPresenter implements InfoContract.Actions {
 
     private static final String TAG = "InfoPresenter";
