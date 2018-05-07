@@ -425,9 +425,8 @@ public class MockRepo implements DataService {
     }
 
     @Override
-
-    public void listenForSessionStatus(String sessionID, Listen<String> callback) {
-
+    public Listen listenSessionStatus(String sessionID, Listen<SessionStatus> callback) {
+        return callback;
     }
 
     @Override

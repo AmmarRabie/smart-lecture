@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
-import cmp.sem.team8.smarlecture.common.data.model.*;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 
 
 /**
@@ -115,6 +115,17 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter<SessionsRecycl
             nameTextView.setText(currSession.getName());
             statusTextView.setText(currSession.getSessionStatus().toString());
 
+            switch (currSession.getSessionStatus()) {
+                case OPEN:
+                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_green));
+                    break;
+                case NOT_ACTIVATED:
+                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_yellow));
+                    break;
+                case CLOSED:
+                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_red));
+                    break;
+            }
             if (mItemClickListener == null)
                 return;
 

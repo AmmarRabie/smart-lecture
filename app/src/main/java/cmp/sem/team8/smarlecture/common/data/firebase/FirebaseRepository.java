@@ -754,27 +754,22 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void listenForSessionStatus(String sessionID, final Listen<String> callback) {
-
-
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS)
-                .child(sessionID).child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS);
-
-        mRef.addValueEventListener(new ValueEventListener() {
+    public Listen listenSessionStatus(final String sessionID, final Listen<SessionStatus> callback) {
+        DatabaseReference statusRef = getSessionRef(sessionID).child(SessionEntry.KEY_SESSION_STATUS);
+        ValueEventListener valueEventListener = statusRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) return;
-                String sessionStatus = dataSnapshot.getValue(String.class);
-                callback.onDataReceived(sessionStatus);
-                callback.increment();
+            public void onDataChange(DataSnapshot statusSnapshot) {
+                if (!statusSnapshot.exists()) return;
+                String sessionStatus = statusSnapshot.getValue(String.class);
+                callback.onDataReceived(SessionStatus.fromString(sessionStatus));
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
+        addNewListener(callback, valueEventListener, statusRef);
+        return callback;
     }
 
     @Override
