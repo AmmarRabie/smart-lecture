@@ -2,17 +2,10 @@ package cmp.sem.team8.smarlecture.group.sessions;
 
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.common.data.DataService;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 
 /**
  * Created by Loai Ali on 4/15/2018.
@@ -23,7 +16,6 @@ public class SessionsPresenter implements SessionsContract.Actions {
     private static final int minId = 0;
     private static final int maxId = 10000000;
     private final String GROUP_ID;
-    private DatabaseReference mGroupRef;
     private DataService mDataSource;
     private SessionsContract.Views mView;
 
@@ -32,7 +24,6 @@ public class SessionsPresenter implements SessionsContract.Actions {
         mView = view;
         mDataSource = dataSource;
         GROUP_ID = groupID;
-        mGroupRef = null;
         if (groupID == null) {
             Log.e(TAG, "MembersPresenter: group passed as null");
             return;
@@ -43,29 +34,7 @@ public class SessionsPresenter implements SessionsContract.Actions {
     @Override
     public void start() {
         mView.handleOfflineStates();
-
-
-        FirebaseDatabase.getInstance().getReference(SessionEntry.KEY_THIS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            mGroupRef = FirebaseDatabase.getInstance().
-                                    getReference(SessionEntry.KEY_THIS);
-                            addSessions();
-                        } else {
-                            Log.e(TAG, "onDataChange: the Gruop presenter is called with invalid group id");
-                            mView.showOnErrorMessage("group doesn't exist");
-                            mGroupRef = null;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        mGroupRef = null;
-                        mView.showOnErrorMessage(databaseError.getMessage());
-                    }
-                });
+        addSessions();
     }
 
 
@@ -104,7 +73,6 @@ public class SessionsPresenter implements SessionsContract.Actions {
 
     @Override
     public void editSession(final String sessionName, final String sessionID) {
-        if (mGroupRef == null) return;
         if (sessionID == null || sessionID.isEmpty()) {
             mView.showOnErrorMessage("Session doesn't have an ID ");
             return;
@@ -148,10 +116,6 @@ public class SessionsPresenter implements SessionsContract.Actions {
     }
 
     private void addSessions() {
-        if (mGroupRef == null) {
-            return;
-        }
-
         mDataSource.getGroupSessions(GROUP_ID, new DataService.Get<ArrayList<cmp.sem.team8.smarlecture.common.data.model.SessionModel>>() {
             @Override
             public void onDataFetched(ArrayList<cmp.sem.team8.smarlecture.common.data.model.SessionModel> data) {

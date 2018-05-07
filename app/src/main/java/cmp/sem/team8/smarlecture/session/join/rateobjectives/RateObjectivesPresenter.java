@@ -2,16 +2,9 @@ package cmp.sem.team8.smarlecture.session.join.rateobjectives;
 
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.DataService;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 /**
@@ -20,19 +13,13 @@ import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 public class RateObjectivesPresenter implements RateObjectivesContract.Actions {
     private static final String TAG = "RateObjectivesPresenter";
-
-    private RateObjectivesContract.Views mView;
-
     private final String SESSION_ID;
-
+    private RateObjectivesContract.Views mView;
     private DataService mDataSource;
-
-    private DatabaseReference mObjectiveRef;
 
     public RateObjectivesPresenter(RateObjectivesContract.Views mView, String SesionID, DataService dataSource) {
         this.mView = mView;
         SESSION_ID = SesionID;
-        mObjectiveRef = null;
         if (SESSION_ID == null) {
             Log.e(TAG, "RateObjectivesPresenter: Session passed as null");
 
@@ -46,40 +33,7 @@ public class RateObjectivesPresenter implements RateObjectivesContract.Actions {
     @Override
     public void start() {
         mView.handleOfflineStates();
-
-        FirebaseDatabase.getInstance().getReference(FirebaseContract.SessionEntry.KEY_THIS).child(SESSION_ID).addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.exists()) {
-
-                    mObjectiveRef = FirebaseDatabase.getInstance().getReference(FirebaseContract.SessionEntry.KEY_THIS).child(SESSION_ID).
-
-                            child(FirebaseContract.SessionEntry.KEY_FOR_OBJECTIVES_LIST);
-
-                    getObjectives();
-
-                } else {
-
-                    Log.e(TAG, "onDataChange: the RateObjective presenter is called with invalid Session id");
-
-                    mView.showOnErrorMessage("Session doesn't exist");
-
-                    mObjectiveRef = null;
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                mObjectiveRef = null;
-
-                mView.showOnErrorMessage(databaseError.getMessage());
-
-            }
-        });
-
+        getObjectives();
     }
 
     @Override

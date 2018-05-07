@@ -2,16 +2,9 @@ package cmp.sem.team8.smarlecture.session.create.objectives;
 
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.common.data.DataService;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract;
 import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 
 /**
@@ -21,14 +14,9 @@ import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
     private static final String TAG = "ObjectiveListPresenter";
-
-    private ObjectivesContract.Views mView;
-
-    private DataService mDataSource;
-
     private final String SESSION_ID;
-
-    private DatabaseReference mObjectiveRef;
+    private ObjectivesContract.Views mView;
+    private DataService mDataSource;
 
     public ObjectivesPresenter(ObjectivesContract.Views mView, String SESSION_ID, DataService dataSource) {
 
@@ -37,8 +25,6 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
         mDataSource = dataSource;
 
         this.SESSION_ID = SESSION_ID;
-
-        mObjectiveRef = null;
 
         if (SESSION_ID == null) {
 
@@ -52,47 +38,12 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
     }
 
     public void start() {
-
         mView.handleOfflineStates();
-
-        FirebaseDatabase.getInstance().getReference(FirebaseContract.SessionEntry.KEY_THIS).child(SESSION_ID).addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.exists()) {
-
-                    mObjectiveRef = FirebaseDatabase.getInstance().getReference(FirebaseContract.SessionEntry.KEY_THIS).child(SESSION_ID).
-
-                            child(FirebaseContract.SessionEntry.KEY_FOR_OBJECTIVES_LIST);
-
-                    getObjectives();
-
-                } else {
-
-                    Log.e(TAG, "onDataChange: the Objective presenter is called with invalid Session id");
-
-                    mView.showOnErrorMessage("Session doesn't exist");
-
-                    mObjectiveRef = null;
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                mObjectiveRef = null;
-
-                mView.showOnErrorMessage(databaseError.getMessage());
-
-            }
-        });
-
+        getObjectives();
     }
 
     @Override
     public void getObjectives() {
-
         mDataSource.getObjectives(SESSION_ID, new DataService.Get<ArrayList<ObjectiveModel>>() {
             @Override
             public void onDataFetched(ArrayList<ObjectiveModel> data) {
@@ -110,24 +61,12 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
                 mView.showOnErrorMessage("Wrong Session ID");
             }
         });
-
-
     }
 
     @Override
     public void addObjective(final String objectiveDescription) {
-
-        if (mObjectiveRef == null) {
-
-            Log.e(TAG, "addSObjective: called without finding the Session");
-
-            return;
-        }
-
         if (objectiveDescription == null || objectiveDescription.isEmpty()) {
-
-            mView.showOnErrorMessage("Objective desciption can't be empty");
-
+            mView.showOnErrorMessage("Objective description can't be empty");
             return;
         }
 
@@ -143,12 +82,10 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
             }
         });
 
-
     }
 
     @Override
     public void editObjective(final String objectiveID, final String objectiveDescription) {
-
         mDataSource.editObjective(objectiveID, SESSION_ID, objectiveDescription, mView.getOfflineState(), new DataService.Update() {
             @Override
             public void onUpdateSuccess() {
@@ -160,8 +97,6 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
                 mView.showOnErrorMessage(cause);
             }
         });
-        if (mObjectiveRef == null)
-            return;
     }
 
     @Override
@@ -177,7 +112,5 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
                 mView.showOnErrorMessage(cause);
             }
         });
-
-
     }
 }

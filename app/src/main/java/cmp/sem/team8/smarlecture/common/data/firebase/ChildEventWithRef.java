@@ -7,7 +7,7 @@ import com.google.firebase.database.DatabaseReference;
  * Created by AmmarRabie on 06/05/2018.
  */
 
-public class ChildEventWithRef extends EventWithRefBase {
+class ChildEventWithRef extends EventWithRefBase {
     ChildEventListener childEventListener;
 
     ChildEventWithRef(DatabaseReference reference) {

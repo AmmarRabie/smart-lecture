@@ -1,16 +1,12 @@
 package cmp.sem.team8.smarlecture.session.create.info;
 
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import cmp.sem.team8.smarlecture.common.data.DataService;
-import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
-import cmp.sem.team8.smarlecture.model.SessionModel;
 
 /**
  * Created by ramym on 3/15/2018.
  */
+
 /**
  * @deprecated
  */
