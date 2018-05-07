@@ -70,7 +70,7 @@ public class InfoFragment extends Fragment implements InfoContract.Views {
         if (!isAdded())
             return;
         Intent i = new Intent(getContext(), RateObjectivesActivity.class);
-        i.putExtra("session_id", sessionID);
+        i.putExtra(getString(R.string.IKey_sessionId), sessionID);
         startActivity(i);
         if (getActivity() != null)
             getActivity().finish();

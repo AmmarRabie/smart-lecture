@@ -157,6 +157,8 @@ public class QuestionsFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        if (mQuestionsList != null)
+            mQuestionsList.clear();
         mPresenter.start();
     }
 
