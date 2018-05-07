@@ -54,4 +54,8 @@
 
     <color name="timeUp8">#ffffff</color>
     <color name="timeBelow8">#000000</color>
+
+    <color name="trafficLight_green">#00e676</color>
+    <color name="trafficLight_red">#f44336</color>
+    <color name="trafficLight_yellow">#ffa726</color>
 </resources>

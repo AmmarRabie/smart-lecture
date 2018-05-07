@@ -4,6 +4,7 @@ package cmp.sem.team8.smarlecture.session.create.members;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 import cmp.sem.team8.smarlecture.common.view.MemberNotesDialog;
@@ -63,9 +66,17 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
         isStarted = true;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if (!(getActivity() instanceof MembersFragmentCallbacks)) {
+            throw new IllegalStateException("parent activity of MembersFragment should impl its callbacks");
+        }
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.frag_session_members, container, false);
+        setHasOptionsMenu(true);
 
         secretParentView = root.findViewById(R.id.membersFrag_secretParent);
         attendanceTimerParentView = root.findViewById(R.id.membersFrag_attendanceTimerParent);
@@ -133,6 +144,21 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
         mPresenter = presenter;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.optionSessionOwner_open:
+                mPresenter.setSessionStatus(DataService.SessionStatus.OPEN);
+                return true;
+            case R.id.optionSessionOwner_deactivate:
+                mPresenter.setSessionStatus(DataService.SessionStatus.NOT_ACTIVATED);
+                return true;
+            case R.id.optionSessionOwner_close:
+                mPresenter.setSessionStatus(DataService.SessionStatus.CLOSED);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void showErrorMessage(String cause) {
@@ -144,12 +170,14 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
         startAttendanceView.setVisibility(View.VISIBLE);
         secretParentView.setVisibility(View.VISIBLE);
         attendanceTimerParentView.setVisibility(View.VISIBLE);
+        startAttendanceView.setEnabled(true);
+        changeSecretView.setEnabled(true);
+        attendanceTimerParentView.setEnabled(true);
     }
 
     @Override
     public void hideBeginAttendanceButton(boolean disableOnly) {
-        if (disableOnly)
-        {
+        if (disableOnly) {
             startAttendanceView.setEnabled(false);
             changeSecretView.setEnabled(false);
             attendanceTimerParentView.setEnabled(false);
@@ -161,15 +189,32 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
     }
 
     @Override
+    public void showSessionStatus(DataService.SessionStatus status) {
+        switch (status) {
+            case OPEN:
+                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_green);
+                break;
+            case NOT_ACTIVATED:
+                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_yellow);
+                break;
+            case CLOSED:
+                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_red);
+                break;
+        }
+    }
+
+    @Override
     public void startAttendanceTimer(int minutes) {
 
         new CountDownTimer(minutes * 60 * 1000, 1000) {
-
             public void onTick(long millisUntilFinished) {
-                AttendanceTimerView.setText("" + millisUntilFinished / 1000);
+                if (isAdded())
+                    AttendanceTimerView.setText("" + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
+                if (!isAdded())
+                    return;
                 AttendanceTimerView.setText(getString(R.string.mes_done));
                 mPresenter.onAttendanceTimerEnd();
             }
@@ -249,6 +294,11 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
     public void onDeleteNoteSuccess(String memberId, NoteModel noteDeleted) {
         if (memberNotesDialogView.isAdded())
             memberNotesDialogView.deleteNote(noteDeleted.getId());
+    }
+
+
+    public interface MembersFragmentCallbacks {
+        void setColor(@ColorRes int color);
     }
 
 

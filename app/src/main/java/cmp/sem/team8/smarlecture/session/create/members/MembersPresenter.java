@@ -25,6 +25,10 @@ public class MembersPresenter implements MembersContract.Actions {
     private MembersContract.Views mView;
     private DataService mDataSource;
 
+    private boolean isAttendanceWork = false;
+    private DataService.SessionStatus currSessionStatus;
+    private DataService.AttendanceStatus currAttendanceStatus;
+
     public MembersPresenter(DataService dataSource, MembersContract.Views view, String sessionId) {
         mDataSource = dataSource;
         mView = view;
@@ -48,8 +52,10 @@ public class MembersPresenter implements MembersContract.Actions {
                 }
                 DataService.AttendanceStatus attendanceStatus = session.getAttendanceStatus();
                 DataService.SessionStatus sessionStatus = session.getSessionStatus();
+                currSessionStatus = sessionStatus;
+                currAttendanceStatus = attendanceStatus;
+                mView.showSessionStatus(sessionStatus);
                 if (sessionStatus.equals(DataService.SessionStatus.OPEN)) {
-                    mView.showBeginAttendanceButton();
                     mView.showSecret(secret);
                     switch (attendanceStatus) {
                         case CLOSED:
@@ -57,6 +63,7 @@ public class MembersPresenter implements MembersContract.Actions {
                             mView.showBeginAttendanceButton();
                             break;
                         case OPEN:
+                            isAttendanceWork = true;
                             mView.hideBeginAttendanceButton(false);
                             break;
                     }
@@ -64,6 +71,8 @@ public class MembersPresenter implements MembersContract.Actions {
                 }
                 // the session is closed, show only the members
                 mView.hideBeginAttendanceButton(true);
+                if (attendanceStatus.equals(DataService.AttendanceStatus.OPEN))
+                    isAttendanceWork = true;
             }
         });
         if (membersListener != null) {
@@ -98,7 +107,13 @@ public class MembersPresenter implements MembersContract.Actions {
 
     @Override
     public void BeginAttendance() {
+        if (isAttendanceWork) {
+            mView.showErrorMessage("Already in progress");
+            return;
+        }
         mView.startAttendanceTimer(3);
+        isAttendanceWork = true;
+        currAttendanceStatus = DataService.AttendanceStatus.OPEN;
 
         mDataSource.setAttendanceStatus(SESSION_ID, DataService.AttendanceStatus.OPEN, null);
         mDataSource.setSessionSecret(SESSION_ID, mView.getSecret(), null);
@@ -107,11 +122,14 @@ public class MembersPresenter implements MembersContract.Actions {
     @Override
     public void onAttendanceTimerEnd() {
         mDataSource.setAttendanceStatus(SESSION_ID, DataService.AttendanceStatus.CLOSED, null);
+        isAttendanceWork = false;
+        currAttendanceStatus = DataService.AttendanceStatus.CLOSED;
     }
 
     @Override
     public void onAttendanceMarkChanged(String memberId, boolean isAttend) {
         mDataSource.setMemberAttendance(SESSION_ID, memberId, isAttend, null);
+        // listening will auto update the list
     }
 
     @Override
@@ -204,11 +222,35 @@ public class MembersPresenter implements MembersContract.Actions {
     public void onDestroy() {
         mDataSource.forget(membersListener);
         membersListener = null;
+        if (isAttendanceWork) {
+            mDataSource.setAttendanceStatus(SESSION_ID, DataService.AttendanceStatus.CLOSED, null);
+            isAttendanceWork = false;
+        }
     }
 
     @Override
     public void updateView(MembersContract.Views views) {
         mView = views;
         mView.setPresenter(this);
+    }
+
+    @Override
+    public void setSessionStatus(final DataService.SessionStatus newStatus) {
+        if (isAttendanceWork && !newStatus.equals(DataService.SessionStatus.OPEN)) {
+            mView.showErrorMessage("Wait till attendance timer end");
+            return;
+        }
+        mDataSource.setSessionStatus(SESSION_ID, newStatus, new DataService.Insert<Void>() {
+            @Override
+            public void onDataInserted(Void feedback) {
+                mView.showSessionStatus(newStatus);
+                start();
+            }
+        });
+    }
+
+    @Override
+    public DataService.AttendanceStatus getAttendanceStatus() {
+        return currAttendanceStatus;
     }
 }

@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.session.create.members;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.MemberModel;
 import cmp.sem.team8.smarlecture.common.data.model.NoteModel;
 
@@ -29,8 +30,9 @@ public interface MembersContract {
         /**
          * called when the session status is open or closed
          */
-
         void hideBeginAttendanceButton(boolean disableOnly);
+
+        void showSessionStatus(DataService.SessionStatus status);
 
         /**
          * to show the timer of the attendance in the fragment;
@@ -85,6 +87,7 @@ public interface MembersContract {
      */
     interface Actions extends IBasePresenter {
 
+        DataService.AttendanceStatus getAttendanceStatus();
         /**
          * steps
          * 1- make attendance secrect
@@ -126,5 +129,7 @@ public interface MembersContract {
         void deleteNote(String memberIdShowing, String noteId);
 
         void updateView(Views views);
+
+        void setSessionStatus(DataService.SessionStatus newStatus);
     }
 }

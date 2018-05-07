@@ -1,55 +1,95 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Session ID: "
-            android:textAppearance="?android:textAppearanceLarge"/>
+            android:textAppearance="?android:textAppearanceLarge" />
+
         <TextView
+            android:id="@+id/session_id"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text=""
-            android:textAppearance="?android:textAppearanceMedium"
-            android:id="@+id/session_id"/>
+            android:textAppearance="?android:textAppearanceMedium" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Session Owner: "
-            android:textAppearance="?android:textAppearanceLarge"/>
+            android:textAppearance="?android:textAppearanceLarge" />
+
         <TextView
+            android:id="@+id/session_owner"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/session_owner"
-            android:textAppearance="?android:textAppearanceMedium"/>
+            android:textAppearance="?android:textAppearanceMedium" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Group Name: "
-            android:textAppearance="?android:textAppearanceLarge"/>
+            android:textAppearance="?android:textAppearanceLarge" />
+
         <TextView
+            android:id="@+id/group_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/group_name"
-            android:textAppearance="?android:textAppearanceMedium"/>
+            android:textAppearance="?android:textAppearanceMedium" />
     </LinearLayout>
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:background="#006699"
+        android:layout_height="wrap_content">
 
+    </android.support.v7.widget.Toolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        android:src="#00e676" />
+    android:src="#00e676"
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        android:src="#91827717" />
+    android:src="#ffea00"
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        android:src="#99b71c1c" />
+    android:src="#f44336"
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="kdsklfl" />
 
 
 </LinearLayout>

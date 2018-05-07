@@ -55,7 +55,7 @@ public class GroupPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
 
         if (position == 0)
-            return "Students";
+            return "Members";
         else {
             return "Sessions";
         }
