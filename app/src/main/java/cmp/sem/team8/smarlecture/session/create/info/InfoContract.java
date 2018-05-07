@@ -7,8 +7,10 @@ import cmp.sem.team8.smarlecture.common.data.DataService;
 /**
  * Created by ramym on 3/15/2018.
  */
-
-public class InfoContract {
+/**
+ * @deprecated
+ */
+class InfoContract {
     /**
      * views methods implemented by fragment
      */

@@ -2,9 +2,6 @@ package cmp.sem.team8.smarlecture.session.join.info;
 
 import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 
@@ -12,13 +9,15 @@ import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
  * Created by Loai Ali on 4/23/2018.
  */
 
+/**
+ * @deprecated
+ */
 public class InfoPresenter implements InfoContract.Actions {
 
     private static final String TAG = "InfoPresenter";
+    InfoContract.Views mView;
     private String sessionID;
     private String groupID;
-    InfoContract.Views mView;
-    private DatabaseReference mRef;
     private DataService mDataSource;
 
     public InfoPresenter(InfoContract.Views view, String groupID, String sessionID, DataService dataSource) {
@@ -26,7 +25,6 @@ public class InfoPresenter implements InfoContract.Actions {
         this.sessionID = sessionID;
         mView = view;
         mView.setPresenter(this);
-        mRef = FirebaseDatabase.getInstance().getReference();
         mDataSource = dataSource;
     }
 
@@ -52,16 +50,14 @@ public class InfoPresenter implements InfoContract.Actions {
                 mView.showErrorMessage(cause);
             }
         });
-        mDataSource.listenForSessionStatus(sessionID, new DataService.Listen<String>(1, 1) {
+        mDataSource.listenSessionStatus(sessionID, new DataService.Listen<DataService.SessionStatus>() {
             @Override
-            public void onDataReceived(String dataSnapshot) {
-                if (dataSnapshot.equals(DataService.SessionStatus.CLOSED.toString())) {
+            public void onDataReceived(DataService.SessionStatus sessionStatus) {
+                if (sessionStatus.equals(DataService.SessionStatus.CLOSED)) {
                     if (mView != null)
                         mView.closeSession(sessionID);
                 }
             }
         });
-
-
     }
 }

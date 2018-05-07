@@ -20,7 +20,6 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -36,7 +35,6 @@ import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
-import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
@@ -679,10 +677,21 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void setSessionStatus(String sessionId, SessionStatus status, Insert<Void> callback) {
-        getSessionRef(sessionId).child(SessionEntry.KEY_SESSION_STATUS).setValue(status.toString());
-        if (callback != null)
-            callback.onDataInserted(null);
+    public void setSessionStatus(String sessionId, SessionStatus status, final Insert<Void> callback) {
+        Task<Void> task = getSessionRef(sessionId).child(SessionEntry.KEY_SESSION_STATUS).setValue(status.toString());
+        if (callback == null)
+            return;
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                callback.onDataInserted(null);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                callback.onError(e.getMessage());
+            }
+        });
     }
 
 
@@ -745,27 +754,22 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void listenForSessionStatus(String sessionID, final Listen<String> callback) {
-
-
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(FirebaseContract.SessionEntry.KEY_THIS)
-                .child(sessionID).child(FirebaseContract.SessionEntry.KEY_SESSION_STATUS);
-
-        mRef.addValueEventListener(new ValueEventListener() {
+    public Listen listenSessionStatus(final String sessionID, final Listen<SessionStatus> callback) {
+        DatabaseReference statusRef = getSessionRef(sessionID).child(SessionEntry.KEY_SESSION_STATUS);
+        ValueEventListener valueEventListener = statusRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) return;
-                String sessionStatus = dataSnapshot.getValue(String.class);
-                callback.onDataReceived(sessionStatus);
-                callback.increment();
+            public void onDataChange(DataSnapshot statusSnapshot) {
+                if (!statusSnapshot.exists()) return;
+                String sessionStatus = statusSnapshot.getValue(String.class);
+                callback.onDataReceived(SessionStatus.fromString(sessionStatus));
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
+        addNewListener(callback, valueEventListener, statusRef);
+        return callback;
     }
 
     @Override
@@ -1127,6 +1131,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         mSessionRef.child(SessionEntry.KEY_FOR_SESSION_NAME_).setValue(sessionName).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                callback.onDataInserted(null);
                 if (task.isSuccessful())
                     //callback.onDataInserted(null);
                     groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1135,13 +1140,11 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                             if (!dataSnapshot.exists())
                                 return;
                             for (DataSnapshot member : dataSnapshot.getChildren()) {
-
                                 //if true then the user accepted the invitation request
                                 if (member.child("invite").getValue().equals(true)) {
                                     mSessionRef.child(SessionEntry.KEY_NAMES_LIST).child(member.getKey()).child(SessionEntry.KEY_ATTEND).setValue(false);
                                 }
                             }
-                            callback.onDataInserted(null);
                         }
 
                         @Override

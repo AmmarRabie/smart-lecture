@@ -2,19 +2,20 @@ package cmp.sem.team8.smarlecture.session.create;
 
 
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.DataService;
-import cmp.sem.team8.smarlecture.group.members.MembersFragment;
-import cmp.sem.team8.smarlecture.session.create.info.InfoPresenter;
-import cmp.sem.team8.smarlecture.session.create.objectives.ObjectivesFragment;
+import cmp.sem.team8.smarlecture.session.create.members.MembersFragment;
 
-public class CreateSessionActivity extends AppCompatActivity {
+public class CreateSessionActivity extends AppCompatActivity implements MembersFragment.MembersFragmentCallbacks {
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -47,7 +48,7 @@ public class CreateSessionActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 1) // members
+                if (position == 0) // members
                 {
                     pageAdapter.membersPresenter.start();
                 }
@@ -68,6 +69,17 @@ public class CreateSessionActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_session_owner, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+
     //********** onBackPressed  ****************
     // to close session session activity and return back to the previous activity.
     // steps
@@ -76,24 +88,31 @@ public class CreateSessionActivity extends AppCompatActivity {
     // 3-
     @Override
     public void onBackPressed() {
-        InfoPresenter infoPresenter = pageAdapter.infoPresenter;
-        if (infoPresenter == null || infoPresenter.getSessionStatus() == null) {
-            super.onBackPressed();
+        if (!(viewPager.getCurrentItem() == 0)) {
+            viewPager.setCurrentItem(0, true);
             return;
         }
-        if (infoPresenter.getSessionStatus().equals(DataService.SessionStatus.OPEN)) {
+        if (pageAdapter.membersPresenter.getAttendanceStatus().equals(DataService.AttendanceStatus.OPEN)){
             AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
             mAlertBuilder.setTitle("Confirmation");
             mAlertBuilder.setIcon(android.R.drawable.ic_dialog_alert);
-            mAlertBuilder.setMessage("The session will be ended. are you sure to continue");
-            mAlertBuilder.setPositiveButton("End Session", new DialogInterface.OnClickListener() {
+            mAlertBuilder.setMessage("Close Attendance and exit");
+            mAlertBuilder.setPositiveButton("close attendance", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    pageAdapter.infoPresenter.endSession();
+                    pageAdapter.membersPresenter.onDestroy();
                     CreateSessionActivity.super.onBackPressed();
                 }
             });
             mAlertBuilder.show();
         } else super.onBackPressed();
+    }
+
+    @Override
+    public void setColor(int color) {
+        tabLayout.setBackgroundColor(getResources().getColor(color));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(color)));
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 }

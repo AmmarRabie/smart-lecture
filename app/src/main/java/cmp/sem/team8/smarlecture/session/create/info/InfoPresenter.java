@@ -11,7 +11,9 @@ import cmp.sem.team8.smarlecture.model.SessionModel;
 /**
  * Created by ramym on 3/15/2018.
  */
-
+/**
+ * @deprecated
+ */
 public class InfoPresenter implements InfoContract.Actions {
 
     private final String GROUP_ID;

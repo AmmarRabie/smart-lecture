@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:textAppearanceLarge"
             android:textStyle="bold"
-            tools:text="Ammar Alsayed" />
+            tools:text="@tools:sample/full_names" />
 
         <TextView
             android:id="@+id/groupMemberItem_email"

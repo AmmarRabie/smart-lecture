@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import cmp.sem.team8.smarlecture.common.auth.firebase.FirebaseAuthService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
-import cmp.sem.team8.smarlecture.session.create.info.InfoFragment;
-import cmp.sem.team8.smarlecture.session.create.info.InfoPresenter;
 import cmp.sem.team8.smarlecture.session.create.members.MembersFragment;
 import cmp.sem.team8.smarlecture.session.create.members.MembersPresenter;
 import cmp.sem.team8.smarlecture.session.create.objectives.ObjectivesFragment;
@@ -24,8 +22,7 @@ class CreateSessionPagerAdapter extends FragmentPagerAdapter {
     private final int NUM_TABS;
     private final String GROUP_ID;
     private final String SESSION_ID;
-    InfoFragment infoFragment;
-    InfoPresenter infoPresenter;
+
     ObjectivesFragment objectivesFragment;
     ObjectivesPresenter objectivesPresenter;
     MembersFragment membersFragment;
@@ -44,12 +41,6 @@ class CreateSessionPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                infoFragment = infoFragment == null ?
-                        InfoFragment.newInstance() : infoFragment;
-                if (infoPresenter == null)
-                    infoPresenter = new InfoPresenter(FirebaseRepository.getInstance(), infoFragment, GROUP_ID, SESSION_ID);
-                return infoFragment;
-            case 1:
                 if (membersFragment == null) {
                     membersFragment = MembersFragment.newInstance();
                     if (membersPresenter == null)
@@ -58,12 +49,12 @@ class CreateSessionPagerAdapter extends FragmentPagerAdapter {
                         membersPresenter.updateView(membersFragment);
                 }
                 return membersFragment;
-            case 2:
+            case 1:
                 if (objectivesFragment == null)
                     objectivesFragment = ObjectivesFragment.newInstance();
                 objectivesPresenter = new ObjectivesPresenter(objectivesFragment, SESSION_ID, FirebaseRepository.getInstance());
                 return objectivesFragment;
-            case 3:
+            case 2:
                 if (questionsFragment == null) {
                     questionsFragment = QuestionsFragment.newInstance();
                     questionsPresenter = new QuestionsPresenter(FirebaseRepository.getInstance(),
@@ -79,12 +70,10 @@ class CreateSessionPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Info";
-            case 1:
                 return "Members";
-            case 2:
+            case 1:
                 return "Objectives";
-            case 3:
+            case 2:
                 return "Questions";
         }
         return "";
@@ -92,7 +81,7 @@ class CreateSessionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return NUM_TABS;
+        return 3;
     }
 
 }

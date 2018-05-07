@@ -45,5 +45,6 @@ public class JoinSessionActivity extends AppCompatActivity {
         Intent service = new Intent(this, AttendanceMonitorService.class);
         service.putExtra(getString(R.string.IKey_sessionId), SessionId);
         startService(service);
+//        service = new Intent(this, );
     }
 }

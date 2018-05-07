@@ -118,7 +118,7 @@ public interface DataService {
 
 
     //check for session status
-    void listenForSessionStatus(String sessionID, Listen<String> callback);
+    Listen listenSessionStatus(String sessionID, Listen<SessionStatus> callback);
 
 
     //gets the objectives for a session
