@@ -17,8 +17,8 @@ final class FirebaseContract {
         static final String KEY_OWNER_ID = "group_owner";
         static final String KEY_NAME = "name";
         static final String KEY_NAMES_LIST = "names_list";
-        static final String KEY_NAMES_LIST_invite = "invite";
-        static final String KEY_NAMES_LIST_grade = "grade";
+        static final String KEY_NAMES_LIST_IS_MEMBER = "invite";
+        static final String KEY_NAMES_LIST_GRADE = "grade";
         static final String KEY_SESSIONS = "sessions";
         static String[] keySet;
         static String[] requiredChildes;
@@ -27,7 +27,7 @@ final class FirebaseContract {
             keySet = new String[]{KEY_OWNER_ID,
                     KEY_NAME,
                     KEY_NAMES_LIST,
-                    KEY_SESSIONS,KEY_NAMES_LIST_grade,KEY_NAMES_LIST_invite};
+                    KEY_SESSIONS, KEY_NAMES_LIST_GRADE, KEY_NAMES_LIST_IS_MEMBER};
         }
 
         static {

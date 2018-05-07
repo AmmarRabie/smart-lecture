@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import cmp.sem.team8.smarlecture.common.data.DataService;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 
 /**
  * Created by Loai Ali on 4/15/2018.
@@ -116,9 +117,9 @@ public class SessionsPresenter implements SessionsContract.Actions {
     }
 
     private void addSessions() {
-        mDataSource.getGroupSessions(GROUP_ID, new DataService.Get<ArrayList<cmp.sem.team8.smarlecture.common.data.model.SessionModel>>() {
+        mDataSource.getGroupSessions(GROUP_ID, new DataService.Get<ArrayList<SessionModel>>() {
             @Override
-            public void onDataFetched(ArrayList<cmp.sem.team8.smarlecture.common.data.model.SessionModel> data) {
+            public void onDataFetched(ArrayList<SessionModel> data) {
                 mView.showSessionsList(data);
             }
 

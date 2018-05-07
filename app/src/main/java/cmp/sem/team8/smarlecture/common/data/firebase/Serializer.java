@@ -64,7 +64,7 @@ class Serializer {
     static InvitedUserModel invitedUser(DataSnapshot invitedUserRoot, DataSnapshot userRoot) {
         if (!checkRequiredChildes((String[]) null, invitedUserRoot)) return null;
         UserModel userModel = user(userRoot);
-        return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.child(GroupEntry.KEY_NAMES_LIST_invite).getValue()));
+        return new InvitedUserModel(userModel, ((boolean) invitedUserRoot.child(GroupEntry.KEY_NAMES_LIST_IS_MEMBER).getValue()));
     }
 
     static SessionForUserModel sessionForUser(DataSnapshot userRoot, DataSnapshot sessionRoot, DataSnapshot groupRoot) {

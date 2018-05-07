@@ -143,7 +143,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
         for (int i = 0; i < ids.size(); i++) {
             getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST).child(ids.get(i))
-                    .child(GroupEntry.KEY_NAMES_LIST_grade).setValue(grade.get(i));
+                    .child(GroupEntry.KEY_NAMES_LIST_GRADE).setValue(grade.get(i));
         }
 
         callback.onUpdateSuccess();
@@ -293,7 +293,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                             HashMap<String, Object> ob = (HashMap<String, Object>) ch.getValue();
                             //ob.clear();
                             String UserId = ch.getKey();
-                            long num = (Long) ob.get(GroupEntry.KEY_NAMES_LIST_grade);
+                            long num = (Long) ob.get(GroupEntry.KEY_NAMES_LIST_GRADE);
                             String attendaceGrade = Long.toString(num);
                             getUserRef(UserId).addListenerForSingleValueEvent(new UserValueEvent(attendaceGrade, users, dataSnapshot.getChildrenCount()));
                         }
@@ -389,8 +389,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
                         // insert the user into fetched group
                         HashMap<String, Object> value = new HashMap<>();
-                        value.put(GroupEntry.KEY_NAMES_LIST_invite, false);
-                        value.put(GroupEntry.KEY_NAMES_LIST_grade, 0);
+                        value.put(GroupEntry.KEY_NAMES_LIST_IS_MEMBER, false);
+                        value.put(GroupEntry.KEY_NAMES_LIST_GRADE, 0);
                         getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST)
                                 .child(userSnapshot.getKey()).setValue(value); // false mean not accepted yet
 
@@ -428,7 +428,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         userRequestedGroups
                 .child(groupId).setValue(true);
         getReference(GroupEntry.KEY_THIS).child(groupId).child(GroupEntry.KEY_NAMES_LIST)
-                .child(userId).setValue(true);
+                .child(userId).child(GroupEntry.KEY_NAMES_LIST_IS_MEMBER).setValue(true);
 
         // subscribe user to this group
         FirebaseMessaging.getInstance().subscribeToTopic(groupId);
@@ -1141,7 +1141,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                                 return;
                             for (DataSnapshot member : dataSnapshot.getChildren()) {
                                 //if true then the user accepted the invitation request
-                                if (member.child("invite").getValue().equals(true)) {
+                                if (member.child(GroupEntry.KEY_NAMES_LIST_IS_MEMBER).getValue().equals(true)) {
                                     mSessionRef.child(SessionEntry.KEY_NAMES_LIST).child(member.getKey()).child(SessionEntry.KEY_ATTEND).setValue(false);
                                 }
                             }
