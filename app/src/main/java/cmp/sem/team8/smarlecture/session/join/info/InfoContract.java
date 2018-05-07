@@ -7,9 +7,7 @@ import cmp.sem.team8.smarlecture.IBaseView;
  * Created by Loai Ali on 4/23/2018.
  */
 
-/**
- * @deprecated
- */
+
 public interface InfoContract {
     interface Views extends IBaseView<Actions> {
         /**

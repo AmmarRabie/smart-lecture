@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:contentDescription="Logo"
-        android:src="@drawable/logo_big"
+        android:src="@drawable/logo_big_burned"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
