@@ -32,6 +32,7 @@ dependencies {
     // Apache io for writing and reading excel files
     compile "org.apache.poi:poi:3.15"
 //    compile "org.apache.poi:poi-ooxml:3.15"
+    compile 'com.github.ome450901:SimpleRatingBar:1.4.1'
 
 //    implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'

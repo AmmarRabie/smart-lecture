@@ -9,20 +9,33 @@
     <TextView
         android:id="@+id/objectivedescription"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textStyle="bold"
-        tools:text="Objective 1" />
+        tools:text="HFAfjnsajfknfjkanjkfnjkafnjknafjknakjsfnkjsadfnjfsdajknasdkjfnkjsanfdkjndfskjndsdkjsfnkjasnfdkjndjdfdsakjfkdjfsankjnfsadkjnfsadkjnsdfkj" />
 
-    <android.support.v7.widget.AppCompatRatingBar
+    <com.willy.ratingbar.ScaleRatingBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/objectiverate"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_weight="1"
-        android:paddingRight="8dp" />
+        android:layout_gravity="center"
+        android:gravity="center"
+        app:srb_numStars="3"
+        app:srb_minimumStars="1"
+        app:srb_rating="2"
+        app:srb_starWidth="30dp"
+        app:srb_starHeight="30dp"
+        app:srb_starPadding="15dp"
+        app:srb_stepSize="0.5"
+        app:srb_isIndicator="false"
+        app:srb_clickable="true"
+        app:srb_scrollable="true"
+        app:srb_clearRatingEnabled="true">
+    </com.willy.ratingbar.ScaleRatingBar>
 
 
 </LinearLayout>

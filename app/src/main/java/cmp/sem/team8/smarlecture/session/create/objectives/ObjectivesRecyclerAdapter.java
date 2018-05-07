@@ -21,6 +21,7 @@ public class ObjectivesRecyclerAdapter extends RecyclerView.Adapter<ObjectivesRe
     private ArrayList<ObjectiveModel> mObjectivesList;
     private Context mContext;
 
+
     public ObjectivesRecyclerAdapter(Context context, ArrayList<ObjectiveModel> objectivesList,
                                      OnItemClickListener onEditClickListener) {
         this(context, objectivesList);

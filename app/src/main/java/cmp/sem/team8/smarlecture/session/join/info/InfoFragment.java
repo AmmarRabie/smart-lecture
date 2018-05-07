@@ -18,9 +18,7 @@ import android.widget.Toast;
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.session.join.rateobjectives.RateObjectivesActivity;
 
-/**
- * @deprecated
- */
+
 public class InfoFragment extends Fragment implements InfoContract.Views {
     private InfoContract.Actions mPresenter;
     private TextView mSessionID;
