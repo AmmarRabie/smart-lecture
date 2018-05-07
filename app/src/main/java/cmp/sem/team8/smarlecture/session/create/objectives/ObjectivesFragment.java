@@ -274,6 +274,20 @@ public class ObjectivesFragment extends android.support.v4.app.Fragment implemen
 
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(mObjectiveList.get(position).getmObjectiveDescription())
+                .setMessage("Average Rating: "+mObjectiveList.get(position).getmObjectivesAverageRating()+"\nNumber of Users Rated: "+mObjectiveList.get(position).getmNumberofUsersRatedThisObjective())
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(getContext(),"Thanks",Toast.LENGTH_SHORT);
+                        dialog.cancel();
+                    }
+                }).show();
+
+    }
+
 
     @Override
     public void onInternetConnectionLost() {
