@@ -32,6 +32,18 @@ public class InfoPresenter implements InfoContract.Actions {
             @Override
             public void onDataFetched(SessionForUserModel data) {
                 mView.showSessionInfo(sessionID, data.getOwner().getName(), data.getGroup().getName(), data.getName());
+                if(data.getSessionStatus()== DataService.SessionStatus.OPEN){
+                    mDataSource.listenSessionStatus(sessionID, new DataService.Listen<DataService.SessionStatus>() {
+                        @Override
+                        public void onDataReceived(DataService.SessionStatus sessionStatus) {
+                            if (sessionStatus.equals(DataService.SessionStatus.CLOSED)) {
+                                if (mView != null)
+                                    mView.closeSession(sessionID);
+                            }
+                        }
+                    });
+
+                }
             }
 
             @Override
@@ -48,14 +60,9 @@ public class InfoPresenter implements InfoContract.Actions {
                 mView.showErrorMessage(cause);
             }
         });
-        mDataSource.listenSessionStatus(sessionID, new DataService.Listen<DataService.SessionStatus>() {
-            @Override
-            public void onDataReceived(DataService.SessionStatus sessionStatus) {
-                if (sessionStatus.equals(DataService.SessionStatus.CLOSED)) {
-                    if (mView != null)
-                        mView.closeSession(sessionID);
-                }
-            }
-        });
+
+
+
+
     }
 }

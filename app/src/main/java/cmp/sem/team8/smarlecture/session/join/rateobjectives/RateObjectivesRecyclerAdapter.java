@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.willy.ratingbar.BaseRatingBar;
+import com.willy.ratingbar.ScaleRatingBar;
+
 import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.R;
@@ -80,13 +83,28 @@ public class RateObjectivesRecyclerAdapter extends RecyclerView.Adapter<RateObje
     class RateObjectiveHolder extends RecyclerView.ViewHolder
 
     {
-        private RatingBar mRateView;
+//        private RatingBar mRateView;
+        private ScaleRatingBar ratingBar = new ScaleRatingBar(mContext);
         private TextView mObjectiveDescription;
 
         RateObjectiveHolder(View itemView) {
             super(itemView);
-            mRateView = itemView.findViewById(R.id.objectiverate);
+//            mRateView = itemView.findViewById(R.id.objectiverate);
             mObjectiveDescription = itemView.findViewById(R.id.objectivedescription);
+            ratingBar = itemView.findViewById(R.id.objectiverate);
+
+            ratingBar.setNumStars(3);
+            ratingBar.setMinimumStars(0);
+            ratingBar.setRating(0);
+            ratingBar.setStarPadding(10);
+            ratingBar.setStepSize(0.5f);
+            ratingBar.setStarWidth(60);
+            ratingBar.setStarHeight(60);
+            ratingBar.setIsIndicator(false);
+            ratingBar.setClickable(true);
+            ratingBar.setScrollable(true);
+            ratingBar.setClearRatingEnabled(true);
+
         }
 
         void bind(final int position) {
@@ -95,14 +113,13 @@ public class RateObjectivesRecyclerAdapter extends RecyclerView.Adapter<RateObje
 
             if (mItemClickListener == null)
                 return;
-            mRateView.setNumStars(3);
-            mRateView.setRating(mUserRatings.get(position));
-            mRateView.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+//            mRateView.setNumStars(3);
+            ratingBar.setRating(mUserRatings.get(position));
+            ratingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
                 @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                public void onRatingChange(BaseRatingBar baseRatingBar, float rating) {
                     mItemClickListener.onRateItemClick(ratingBar, position, rating);
                     mUserRatings.set(position, rating);
-
                 }
             });
 

@@ -63,8 +63,8 @@ public class RateObjectivesFragment extends android.support.v4.app.Fragment
     private View.OnClickListener mCancelRatingListner = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(getContext(), GroupsActivity.class);
-            startActivity(i);
+           /* Intent i = new Intent(getContext(), GroupsActivity.class);
+            startActivity(i);*/
             //remove the activity from the backstack so after starting grouplist activity
             // if clicking on back button it won't get us back to this activity
             getActivity().finish();

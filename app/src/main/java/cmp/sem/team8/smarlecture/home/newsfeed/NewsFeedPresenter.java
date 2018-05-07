@@ -14,6 +14,7 @@ public class NewsFeedPresenter implements NewsFeedContract.Actions {
     private DataService mDataSource;
     private NewsFeedContract.Views mView;
 
+
     public NewsFeedPresenter(AuthService authService, DataService dataSource, NewsFeedContract.Views newsFeedFragment) {
         USER_ID = authService.getCurrentUser().getUserId();
 //        USER_ID = "CN8UDtwYkmSoiBGVU8clydIW9Ri1";
