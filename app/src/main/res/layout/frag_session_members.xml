@@ -8,7 +8,6 @@
 
 
     <Button
-        android:background = "@drawable/roundedbutton"
         android:id="@+id/membersFrag_startAttendance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
