@@ -17,6 +17,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 /**
  * Created by ramym on 5/1/2018.
  */
+
 public class GradesAdapter extends RecyclerView.Adapter<GradesAdapter.ViewHolder> {
     private ArrayList<UserGradeModel> mDataset;
 
@@ -28,28 +29,30 @@ public class GradesAdapter extends RecyclerView.Adapter<GradesAdapter.ViewHolder
         public TextView name;
         public TextView email;
         public TextView grade;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            name  =(TextView)itemView.findViewById(R.id.grade_item_name);
-            email =(TextView)itemView.findViewById(R.id.grade_item_email);
-            grade =(TextView)itemView.findViewById(R.id.grade_item_grade);
+            name = (TextView) itemView.findViewById(R.id.grade_item_name);
+            email = (TextView) itemView.findViewById(R.id.grade_item_email);
+            grade = (TextView) itemView.findViewById(R.id.grade_item_grade);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public GradesAdapter( ArrayList<UserGradeModel> mDataset) {
-        this.mDataset=mDataset;
+    public GradesAdapter(ArrayList<UserGradeModel> mDataset) {
+        this.mDataset = mDataset;
     }
 
-    public void setList(ArrayList<UserGradeModel>mDataset){
-        this.mDataset=mDataset;
+    public void setList(ArrayList<UserGradeModel> mDataset) {
+        this.mDataset = mDataset;
     }
+
     // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+                                         int viewType) {
         // create a new view
-        View v =  LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.listrow_user_grade, parent, false);
 
         return new ViewHolder(v);
@@ -60,7 +63,7 @@ public class GradesAdapter extends RecyclerView.Adapter<GradesAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        UserGradeModel user=mDataset.get(position);
+        UserGradeModel user = mDataset.get(position);
         holder.name.setText(user.getName());
         holder.email.setText(user.getEmail());
         holder.grade.setText(user.getGrade());

@@ -10,53 +10,69 @@ import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
  * Created by ramym on 5/1/2018.
  */
 
+
 public interface GradesContract {
 
     interface Views extends IBaseView<GradesContract.Actions> {
 
         /**
-         *   show error message
-         * @param cause
-         * to show an error message ex: higest grade < lowest grade
+         * show error message
+         *
+         * @param cause to show an error message ex: higest grade < lowest grade
          */
         void showErrorMessage(String cause);
 
         /**
-         *    show Grades of Group
-         * @param list
-         * to show list of users of the group with their grade
+         * show Grades of Group
+         *
+         * @param list to show list of users of the group with their grade
          */
         void showGradesOfGroup(ArrayList<UserGradeModel> list);
 
-        /**  getHighestGrade
+        /**
+         * getHighestGrade
          *
-         * @return  Highest grade of  a student
+         * @return Highest grade of  a student
          */
         int getHighestGrade();
 
 
-        /**  getLowestGrade
+        /**
+         * getLowestGrade
          *
-         * @return  Lowest grade of  a student
+         * @return Lowest grade of  a student
          */
         int getLowestGrade();
 
 
-        /**   showProgressIndicator
-         *   to show any Ui to tell the user there is some tasks still running
+        /**
+         * showProgressIndicator
+         * to show any Ui to tell the user there is some tasks still running
          */
         void showProgressIndicator();
 
-        /**   hideProgressIndicator
-         *   to hide  Ui to tell the user there is some tasks are finished
+        /**
+         * hideProgressIndicator
+         * to hide  Ui to tell the user there is some tasks are finished
          */
-         void hideProgressIndicator();
+        void hideProgressIndicator();
 
-        /** getGroupId
-         *   to send to presenter id of the current group
-         * @return  Group id
+        /**
+         * getGroupId
+         * to send to presenter id of the current group
+         *
+         * @return Group id
          */
-         String getGroupId();
+        String getGroupId();
+
+
+        void hideActivityLoading();
+
+        void showEmptyView();
+
+        void hideEmptyView();
+
+
     }
 
 
@@ -66,8 +82,8 @@ public interface GradesContract {
     interface Actions extends IBasePresenter {
 
         /**
-         *  get Group grade
-         *  to get Group grade for the first time
+         * get Group grade
+         * to get Group grade for the first time
          */
         void getGroupGrade();
 

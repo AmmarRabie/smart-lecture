@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.statistics;
 
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,11 +46,17 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
         String groupId=mView.getGroupID();
         mDatabase.getGroupAndItsSessionNameList(groupId, new DataService.Get<GroupStatisticsModel>() {
             @Override
+            public void onDataNotAvailable() {
+                mView.showEmptyView();
+            }
+
+            @Override
             public void onDataFetched(GroupStatisticsModel data_coming) {
                 data=data_coming;
                 groupAttendancePercentage();
                 MostAndWorstAttendanceUsers();
                 mView.hideProgressIndicator();
+                mView.hideEmptyView();
             }
         });
     }

@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -29,6 +31,9 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
         TextView Attendance_Percentage;
         TextView Percentage_text;
         GroupStatisticsContract.Actions mPresenter;
+        ScrollView fullView;
+        LinearLayout emptyView;
+        ProgressBar begSpinner;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,12 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
             Attendance_Percentage.setVisibility(View.GONE);
             Percentage_text=(TextView)findViewById(R.id.group_statistics_text_percentage);
             Percentage_text.setVisibility(View.GONE);
+            emptyView=(LinearLayout)findViewById(R.id.statisitcs_empty_view);
+            fullView=(ScrollView)findViewById(R.id.activity_expandable_scroll_view);
+            begSpinner=(ProgressBar)findViewById(R.id.statisitcs_progress_bar_beg);
+            begSpinner.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+            fullView.setVisibility(View.GONE);
             mPresenter=new GroupStatisticsPresenter(this);
 
             adapter = new ExpandableAdapter(this, mPresenter.getGroupsOfUsers());
@@ -157,6 +168,22 @@ public class GroupStatisticsActivity extends AppCompatActivity implements  Group
     @Override
     public void hideProgressIndicator() {
         spinner.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEmptyView() {
+
+            begSpinner.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            fullView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideEmptyView()
+    {
+        begSpinner.setVisibility(View.GONE);
+        emptyView.setVisibility(View.GONE);
+        fullView.setVisibility(View.VISIBLE);
     }
 
 

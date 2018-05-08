@@ -205,6 +205,11 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getChildrenCount()==0)
+                        {
+                            callback.onDataNotAvailable();
+                            return;
+                        }
                         ArrayList<String> groupp = new ArrayList<>();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             groupp.add(ds.getKey());
@@ -219,13 +224,19 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 });
 
         //  getReference(GroupEntry.KEY_SESSIONS).child(groupId).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
-        getReference(FirebaseContract.SessionEntry.KEY_THIS).orderByChild(FirebaseContract.SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addValueEventListener(new ValueEventListener() {
+        getReference(FirebaseContract.SessionEntry.KEY_THIS).orderByChild(FirebaseContract.SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
             String SessionID;
 
             @Override
             synchronized public void onDataChange(DataSnapshot dataSnapshot) {
 
                 final ArrayList<ArrayList<String>> sessionMem = new ArrayList<>();
+
+                if (dataSnapshot.getChildrenCount()==0)
+                {
+                    callback.onDataNotAvailable();
+                    return;
+                }
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     SessionID = ds.getKey();
@@ -288,6 +299,9 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     @Override
                     synchronized public void onDataChange(DataSnapshot dataSnapshot) {
                         final ArrayList<UserGradeModel> users = new ArrayList<>();
+
+                        if (dataSnapshot.getChildrenCount()==0)
+                            callback.onDataNotAvailable();
 
                         for (DataSnapshot ch : dataSnapshot.getChildren()) {
                             HashMap<String, Object> ob = (HashMap<String, Object>) ch.getValue();

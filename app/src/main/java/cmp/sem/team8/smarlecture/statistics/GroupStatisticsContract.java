@@ -54,6 +54,9 @@ public interface GroupStatisticsContract {
          *   to hide  Ui to tell the user there is some tasks are finished
          */
          void  hideProgressIndicator();
+
+         void hideEmptyView();
+         void showEmptyView();
     }
 
 
