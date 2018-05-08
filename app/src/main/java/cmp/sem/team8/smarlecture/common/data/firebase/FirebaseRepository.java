@@ -612,7 +612,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
 
     @Override
-    public void getUsersListOfGroup(String groupId, final Get<ArrayList<InvitedUserModel>> callback) {
+    public void getGroupMembers(String groupId, final Get<ArrayList<InvitedUserModel>> callback) {
         final ArrayList<InvitedUserModel> result = new ArrayList<>();
         getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

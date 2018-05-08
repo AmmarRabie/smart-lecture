@@ -403,7 +403,7 @@ public class MockRepo implements DataService {
 
 
     @Override
-    public void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback) {
+    public void getGroupMembers(String groupId, Get<ArrayList<InvitedUserModel>> callback) {
 
     }
 
