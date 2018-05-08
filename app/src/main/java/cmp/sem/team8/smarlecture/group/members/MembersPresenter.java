@@ -43,11 +43,11 @@ public class MembersPresenter implements MembersContract.Actions {
         mView.handleOfflineStates();
         mView.showGroupName(GROUP_NAME);
 
-        mDataSource.getUsersListOfGroup(GROUP_ID, new GetUserCallback());
+        mDataSource.getGroupMembers(GROUP_ID, new GetUserCallback());
     }
 
     @Override
-    public void addStudent(final String email) {
+    public void addMember(final String email) {
         if (email == null || email.isEmpty()) {
             mView.showOnErrorMessage("Student must have an email");
             return;
@@ -125,7 +125,7 @@ public class MembersPresenter implements MembersContract.Actions {
     final class GetUserCallback extends DataService.Get<ArrayList<InvitedUserModel>> {
         @Override
         public void onDataFetched(ArrayList<InvitedUserModel> data) {
-            mView.showNamesList(data);
+            mView.showMembers(data);
         }
 
         @Override

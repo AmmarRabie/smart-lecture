@@ -81,6 +81,7 @@ public class ObjectivesRecyclerAdapter extends RecyclerView.Adapter<ObjectivesRe
          * @param view     the view clicked
          * @param position its position in the list
          */
+        void onItemClick(View view,int position);
 
 
     }
@@ -123,6 +124,12 @@ public class ObjectivesRecyclerAdapter extends RecyclerView.Adapter<ObjectivesRe
                     mItemClickListener.onEditObjectiveClick(view, position);
                 }
             });
+containerView.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        mItemClickListener.onItemClick(v,position);
+    }
+});
 
 
         }

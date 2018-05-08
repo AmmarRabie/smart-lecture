@@ -8,15 +8,15 @@ import cmp.sem.team8.smarlecture.common.data.DataService;
 
 public class SessionModel {
     private String id;
-    private String forGroup;
+    private String forGroupId;
     private DataService.AttendanceStatus attendanceStatus;
     private DataService.SessionStatus sessionStatus;
     private String name;
     private String secret;
 
-    public SessionModel(String id, String forGroup, DataService.AttendanceStatus attendanceStatus, DataService.SessionStatus sessionStatus, String name) {
+    public SessionModel(String id, String forGroupId, DataService.AttendanceStatus attendanceStatus, DataService.SessionStatus sessionStatus, String name) {
         this.id = id;
-        this.forGroup = forGroup;
+        this.forGroupId = forGroupId;
         this.attendanceStatus = attendanceStatus;
         this.sessionStatus = sessionStatus;
         this.name = name;
@@ -30,12 +30,12 @@ public class SessionModel {
         this.id = id;
     }
 
-    public String getForGroup() {
-        return forGroup;
+    public String getForGroupId() {
+        return forGroupId;
     }
 
-    public void setForGroup(String forGroup) {
-        this.forGroup = forGroup;
+    public void setForGroupId(String forGroupId) {
+        this.forGroupId = forGroupId;
     }
 
     public String getSecret() {

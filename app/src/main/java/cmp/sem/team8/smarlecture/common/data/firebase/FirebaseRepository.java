@@ -612,7 +612,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
 
     @Override
-    public void getUsersListOfGroup(String groupId, final Get<ArrayList<InvitedUserModel>> callback) {
+    public void getGroupMembers(String groupId, final Get<ArrayList<InvitedUserModel>> callback) {
         final ArrayList<InvitedUserModel> result = new ArrayList<>();
         getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1002,7 +1002,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot userSnapshot) {
-                                MemberModel newAttendee = Serializer.attendee(attendeeSnapshot, userSnapshot);
+                                MemberModel newAttendee = Serializer.sessionMember(attendeeSnapshot, userSnapshot);
                                 callback.onDataReceived(newAttendee);
                             }
 
@@ -1210,7 +1210,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     if (existedGroupMember != null) {
                         // add to this group member, this contribution (member model)
                         boolean isAttend = ((boolean) oneSessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
-                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.serializeNotes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.notes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
                         existedGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
 
                         if (++currMembersHandled == membersCount)
@@ -1231,7 +1231,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     public void onDataFetched(UserModel thisUser) {
                         final FileModel.GroupMember newGroupMember = new FileModel.GroupMember(thisUser);
                         boolean isAttend = ((boolean) sessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
-                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.serializeNotes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.notes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
                         newGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
                         groupMembers.add(newGroupMember);
 

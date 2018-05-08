@@ -89,7 +89,6 @@ public class AttendancePresenter implements AttendanceContract.Actions {
         if (!mIsConnectionTimeOver) {
             mView.stopConnectionTimer();
             doOnEndingConnectionProperly();
-            return;
         }
     }
 
@@ -99,6 +98,7 @@ public class AttendancePresenter implements AttendanceContract.Actions {
         if (!mIsAttendanceTimeOver) {
             mView.stopAttendanceTimer();
             doOnOpeningConnectionBeforeAttendanceTimeEnd();
+            return;
         }
         doOnOpeningConnectionAfterAttendanceTimeEnd();
     }

@@ -22,34 +22,34 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry
 
 abstract class FirebaseRepoHelper implements DataService {
 
-    protected HashMap<Listen, EventWithRefBase> listenersMap;
+    HashMap<Listen, EventWithRefBase> listenersMap;
 
     FirebaseRepoHelper() {
         listenersMap = new HashMap<>();
     }
 
 
-    public static DatabaseReference getReference(String ref) {
+    static DatabaseReference getReference(String ref) {
         return FirebaseDatabase.getInstance().getReference(ref);
     }
 
-    public static DatabaseReference getGroupRef(String groupId) {
+    static DatabaseReference getGroupRef(String groupId) {
         return getReference(GroupEntry.KEY_THIS).child(groupId);
     }
 
-    public static DatabaseReference getSessionRef(String sessionId) {
+    static DatabaseReference getSessionRef(String sessionId) {
         return getReference(SessionEntry.KEY_THIS).child(sessionId);
     }
 
-    public DatabaseReference getUserRef(String userId) {
+    DatabaseReference getUserRef(String userId) {
         return getReference(UserEntry.KEY_THIS).child(userId);
     }
 
-    public DatabaseReference getGroupMessagesRef(String groupId) {
+    DatabaseReference getGroupMessagesRef(String groupId) {
         return getReference(GroupMessagesEntry.KEY_THIS).child(groupId);
     }
 
-    protected StorageReference getProfileImageRef(String imageId) {
+    StorageReference getProfileImageRef(String imageId) {
         return FirebaseStorage.getInstance()
                 .getReference(StorageEntry.FOLDER_PROFILE_IMAGES).child(imageId + ".png");
     }
