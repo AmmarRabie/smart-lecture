@@ -128,7 +128,7 @@ public interface DataService {
 
     void insertObjective(String sessionID, String addedObjective, boolean isOffline, Insert<ObjectiveModel> callback);
 
-    void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
+    void getGroupMembers(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
     void getSessionStatus(String sessionId, Get<SessionStatus> callback);
 

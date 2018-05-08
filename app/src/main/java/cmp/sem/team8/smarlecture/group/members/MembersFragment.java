@@ -74,7 +74,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void showNamesList(ArrayList<InvitedUserModel> namesList) {
+    public void showMembers(ArrayList<InvitedUserModel> namesList) {
         if (namesList.equals(mNamesList))
             return;
         mNamesList.clear();
@@ -184,7 +184,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public void onSaveItemClick(View v, String name, int position) {
-        mPresenter.addStudent(name);
+        mPresenter.addMember(name);
     }
 
     @Override
