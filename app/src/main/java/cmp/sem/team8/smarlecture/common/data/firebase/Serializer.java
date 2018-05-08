@@ -113,7 +113,7 @@ class Serializer {
         );
     }
 
-    static MemberModel attendee(DataSnapshot attendeeSnapshot, DataSnapshot userSnapshot) {
+    static MemberModel sessionMember(DataSnapshot attendeeSnapshot, DataSnapshot userSnapshot) {
         UserModel userModel = user(userSnapshot);
         boolean isAttend = ((boolean) attendeeSnapshot.child(SessionEntry.KEY_ATTEND).getValue());
         if (!attendeeSnapshot.child(SessionEntry.KEY_NOTES).exists())
@@ -131,7 +131,7 @@ class Serializer {
         return new NoteModel(noteId, noteText);
     }
 
-    static ArrayList<NoteModel> serializeNotes(DataSnapshot notesSnapshot) {
+    static ArrayList<NoteModel> notes(DataSnapshot notesSnapshot) {
         ArrayList<NoteModel> notes = new ArrayList<>();
         for (DataSnapshot oneNoteSnapshot : notesSnapshot.getChildren())
             notes.add(note(oneNoteSnapshot));
@@ -171,7 +171,7 @@ class Serializer {
         return true;
     }
 
-    public static ArrayList<GroupMessageModel> groupMessages(DataSnapshot groupSnapshot, DataSnapshot messagesSnapshot) {
+    static ArrayList<GroupMessageModel> groupMessages(DataSnapshot groupSnapshot, DataSnapshot messagesSnapshot) {
         final GroupModel groupModel = group(groupSnapshot);
         ArrayList<GroupMessageModel> result = new ArrayList<>();
         for (DataSnapshot messageSnapshot : messagesSnapshot.getChildren()) {

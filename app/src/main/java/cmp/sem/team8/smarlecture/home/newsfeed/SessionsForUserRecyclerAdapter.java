@@ -1,8 +1,6 @@
 package cmp.sem.team8.smarlecture.home.newsfeed;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,7 +121,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mItemClickListener.onItemClick(v, position, mSessionsList.get(position).getId(), mSessionsList.get(position).getForGroup());
+                        mItemClickListener.onItemClick(v, position, mSessionsList.get(position).getId(), mSessionsList.get(position).getForGroupId());
                     }
                 });
             }

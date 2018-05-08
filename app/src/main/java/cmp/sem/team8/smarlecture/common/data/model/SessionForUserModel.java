@@ -9,7 +9,7 @@ public class SessionForUserModel extends SessionModel {
     private UserModel owner;
 
     public SessionForUserModel(SessionModel session, GroupModel group, UserModel owner) {
-        super(session.getId(), session.getForGroup(), session.getAttendanceStatus(), session.getSessionStatus(), session.getName());
+        super(session.getId(), session.getForGroupId(), session.getAttendanceStatus(), session.getSessionStatus(), session.getName());
         this.group = group;
         this.owner = owner;
     }
