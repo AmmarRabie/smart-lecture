@@ -53,6 +53,11 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
             @Override
             public void onDataFetched(GroupStatisticsModel data_coming) {
                 data=data_coming;
+                if (data_coming.getGroupMembers()==null||data_coming.getSessionMembers()==null)
+                {
+                    mView.showEmptyView();
+                    return ;
+                }
                 groupAttendancePercentage();
                 MostAndWorstAttendanceUsers();
                 mView.hideProgressIndicator();
@@ -69,6 +74,8 @@ public class GroupStatisticsPresenter implements GroupStatisticsContract.Actions
 
         ArrayList<ArrayList<String>> SessionsMem=data.getSessionMembers();
         ArrayList<String>  GroupMem  = data.getGroupMembers();
+
+        if (GroupMem==null) return;
 
         for(int i=0;i<data.getSessionMembers().size();i++)
         {
