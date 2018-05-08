@@ -96,15 +96,23 @@ public class MembersPresenter implements MembersContract.Actions {
             ExportContext exportContext = new ExportContext(new ExcelExportStrategy());
             exportContext.export(fileData, fileName).addOnSuccessListener(new ExportTask.OnSuccessListener() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(String message) {
                     mView.onExportSuccess();
                 }
             }).addOnFailureListener(new ExportTask.OnFailureListener() {
                 @Override
-                public void onFailure() {
-                    mView.showOnErrorMessage("Sorry, Can't export this group");
+                public void onFailure(String message) {
+                    if (message == null)
+                        message = "Sorry, Can't export this group";
+                    mView.showOnErrorMessage(message);
                 }
             });
+        }
+
+        @Override
+        public void onDataNotAvailable() {
+            super.onDataNotAvailable();
+            mView.showOnErrorMessage("Can't export group with empty members or sessions");
         }
     }
 
