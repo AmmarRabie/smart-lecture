@@ -26,6 +26,9 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * Created by AmmarRabie on 21/04/2018.
  */
 
+/**
+ * Hide the logic of getting models from firebase DataSnapshot
+ */
 class Serializer {
     private static final String TAG = "Serializer";
 
@@ -82,21 +85,6 @@ class Serializer {
         String email = userRoot.child(UserEntry.KEY_EMAIL).getValue(String.class);
         return new UserModel(name, email, userRoot.getKey());
     }
-
-/*    public static ArrayList<InvitedUserModel> serializeInvitedUserList(DataSnapshot listRoot) {
-        if (listRoot == null || !listRoot.exists()) {
-            Log.w(TAG, "serializeInvitedUserList: listRoot does not exists or null");
-            return null;
-        }
-        if (listRoot.getChildrenCount() == 0) {
-            Log.w(TAG, "serializeInvitedUserList: listRoot does not have children");
-            return null;
-        }
-        ArrayList<InvitedUserModel> result = new ArrayList<>();
-        for (DataSnapshot invitedUserRoot : listRoot.getChildren())
-            result.add(invitedUser(invitedUserRoot));
-        return result;
-    }*/
 
     static GroupInvitationModel groupInvitation(DataSnapshot groupSnapshot, DataSnapshot userSnapshot) {
         GroupModel groupModel = group(groupSnapshot);

@@ -20,9 +20,13 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry
  * Created by AmmarRabie on 21/04/2018.
  */
 
+/**
+ * Helper class for {@link FirebaseRepository}. simplify the logic  of listening and forgetting
+ * Also define the get reference for basic entries
+ */
 abstract class FirebaseRepoHelper implements DataService {
 
-    HashMap<Listen, EventWithRefBase> listenersMap;
+    private HashMap<Listen, EventWithRefBase> listenersMap;
 
     FirebaseRepoHelper() {
         listenersMap = new HashMap<>();
@@ -41,15 +45,15 @@ abstract class FirebaseRepoHelper implements DataService {
         return getReference(SessionEntry.KEY_THIS).child(sessionId);
     }
 
-    DatabaseReference getUserRef(String userId) {
+    static DatabaseReference getUserRef(String userId) {
         return getReference(UserEntry.KEY_THIS).child(userId);
     }
 
-    DatabaseReference getGroupMessagesRef(String groupId) {
+    static DatabaseReference getGroupMessagesRef(String groupId) {
         return getReference(GroupMessagesEntry.KEY_THIS).child(groupId);
     }
 
-    StorageReference getProfileImageRef(String imageId) {
+    static StorageReference getProfileImageRef(String imageId) {
         return FirebaseStorage.getInstance()
                 .getReference(StorageEntry.FOLDER_PROFILE_IMAGES).child(imageId + ".png");
     }
@@ -64,14 +68,13 @@ abstract class FirebaseRepoHelper implements DataService {
         }
     }
 
-    protected void addNewListener(Listen callback, ValueEventListener listener, DatabaseReference reference) {
+    void addNewListener(Listen callback, ValueEventListener listener, DatabaseReference reference) {
         EventWithRefBase valueEventWithRef = new ValueEventWithRef(reference, listener);
         listenersMap.put(callback, valueEventWithRef);
     }
 
-    protected void addNewListener(Listen callback, ChildEventListener listener, DatabaseReference reference) {
+    void addNewListener(Listen callback, ChildEventListener listener, DatabaseReference reference) {
         EventWithRefBase valueEventWithRef = new ChildEventWithRef(reference, listener);
         listenersMap.put(callback, valueEventWithRef);
     }
-
 }

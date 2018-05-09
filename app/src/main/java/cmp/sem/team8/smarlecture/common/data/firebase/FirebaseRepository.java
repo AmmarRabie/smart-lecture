@@ -40,8 +40,10 @@ import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
 /**
- * This is the implementation of the DataService using firebase database
+ * This is the implementation of the {@link cmp.sem.team8.smarlecture.common.data.DataService}
+ * using firebase database
  * <p>
+ *     this class do the logic of querying data from firebase database
  */
 public class FirebaseRepository extends FirebaseRepoHelper {
 
@@ -192,10 +194,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         });
     }
 
-    @Override
-    public void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback) {
-
-    }
 
     @Override
     public void getGroupAndItsSessionNameList(String groupId, final Get<GroupStatisticsModel> callback) {
@@ -1332,7 +1330,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 if (task.isSuccessful()) {
                     if (!isOffline)
                         callback.onUpdateSuccess();
-                } else
+                } else if (task.getException() != null)
                     callback.onError(task.getException().getMessage());
             }
         });
@@ -1450,7 +1448,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
     @Override
     public void getGroupId(String sessionId, final Get<String> callback) {
-        FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessionId).child(SessionEntry.KEY_FOR_GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
+        getSessionRef(sessionId).child(SessionEntry.KEY_FOR_GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
@@ -1556,8 +1554,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public Listen ListenSessionQuestions(String sessionID, final Listen<QuestionModel> callback) {
-        DatabaseReference questionsRef = getSessionRef(sessionID).child(SessionEntry.KEY_QUESTIONS);
+    public Listen ListenSessionQuestions(String sessionId, final Listen<QuestionModel> callback) {
+        DatabaseReference questionsRef = getSessionRef(sessionId).child(SessionEntry.KEY_QUESTIONS);
         ChildEventListener childEventListener = questionsRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot newQuestionSnapshot, String s) {

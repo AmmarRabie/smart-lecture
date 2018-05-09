@@ -25,6 +25,10 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * Created by AmmarRabie on 24/04/2018.
  */
 
+/**
+ * Mock implementation of the {@link DataService}, simple enough to test the app front end with
+ * dummy data
+ */
 public class MockRepo implements DataService {
     private static final String TAG = "MockRepo";
 
@@ -37,6 +41,7 @@ public class MockRepo implements DataService {
         users = new ArrayList<>();
         sessions = new ArrayList<>();
         groups = new ArrayList<>();
+        // insert the main system data (users, groups, sessions)
         insertDummyUsers();
         insertDummyGroups();
         insertDummySessions();
@@ -286,11 +291,6 @@ public class MockRepo implements DataService {
         ));
     }
 
-
-    @Override
-    public void getSessionsOfGroup(String groupId, Get<ArrayList<SessionModel>> callback) {
-
-    }
 
     @Override
     public void getGroupAndItsSessionNameList(String groupId, Get<GroupStatisticsModel> callback) {
@@ -630,7 +630,7 @@ public class MockRepo implements DataService {
     }
 
     @Override
-    public Listen ListenSessionQuestions(String sessionID, Listen<QuestionModel> callback) {
+    public Listen ListenSessionQuestions(String sessionId, Listen<QuestionModel> callback) {
         return null;
     }
 
@@ -639,10 +639,6 @@ public class MockRepo implements DataService {
 
     }
 
-    @Override
-    public void deleteGroupMember(String groupId, String memberId, Delete callback) {
-
-    }
 
     @Override
     public void getObjectivesCount(String sessionId, Get<Long> callback) {

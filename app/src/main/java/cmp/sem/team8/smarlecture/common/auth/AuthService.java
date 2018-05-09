@@ -30,7 +30,8 @@ public interface AuthService {
     void signUp(String email, String pass, OnAuthActionComplete<String> callback);
 
     /**
-     * Sign out the current user, if there is not a user then it do nothing
+     * Sign out the current user, if there is not a user then it do nothing.
+     * After calling it {@link #getCurrentUser()} should return null.
      */
     void signOut();
 
@@ -43,10 +44,14 @@ public interface AuthService {
     void sendPasswordResetEmail(String email, OnAuthActionComplete<Void> callback);
 
     /**
-     * @return get current authenticated user, null if there is not authenticated user
+     * @return get current authenticated user, null if there is no authenticated user
      */
     AuthenticatedUser getCurrentUser();
 
+    /**
+     * Callback for authentication process
+     * @param <SuccessData> The type of the data returned after authentication success
+     */
     interface OnAuthActionComplete<SuccessData> {
         void onSuccess(SuccessData data);
 

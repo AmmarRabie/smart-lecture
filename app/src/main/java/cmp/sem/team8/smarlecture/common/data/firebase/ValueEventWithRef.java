@@ -7,6 +7,9 @@ import com.google.firebase.database.ValueEventListener;
  * Created by AmmarRabie on 06/05/2018.
  */
 
+/**
+ * represents the value event listener with its reference
+ */
 class ValueEventWithRef extends EventWithRefBase {
     private ValueEventListener firebaseListener;
 
@@ -14,7 +17,7 @@ class ValueEventWithRef extends EventWithRefBase {
         super(reference);
     }
 
-    public ValueEventWithRef(DatabaseReference reference, ValueEventListener firebaseListener) {
+    ValueEventWithRef(DatabaseReference reference, ValueEventListener firebaseListener) {
         super(reference);
         this.firebaseListener = firebaseListener;
     }
