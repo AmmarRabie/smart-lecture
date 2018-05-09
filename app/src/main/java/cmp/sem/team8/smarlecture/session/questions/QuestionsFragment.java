@@ -112,6 +112,7 @@ public class QuestionsFragment extends Fragment implements
 
     @Override
     public void clearAllQuestions() {
+//        if (mQuestionsList == null) return;
         mQuestionsList.clear();
         mQuestionsRecyclerAdapter.notifyDataSetChanged();
     }
