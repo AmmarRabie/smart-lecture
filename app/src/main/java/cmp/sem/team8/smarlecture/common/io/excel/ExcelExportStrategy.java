@@ -75,6 +75,13 @@ public class ExcelExportStrategy implements ExportStrategy {
         return null;
     }
 
+    /**
+     * Make a new sheet with in the workbook
+     * @param workbook workbook that created sheet will be created on it
+     * @param sheetData the data that will fill the sheet
+     * @return the sheet that has been created
+     * @throws ClassNotFoundException if can't make the sheet
+     */
     private Sheet createSheet(Workbook workbook, FileModel sheetData) throws ClassNotFoundException {
         // Create a Sheet
         Sheet sheet = workbook.createSheet(sheetData.getGroup().getName());
@@ -156,6 +163,12 @@ public class ExcelExportStrategy implements ExportStrategy {
         }
     }
 
+    /**
+     * make a cell style depending on attend state
+     * @param workbook workbook to create the style in it
+     * @param attend should be true if the member is attend
+     * @return the style of the cell
+     */
     private CellStyle makeAttendanceCellStyle(Workbook workbook, boolean attend) {
         CellStyle style = workbook.createCellStyle();
         if (attend)

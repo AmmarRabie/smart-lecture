@@ -4,6 +4,9 @@ package cmp.sem.team8.smarlecture.common.io;
  * Created by AmmarRabie on 30/04/2018.
  */
 
+/**
+ * Represents an export task with failure or success
+ */
 public final class ExportTask {
     private boolean isSuccess;
     private String message;
