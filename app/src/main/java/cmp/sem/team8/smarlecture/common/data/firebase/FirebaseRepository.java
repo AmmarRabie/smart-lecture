@@ -20,7 +20,6 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -43,7 +42,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * This is the implementation of the {@link cmp.sem.team8.smarlecture.common.data.DataService}
  * using firebase database
  * <p>
- *     this class do the logic of querying data from firebase database
+ * this class do the logic of querying data from firebase database
  */
 public class FirebaseRepository extends FirebaseRepoHelper {
 
@@ -878,6 +877,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
+
     @Override
     public void insertObjective(final String sessionID, final String addedObjectiveDescription, final boolean isOffline, final Insert<ObjectiveModel> callback) {
         DatabaseReference mobjectiveRef = FirebaseDatabase.getInstance().
@@ -1614,15 +1614,8 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
-    public void deleteGroupMember(String groupId, String memberId, Delete callback) {
-        getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).child(memberId).removeValue();
-        getUserRef(memberId).child(UserEntry.KEY_INVITATIONS).child(groupId).removeValue();
-        callback.onDeleted();
-    }
-
-    @Override
     public void getObjectivesCount(String sessionId, final Get<Long> callback) {
-        DatabaseReference mObjectiveRef= getSessionRef(sessionId).child(SessionEntry.KEY_FOR_OBJECTIVES_LIST);
+        DatabaseReference mObjectiveRef = getSessionRef(sessionId).child(SessionEntry.KEY_FOR_OBJECTIVES_LIST);
         mObjectiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1635,7 +1628,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
-  
+
     @Override
     public void sendGroupNotification(final String groupId, final String message, final Insert<Void> callback) {
         getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
