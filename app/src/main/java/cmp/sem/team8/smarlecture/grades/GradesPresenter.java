@@ -17,7 +17,8 @@ import static java.lang.Math.round;
  * Created by ramym on 5/1/2018.
  */
 
-public class GradesPresenter implements  GradesContract.Actions{
+
+public class GradesPresenter implements GradesContract.Actions {
 
     GradesContract.Views mView;
     ArrayList<UserGradeModel> mList;
@@ -25,15 +26,15 @@ public class GradesPresenter implements  GradesContract.Actions{
     DataService mDataBase;
     DataService mTestDataBase;
 
-    GradesPresenter (GradesContract.Views view)
-    {
-        this.mView=view;
+    GradesPresenter(GradesContract.Views view) {
+        this.mView = view;
 
         mView.setPresenter(this);
 
-        mDataBase=FirebaseRepository.getInstance();
-        mTestDataBase= MockRepo.getInstance();
+        mDataBase = FirebaseRepository.getInstance();
+        mTestDataBase = MockRepo.getInstance();
     }
+
     @Override
     public void start() {
 
@@ -45,16 +46,26 @@ public class GradesPresenter implements  GradesContract.Actions{
     @Override
     public void getGroupGrade() {
 
-       mDataBase.getGroupGrade(mView.getGroupId(), new DataService.Get<ArrayList<UserGradeModel>>() {
-           @Override
-           public void onDataFetched(ArrayList<UserGradeModel> data)
-           {
-               mView.showGradesOfGroup(data);
-           }
-       });
+        mDataBase.getGroupGrade(mView.getGroupId(), new DataService.Get<ArrayList<UserGradeModel>>() {
+            @Override
+            public void onDataNotAvailable() {
+                mView.hideActivityLoading();
+                mView.showEmptyView();
+            }
+
+            @Override
+            public void onDataFetched(ArrayList<UserGradeModel> data) {
+                if (data.size() != 0) {
+                    mView.hideActivityLoading();
+                    mView.hideEmptyView();
+                    mView.showGradesOfGroup(data);
+                } else {
+                    mView.hideActivityLoading();
+                    mView.showEmptyView();
+                }
+            }
+        });
     }
-
-
 
 
     @Override
@@ -73,6 +84,13 @@ public class GradesPresenter implements  GradesContract.Actions{
 
 
             mDataBase.getGroupAndItsSessionNameList(mView.getGroupId(), new DataService.Get<GroupStatisticsModel>() {
+                @Override
+                public void onDataNotAvailable() {
+                    mView.showErrorMessage(" There is No Sessions to assign Grades ");
+                    mView.hideActivityLoading();
+                    mView.showEmptyView();
+                }
+
                 @Override
                 public void onDataFetched(GroupStatisticsModel data) {
 
@@ -100,42 +118,57 @@ public class GradesPresenter implements  GradesContract.Actions{
                     ArrayList<String> ids = new ArrayList<>();
                     ArrayList<Integer> grades = new ArrayList<>();
 
-                    double slope = (double)(highest_grade - lowest_grade) / ((mylist.get(mylist.size() - 1)).element1 - (mylist.get(0)).element1);
-                    double b = ((lowest_grade-(slope*mylist.get(0).element1)));
+                    if ((mylist.get(mylist.size() - 1)).element1 != (mylist.get(0)).element1) {
+                        double slope = (double) (highest_grade - lowest_grade) / ((mylist.get(mylist.size() - 1)).element1 - (mylist.get(0)).element1);
+                        double b = ((lowest_grade - (slope * mylist.get(0).element1)));
 
-                    // line equation ax+b   a  =  slope.
+                        // line equation ax+b   a  =  slope.
 
-                    for (int i = mylist.size() - 1; i >= 0; i--) {
-                        mylist.get(i).element1 = (int)round(( b +((mylist.get(i).element1 * slope))));
-                        ids.add(mylist.get(i).element0);
-                        grades.add(mylist.get(i).element1);
-                    }
-
-                    mDataBase.updateGroupGrades(mView.getGroupId(), ids, grades, new DataService.Update() {
-                        @Override
-                        public void onUpdateSuccess() {
-
-                            getGroupGrade();
-                            mView.hideProgressIndicator();
+                        for (int i = mylist.size() - 1; i >= 0; i--) {
+                            mylist.get(i).element1 = (int) round((b + ((mylist.get(i).element1 * slope))));
+                            ids.add(mylist.get(i).element0);
+                            grades.add(mylist.get(i).element1);
                         }
-                    });
+
+                        mDataBase.updateGroupGrades(mView.getGroupId(), ids, grades, new DataService.Update() {
+                            @Override
+                            public void onUpdateSuccess() {
+
+                                getGroupGrade();
+                                mView.hideProgressIndicator();
+                            }
+                        });
+                    } else {
+                        for (int i = mylist.size() - 1; i >= 0; i--) {
+                            mylist.get(i).element1 = lowest_grade;
+                            ids.add(mylist.get(i).element0);
+                            grades.add(mylist.get(i).element1);
+                        }
+
+                        mDataBase.updateGroupGrades(mView.getGroupId(), ids, grades, new DataService.Update() {
+                            @Override
+                            public void onUpdateSuccess() {
+
+                                getGroupGrade();
+                                mView.hideProgressIndicator();
+                            }
+                        });
+                    }
                 }
+
+
             });
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             mView.showErrorMessage(e.getMessage());
             mView.hideProgressIndicator();
         }
     }
 
 
+    public class Pair implements Comparable<Pair> {
 
-    public class Pair implements Comparable<Pair>
-        {
-
-        private  String element0;
-        private  int element1;
+        private String element0;
+        private int element1;
 
         public Pair(String element0, int element1) {
             this.element0 = element0;
@@ -153,7 +186,7 @@ public class GradesPresenter implements  GradesContract.Actions{
 
         @Override
         public int compareTo(@NonNull Pair o) {
-            return (this.getElement1()-o.getElement1());
+            return (this.getElement1() - o.getElement1());
         }
     }
 

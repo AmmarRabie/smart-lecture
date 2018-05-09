@@ -21,6 +21,10 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -28,11 +32,13 @@ dependencies {
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.github.GrenderG:Toasty:1.2.8'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.github.ome450901:SimpleRatingBar:1.4.1'
+    implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 
     // Apache io for writing and reading excel files
     compile "org.apache.poi:poi:3.15"
-//    compile "org.apache.poi:poi-ooxml:3.15"
-    compile 'com.github.ome450901:SimpleRatingBar:1.4.1'
+
 
 //    implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
