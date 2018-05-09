@@ -142,12 +142,19 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
                         String newPass = ((EditText) rootView.findViewById(R.id.changePasswordDialog_pass)).getText().toString();
                         String confirmPass = ((EditText) rootView.findViewById(R.id.changePasswordDialog_confirmPass)).getText().toString();
                         mAction.changePassword(oldPass, newPass, confirmPass);
+                        // clear the passwords
+                        ((EditText) rootView.findViewById(R.id.changePasswordDialog_oldPass)).getText().clear();
+                        ((EditText) rootView.findViewById(R.id.changePasswordDialog_pass)).getText().clear();
+                        ((EditText) rootView.findViewById(R.id.changePasswordDialog_confirmPass)).getText().clear();
                     }
                 });
 
         changePasswordDialogBuilder.setNegativeButton(getString(R.string.dAction_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                ((EditText) rootView.findViewById(R.id.changePasswordDialog_oldPass)).getText().clear();
+                ((EditText) rootView.findViewById(R.id.changePasswordDialog_pass)).getText().clear();
+                ((EditText) rootView.findViewById(R.id.changePasswordDialog_confirmPass)).getText().clear();
                 dialog.cancel();
             }
         });
@@ -264,47 +271,4 @@ public class ProfileFragment extends Fragment implements ProfileContract.Views {
         if (progressIndicatorView != null)
             progressIndicatorView.dismiss();
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-/*        //  wait 5 seconds to make sure that the image was updated to the server
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mAction.start();
-                handler.removeCallbacks(this);
-            }
-        }, 5000);*/
-    }
-
-/*    private LinearLayout buildDialogLayout() {
-        LinearLayout layout = new LinearLayout(getContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        EditText pass = new EditText(getContext());
-        pass.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        pass.setHint(getString(R.string.newPass));
-        pass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        pass.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
-        pass.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
-
-        EditText confirmPass = new EditText(getContext());
-        confirmPass.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        confirmPass.setHint(getString(R.string.confirmPass));
-        confirmPass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        confirmPass.setHintTextColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
-        confirmPass.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
-
-        layout.addView(confirmPass, 1);
-        layout.addView(pass, 0);
-        layout.addView(confirmPass, 1);
-
-        return layout;
-    }*/
 }
