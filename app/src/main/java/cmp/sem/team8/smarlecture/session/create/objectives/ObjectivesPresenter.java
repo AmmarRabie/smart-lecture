@@ -39,6 +39,14 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
 
     public void start() {
         mView.handleOfflineStates();
+        mDataSource.getSessionStatus(SESSION_ID, new DataService.Get<DataService.SessionStatus>() {
+            @Override
+            public void onDataFetched(DataService.SessionStatus data) {
+                if(data.equals(DataService.SessionStatus.CLOSED)){
+                    mView.hideAddObjectiveButton();
+                }
+            }
+        });
         getObjectives();
     }
 
@@ -61,6 +69,7 @@ public class ObjectivesPresenter implements ObjectivesContract.Actions {
                 mView.showOnErrorMessage("Wrong Session ID");
             }
         });
+
     }
 
     @Override

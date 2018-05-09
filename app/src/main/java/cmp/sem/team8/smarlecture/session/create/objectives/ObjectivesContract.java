@@ -26,6 +26,8 @@ public interface ObjectivesContract {
 
         boolean getOfflineState();
 
+        void hideAddObjectiveButton();
+
     }
 
     interface Actions extends IBasePresenter {

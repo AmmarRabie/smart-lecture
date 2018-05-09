@@ -32,7 +32,9 @@ public interface InfoContract {
          *
          * @param sessionID
          */
-        void closeSession(String sessionID);
+        void openRateObjectives(String sessionID);
+
+        void closeSession();
     }
 
     interface Actions extends IBasePresenter {

@@ -64,13 +64,19 @@ public class InfoFragment extends Fragment implements InfoContract.Views {
     }
 
     @Override
-    public void closeSession(String sessionID) {
+    public void openRateObjectives(String sessionID) {
         if (!isAdded())
             return;
         Intent i = new Intent(getContext(), RateObjectivesActivity.class);
         i.putExtra(getString(R.string.IKey_sessionId), sessionID);
         startActivity(i);
         if (getActivity() != null)
+            getActivity().finish();
+    }
+
+    @Override
+    public void closeSession() {
+        if(getActivity()!=null)
             getActivity().finish();
     }
 

@@ -44,6 +44,14 @@ public class QuestionsPresenter implements QuestionsContract.Actions {
         questionListener = mDataSource.ListenSessionQuestions(SESSION_ID, getQuestionsCallback);
         if (isLecturer)
             mView.hideQuestionTextBox();
+        mDataSource.getSessionStatus(SESSION_ID, new DataService.Get<DataService.SessionStatus>() {
+            @Override
+            public void onDataFetched(DataService.SessionStatus data) {
+                if(data.equals(DataService.SessionStatus.CLOSED)){
+                    mView.hideQuestionTextBox();
+                }
+            }
+        });
 
     }
 
