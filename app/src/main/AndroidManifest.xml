@@ -114,6 +114,9 @@
             android:configChanges="keyboardHidden|orientation">
 
         </activity>
+
+        <activity android:name=".intro.IntroActivity"
+            android:theme="@style/Theme.Intro"/>
     </application>
 
 </manifest>
