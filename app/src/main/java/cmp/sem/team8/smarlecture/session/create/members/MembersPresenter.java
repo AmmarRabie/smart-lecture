@@ -36,7 +36,6 @@ public class MembersPresenter implements MembersContract.Actions {
         members = new ArrayList<>();
 
         mView.setPresenter(this);
-        //  start();
     }
 
     @Override
@@ -55,14 +54,17 @@ public class MembersPresenter implements MembersContract.Actions {
                 currSessionStatus = sessionStatus;
                 currAttendanceStatus = attendanceStatus;
                 mView.showSessionStatus(sessionStatus);
+                isAttendanceWork = false;
                 if (sessionStatus.equals(DataService.SessionStatus.OPEN)) {
                     mView.showSecret(secret);
                     switch (attendanceStatus) {
                         case CLOSED:
+                            mView.hideBeginAttendanceButton(false);
+                            break;
                         case NOT_ACTIVATED:
                             mView.showBeginAttendanceButton();
                             break;
-                        case OPEN:
+                        case OPEN: // only happen when start is calling again to refresh the view, the timer thread is working with it smoothly
                             isAttendanceWork = true;
                             mView.hideBeginAttendanceButton(false);
                             break;
@@ -70,7 +72,7 @@ public class MembersPresenter implements MembersContract.Actions {
                     return;
                 }
                 // the session is closed, show only the members
-                mView.hideBeginAttendanceButton(true);
+                mView.hideBeginAttendanceButton(false);
                 if (attendanceStatus.equals(DataService.AttendanceStatus.OPEN))
                     isAttendanceWork = true;
             }

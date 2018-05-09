@@ -112,7 +112,7 @@ class SessionsForUserRecyclerAdapter extends RecyclerView.Adapter<SessionsForUse
             userNameView.setText(currSession.getOwner().getName());
             sessionStatusView.setText(currSession.getSessionStatus().name());
             attendanceStatusView.setText(currSession.getAttendanceStatus().name());
-            ProfileImageUtil.setProfileImage(currSession.getOwner().getProfileImage(),profileImageView, 50);
+            ProfileImageUtil.setProfileImage(mContext, currSession.getOwner().getProfileImage(),profileImageView, 50);
 
             if (mItemClickListener == null)
                 return;

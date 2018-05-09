@@ -55,13 +55,6 @@
             android:layout_gravity="center"
             android:text="Add your first group" />
 
-        <Button
-            android:id="@+id/groupListFrag_joinSessionEmptyView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Join Session" />
-
     </LinearLayout>
 
 </RelativeLayout>

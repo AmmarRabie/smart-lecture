@@ -643,4 +643,9 @@ public class MockRepo implements DataService {
     public void deleteGroupMember(String groupId, String memberId, Delete callback) {
 
     }
+
+    @Override
+    public void sendGroupNotification(String groupId, String message, Insert<Void> callback) {
+
+    }
 }

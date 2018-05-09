@@ -84,6 +84,11 @@ public class MembersPresenter implements MembersContract.Actions {
         mDataSource.getGroupInfoForExport(GROUP_ID, new ExportExcelCallback(fileName));
     }
 
+    @Override
+    public void notifyMembers(String message) {
+        mDataSource.sendGroupNotification(GROUP_ID, message, null);
+    }
+
     final class ExportExcelCallback extends DataService.Get<FileModel> {
         private String fileName;
 

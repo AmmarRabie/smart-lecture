@@ -184,6 +184,8 @@ public interface DataService {
     void deleteGroupMember(String groupId, String memberId, Delete callback);
 
 
+    void sendGroupNotification(String groupId, String message, Insert<Void> callback);
+
     /**
      * @param listener
      */
