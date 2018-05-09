@@ -11,11 +11,9 @@ import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 public class QuestionsPresenter implements QuestionsContract.Actions {
 
     private static final String TAG = "QuestionsPresenter";
-
-    private DataService.Listen questionListener;
-
     private final String SESSION_ID;
     private final String USER_ID;
+    private DataService.Listen questionListener;
     private QuestionsContract.Views mView;
     private DataService mDataSource;
     private boolean isLecturer;
@@ -41,9 +39,13 @@ public class QuestionsPresenter implements QuestionsContract.Actions {
 
     public void start() {
         mView.handleOfflineStates();
-        questionListener = mDataSource.ListenSessionQuestions(SESSION_ID, getQuestionsCallback);
         if (isLecturer)
             mView.hideQuestionTextBox();
+        if (questionListener != null) {
+            refresh();
+            return;
+        }
+        questionListener = mDataSource.ListenSessionQuestions(SESSION_ID, getQuestionsCallback);
 
     }
 
@@ -59,7 +61,7 @@ public class QuestionsPresenter implements QuestionsContract.Actions {
     @Override
     public void refresh() {
         mDataSource.forget(questionListener);
-        questionListener = mDataSource.ListenSessionQuestions(SESSION_ID, getQuestionsCallback);
         mView.clearAllQuestions();
+        questionListener = mDataSource.ListenSessionQuestions(SESSION_ID, getQuestionsCallback);
     }
 }

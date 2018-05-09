@@ -1,5 +1,6 @@
 package cmp.sem.team8.smarlecture.session.join.attendance;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -17,6 +18,9 @@ public class AttendanceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_attendance);
+
+        // ensure
+//        stopService(new Intent(this, AttendanceMonitorService.class));
 
         sessionId = getIntent().getStringExtra(getString(R.string.IKey_sessionId));
 
