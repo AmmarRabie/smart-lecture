@@ -36,7 +36,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_send"
-            android:tint="#1565c0" />
+            android:tint="@color/yellow" />
     </LinearLayout>
 
 
