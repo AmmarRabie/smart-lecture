@@ -3,6 +3,7 @@ package cmp.sem.team8.smarlecture.session.questions;
 import cmp.sem.team8.smarlecture.common.auth.AuthService;
 import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 
 /**
  * Created by AmmarRabie on 11/03/2018.
@@ -32,6 +33,17 @@ public class QuestionsPresenter implements QuestionsContract.Actions {
                 QuestionsPresenter.this.mView.addQuestion(dataSnapshot);
             }
         };
+
+        // if session is closed alsom hide the question text box
+        mDataSource.getSessionById(SESSION_ID, new DataService.Get<SessionModel>() {
+            @Override
+            public void onDataFetched(SessionModel data) {
+                if (data.getSessionStatus()== DataService.SessionStatus.CLOSED)
+                {
+                    QuestionsPresenter.this.mView.hideQuestionTextBox();
+                }
+            }
+        });
 
         mView.setPresenter(this);
 
