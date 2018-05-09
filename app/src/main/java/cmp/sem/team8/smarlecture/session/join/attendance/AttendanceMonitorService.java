@@ -6,18 +6,18 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.DataService.AttendanceStatus;
-import cmp.sem.team8.smarlecture.common.data.DataService.SessionStatus;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
-import cmp.sem.team8.smarlecture.session.join.rateobjectives.RateObjectivesActivity;
 
 public class AttendanceMonitorService extends Service {
+    private static final String TAG = "AttendanceMonitorServic";
+
     private String sessionId;
     private boolean isFirstAttendanceStatus = true;
-    private boolean isFirstSessionStatus = true;
 
     public AttendanceMonitorService() {
     }
@@ -30,6 +30,7 @@ public class AttendanceMonitorService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e(TAG, "onStartCommand() called with: intent = [" + intent + "], flags = [" + flags + "], startId = [" + startId + "]");
         final FirebaseRepository repo = FirebaseRepository.getInstance();
         sessionId = intent.getStringExtra(getString(R.string.IKey_sessionId));
         repo.listenAttendanceStatus(sessionId, new DataService.Listen<DataService.AttendanceStatus>() {
@@ -51,25 +52,6 @@ public class AttendanceMonitorService extends Service {
                 }
             }
         });
-/*        repo.listenSessionStatus(sessionId, new DataService.Listen<DataService.SessionStatus>() {
-            @Override
-            public void onDataReceived(DataService.SessionStatus sessionStatus) {
-                if (isFirstAttendanceStatus) {
-                    if (sessionStatus.equals(SessionStatus.OPEN)) {
-                        stopSelf();
-                        repo.forget(this);
-                    }
-                    isFirstAttendanceStatus = false;
-                    return;
-                }
-                if (sessionStatus.equals(SessionStatus.OPEN)) {
-                    stopSelf();
-                    repo.forget(this);
-                    pushAttendanceNotification();
-                    startAttendanceActivity();
-                }
-            }
-        });*/
         return START_NOT_STICKY;
     }
 
@@ -98,12 +80,5 @@ public class AttendanceMonitorService extends Service {
         writeAttendance.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         writeAttendance.putExtra(getString(R.string.IKey_sessionId), sessionId);
         startActivity(writeAttendance);
-    }
-
-    private void startObjectivesActivity() {
-        Intent rateObjectivesIntent = new Intent(this, RateObjectivesActivity.class);
-        rateObjectivesIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        rateObjectivesIntent.putExtra(getString(R.string.IKey_sessionId), sessionId);
-        startActivity(rateObjectivesIntent);
     }
 }

@@ -19,8 +19,8 @@ public class AttendanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_attendance);
 
-        // ensure
-//        stopService(new Intent(this, AttendanceMonitorService.class));
+        // make sure that the service is stopped, so that this activity doesn't fire again
+        stopService(new Intent(this, AttendanceMonitorService.class));
 
         sessionId = getIntent().getStringExtra(getString(R.string.IKey_sessionId));
 
