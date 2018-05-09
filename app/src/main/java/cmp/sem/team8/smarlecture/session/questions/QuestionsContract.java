@@ -12,10 +12,22 @@ import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 
 public interface QuestionsContract {
     interface Views extends IBaseView<Actions> {
+
+        /**
+         * to show error message when something goes wrong
+         * @param cause
+         */
         void showOnErrorMessage(String cause);
 
+        /**
+         * to clear all question
+         * @param
+         */
         void clearAllQuestions();
 
+        /**
+         * to hide QuestionTextbox
+         */
         void hideQuestionTextBox();
 
         void handleOfflineStates();
@@ -27,6 +39,11 @@ public interface QuestionsContract {
     }
 
     interface Actions extends IBasePresenter {
+
+        /**
+         * to add new Question
+         * @param questionText
+         */
         void submitQuestion(String questionText);
         void refresh();
     }

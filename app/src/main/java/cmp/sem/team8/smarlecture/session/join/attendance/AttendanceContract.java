@@ -10,19 +10,44 @@ import cmp.sem.team8.smarlecture.IBaseView;
 public class AttendanceContract {
     interface Views extends IBaseView<AttendanceContract.Actions> {
 
+        /**
+         * to start attendace timer
+         * @param seconds
+         */
         void startAttendanceTimer(int seconds);
 
+        /**
+         * to start connection timer
+         * @param seconds
+         */
         void startConnectionTimer(int seconds);
 
+        /**
+         * to stop attendace timer
+         */
         void stopAttendanceTimer();
-
+        /**
+         * to stop connecction timer
+         */
         void stopConnectionTimer();
 
+        /**
+         *  to show error message
+         * @param cause
+         */
         void showErrorMessage(String cause);
-
+        /**
+         *  to show info message
+         * @param info
+         */
         void showInfoMessage(String info);
 
+        /**
+         * to show coneection
+         * @param successMes
+         */
         void showSuccessMessage(String successMes);
+
 
         void requestDisableConnection();
 
@@ -38,15 +63,35 @@ public class AttendanceContract {
      * Actions methods implemented by presenter
      */
     interface Actions extends IBasePresenter {
+
+        /**
+         * to check on the secrect
+         * @param secret
+         * @return
+         */
         boolean verifySecret(String secret);
 
-        void onAttendanceTimeEnd();
+        /**
+         * logic to be done when attendance time ends
+         * @return
+         */
 
+        void onAttendanceTimeEnd();
+        /**
+         * logic to be done when onConnection time ends
+         * @return
+         */
         void onConnectionTimeEnd();
 
 
+        /**
+         * logic to be done when connection lost
+         */
         void onConnectionLost();
 
+        /**
+         * logic to be done when connection is back
+         */
         void onConnectionBack();
     }
 

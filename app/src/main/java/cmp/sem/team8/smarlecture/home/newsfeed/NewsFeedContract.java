@@ -15,7 +15,16 @@ public interface NewsFeedContract {
 
 
     interface Views extends IBaseView<Actions> {
+        /**
+         * called when  we want to show all session list in news feed
+         * @param sessions
+         */
         void showSessions(ArrayList<SessionForUserModel> sessions);
+
+        /**
+         *  called to add sessions one by one while news feed fragment open
+         * @param session
+         */
         void addSession(SessionForUserModel session);
     }
 

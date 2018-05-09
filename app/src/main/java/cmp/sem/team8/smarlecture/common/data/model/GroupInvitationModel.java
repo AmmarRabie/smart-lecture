@@ -4,6 +4,11 @@ package cmp.sem.team8.smarlecture.common.data.model;
  * Created by AmmarRabie on 24/04/2018.
  */
 
+/**
+ * This class represents one group invitation
+ *
+ */
+
 public class GroupInvitationModel {
     private String groupId;
     private String ownerId;
