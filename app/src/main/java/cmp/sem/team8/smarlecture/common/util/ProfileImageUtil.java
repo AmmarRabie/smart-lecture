@@ -34,12 +34,16 @@ public class ProfileImageUtil {
         return Bitmap.createScaledBitmap(bitmap, width, height, true);
     }
 
-    public static void setProfileImage(byte[] image, ImageView imageView, int dstSquareLength){
-        if (image != null) {
-            Bitmap imgBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-            imgBitmap = Bitmap.createScaledBitmap(imgBitmap, dstSquareLength, dstSquareLength, true);
-            imageView.setImageBitmap(imgBitmap);
+    public static void setProfileImage(Context context, byte[] image, ImageView imageView, int dstSquareLength) {
+        if (image == null) {
+            // put the default value
+            imageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.user_item));
+            return;
         }
+        Bitmap imgBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+        imgBitmap = Bitmap.createScaledBitmap(imgBitmap, dstSquareLength, dstSquareLength, true);
+        imageView.setImageBitmap(imgBitmap);
+
     }
 
     /**

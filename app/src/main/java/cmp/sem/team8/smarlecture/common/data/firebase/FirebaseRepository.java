@@ -205,8 +205,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     synchronized public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getChildrenCount()==0)
-                        {
+                        if (dataSnapshot.getChildrenCount() == 0) {
                             callback.onDataNotAvailable();
                             return;
                         }
@@ -232,8 +231,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
                 final ArrayList<ArrayList<String>> sessionMem = new ArrayList<>();
 
-                if (dataSnapshot.getChildrenCount()==0)
-                {
+                if (dataSnapshot.getChildrenCount() == 0) {
                     callback.onDataNotAvailable();
                     return;
                 }
@@ -300,7 +298,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     synchronized public void onDataChange(DataSnapshot dataSnapshot) {
                         final ArrayList<UserGradeModel> users = new ArrayList<>();
 
-                        if (dataSnapshot.getChildrenCount()==0)
+                        if (dataSnapshot.getChildrenCount() == 0)
                             callback.onDataNotAvailable();
 
                         for (DataSnapshot ch : dataSnapshot.getChildren()) {
@@ -1622,5 +1620,35 @@ public class FirebaseRepository extends FirebaseRepoHelper {
         getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).child(memberId).removeValue();
         getUserRef(memberId).child(UserEntry.KEY_INVITATIONS).child(groupId).removeValue();
         callback.onDeleted();
+    }
+
+    @Override
+    public void sendGroupNotification(final String groupId, final String message, final Insert<Void> callback) {
+        getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot groupSnapshot) {
+                GroupModel group = Serializer.group(groupSnapshot);
+                if (group == null) {
+                    if (callback != null)
+                        callback.onError("Error in sending message");
+                    return;
+                }
+                DatabaseReference notificationRef = getReference(FirebaseContract.GroupMessagesEntry.KEY_THIS).child(groupId)
+                        .push();
+                notificationRef.child(FirebaseContract.GroupMessagesEntry.KEY_BODY)
+                        .setValue(message);
+                notificationRef.child(FirebaseContract.GroupMessagesEntry.KEY_TITLE)
+                        .setValue(group.getName());
+                if (callback != null)
+                    callback.onDataInserted(null);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                if (callback != null)
+                    callback.onError(databaseError.getMessage());
+            }
+        });
     }
 }

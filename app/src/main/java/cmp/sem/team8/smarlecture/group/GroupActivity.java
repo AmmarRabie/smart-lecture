@@ -45,6 +45,10 @@ public class GroupActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.optionGroup_exportToExcel:
+                viewPager.setCurrentItem(0, true);
+                return false; // let the frag handle it
+            case R.id.optionGroup_notifyMembers:
+                viewPager.setCurrentItem(0, true);
                 return false; // let the frag handle it
             case R.id.optionGroup_grades:
                 Intent gradesIntent = new Intent(this, GradesActivity.class);

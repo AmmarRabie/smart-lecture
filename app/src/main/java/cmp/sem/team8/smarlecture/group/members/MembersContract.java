@@ -85,6 +85,8 @@ public interface MembersContract {
         void end();
 
         void exportExcel(String fileName);
+
+        void notifyMembers(String message);
     }
 
 }
