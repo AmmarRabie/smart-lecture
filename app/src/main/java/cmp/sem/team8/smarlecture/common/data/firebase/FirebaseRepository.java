@@ -20,6 +20,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.GroupEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.SessionEntry;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseContract.UserEntry;
@@ -877,7 +878,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
-
     @Override
     public void insertObjective(final String sessionID, final String addedObjectiveDescription, final boolean isOffline, final Insert<ObjectiveModel> callback) {
         DatabaseReference mobjectiveRef = FirebaseDatabase.getInstance().
@@ -1614,6 +1614,29 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     }
 
     @Override
+    public void deleteGroupMember(String groupId, String memberId, Delete callback) {
+        getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).child(memberId).removeValue();
+        getUserRef(memberId).child(UserEntry.KEY_INVITATIONS).child(groupId).removeValue();
+        callback.onDeleted();
+    }
+
+    @Override
+    public void getObjectivesCount(String sessionId, final Get<Long> callback) {
+        DatabaseReference mObjectiveRef= getSessionRef(sessionId).child(SessionEntry.KEY_FOR_OBJECTIVES_LIST);
+        mObjectiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                callback.onDataFetched(dataSnapshot.getChildrenCount());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+  
+    @Override
     public void sendGroupNotification(final String groupId, final String message, final Insert<Void> callback) {
         getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1632,7 +1655,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         .setValue(group.getName());
                 if (callback != null)
                     callback.onDataInserted(null);
-
             }
 
             @Override

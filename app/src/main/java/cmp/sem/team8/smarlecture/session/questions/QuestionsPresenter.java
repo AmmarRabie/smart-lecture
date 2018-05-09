@@ -53,12 +53,20 @@ public class QuestionsPresenter implements QuestionsContract.Actions {
         mView.handleOfflineStates();
         if (isLecturer)
             mView.hideQuestionTextBox();
+        else
+            mDataSource.getSessionStatus(SESSION_ID, new DataService.Get<DataService.SessionStatus>() {
+                @Override
+                public void onDataFetched(DataService.SessionStatus data) {
+                    if(data.equals(DataService.SessionStatus.CLOSED)){
+                        mView.hideQuestionTextBox();
+                    }
+                }
+            });
         if (questionListener != null) {
             refresh();
             return;
         }
         questionListener = mDataSource.ListenSessionQuestions(SESSION_ID, getQuestionsCallback);
-
     }
 
     @Override

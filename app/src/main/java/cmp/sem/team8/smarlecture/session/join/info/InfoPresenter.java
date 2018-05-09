@@ -37,13 +37,26 @@ public class InfoPresenter implements InfoContract.Actions {
                         @Override
                         public void onDataReceived(DataService.SessionStatus sessionStatus) {
                             if (sessionStatus.equals(DataService.SessionStatus.CLOSED)) {
-                                if (mView == null) return;
-                                mView.closeSession(sessionID);
-                                mDataSource.forget(this);
+                                if (mView != null) {
+                                    mDataSource.getObjectivesCount(sessionID, new DataService.Get<Long>() {
+                                        @Override
+                                        public void onDataFetched(Long data) {
+                                            if(data>0)
+                                                mView.openRateObjectives(sessionID);
+                                            else
+                                                mView.closeSession();
+                                        }
+
+                                        @Override
+                                        public void onError(String cause) {
+                                            mView.showErrorMessage(cause);
+                                        }
+                                    });
+
+                                }
                             }
                         }
                     });
-
                 }
             }
 
@@ -61,7 +74,5 @@ public class InfoPresenter implements InfoContract.Actions {
                 mView.showErrorMessage(cause);
             }
         });
-
-
     }
 }

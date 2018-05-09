@@ -445,6 +445,8 @@ public interface DataService {
      */
     void sendGroupNotification(String groupId, String message, Insert<Void> callback);
 
+    void getObjectivesCount(String sessionId,Get<Long>callback);
+
     /**
      * Remove notifying callbacks with changing. After this function is called by a given listener
      * this listener will not receive {@link Listen#onDataReceived}yhhhhh even data changed

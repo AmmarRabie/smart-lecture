@@ -151,6 +151,7 @@ public class GroupsPresenter implements GroupsContract.Actions {
         mDataSource.getGroupsForUser(USER_ID, new DataService.Get<ArrayList<GroupModel>>() {
             @Override
             public void onDataFetched(ArrayList<GroupModel> data) {
+
                 mView.showGroupList(data);
             }
 

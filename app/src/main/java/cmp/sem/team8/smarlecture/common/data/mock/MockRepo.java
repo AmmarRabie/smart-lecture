@@ -641,7 +641,10 @@ public class MockRepo implements DataService {
 
 
     @Override
-    public void sendGroupNotification(String groupId, String message, Insert<Void> callback) {
+    public void getObjectivesCount(String sessionId, Get<Long> callback) {
+    }
 
+    @Override
+    public void sendGroupNotification(String groupId, String message, Insert<Void> callback) {
     }
 }

@@ -140,6 +140,7 @@ public class QuestionsFragment extends Fragment implements
     }
 
 
+
     @Override
     public void onInternetConnectionLost() {
         mInternetState = false;

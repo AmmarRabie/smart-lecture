@@ -230,6 +230,11 @@ public class ObjectivesFragment extends android.support.v4.app.Fragment implemen
     }
 
     @Override
+    public void hideAddObjectiveButton() {
+        mAddObjective.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onDeleteObjectiveClick(View view, int position) {
         mPresenter.deleteObjective(mObjectiveList.get(position).getmObjectiveID());
 
@@ -281,7 +286,6 @@ public class ObjectivesFragment extends android.support.v4.app.Fragment implemen
                 .setMessage("Average Rating: "+mObjectiveList.get(position).getmObjectivesAverageRating()+"\nNumber of Users Rated: "+mObjectiveList.get(position).getmNumberofUsersRatedThisObjective())
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(getContext(),"Thanks",Toast.LENGTH_SHORT);
                         dialog.cancel();
                     }
                 }).show();
