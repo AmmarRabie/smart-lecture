@@ -183,6 +183,8 @@ public interface DataService {
 
     void deleteGroupMember(String groupId, String memberId, Delete callback);
 
+    void getObjectivesCount(String sessionId,Get<Long>callback);
+
 
     void sendGroupNotification(String groupId, String message, Insert<Void> callback);
 

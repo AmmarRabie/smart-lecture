@@ -33,6 +33,7 @@ public class NewsFeedPresenter implements NewsFeedContract.Actions {
     private class GetSessionsCallback extends DataService.Get<SessionForUserModel> {
         @Override
         public void onDataFetched(SessionForUserModel data) {
+            if(!(data.getSessionStatus().equals(DataService.SessionStatus.NOT_ACTIVATED)))
             mView.addSession(data);
         }
 

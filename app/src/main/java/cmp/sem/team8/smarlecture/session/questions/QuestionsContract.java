@@ -23,6 +23,7 @@ public interface QuestionsContract {
         boolean getOfflineState();
 
         void addQuestion(QuestionModel questionInserted);
+
     }
 
     interface Actions extends IBasePresenter {
