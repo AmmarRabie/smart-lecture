@@ -117,13 +117,13 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter<SessionsRecycl
 
             switch (currSession.getSessionStatus()) {
                 case OPEN:
-                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_green));
+                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_open));
                     break;
                 case NOT_ACTIVATED:
-                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_yellow));
+                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_notactive));
                     break;
                 case CLOSED:
-                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_red));
+                    containerView.setBackgroundColor(mContext.getResources().getColor(R.color.trafficLight_closed));
                     break;
             }
             if (mItemClickListener == null)

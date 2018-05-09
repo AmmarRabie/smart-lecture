@@ -1331,24 +1331,24 @@ public class FirebaseRepository extends FirebaseRepoHelper {
     public void deleteSession(final String sessoinId, final boolean isOffline, final Delete callback) {
         if (isOffline)
             callback.onDeleted();
-        FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessoinId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    if (!isOffline)
-                        callback.onDeleted();
-
-                } else callback.onError(task.getException().getMessage());
-
-
-            }
-        });
         getSessionRef(sessoinId).child(SessionEntry.KEY_FOR_GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot groupIdSnapshot) {
                 getGroupRef(groupIdSnapshot.getValue(String.class))
                         .child(GroupEntry.KEY_SESSIONS).child(sessoinId)
                         .removeValue();
+                getSessionRef(sessoinId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if (!isOffline)
+                                callback.onDeleted();
+
+                        } else callback.onError(task.getException().getMessage());
+
+
+                    }
+                });
             }
 
             @Override
