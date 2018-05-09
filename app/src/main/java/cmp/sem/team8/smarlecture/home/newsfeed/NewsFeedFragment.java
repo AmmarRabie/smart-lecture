@@ -93,7 +93,6 @@ public class NewsFeedFragment extends Fragment implements NewsFeedContract.Views
 
     @Override
     public void addSession(SessionForUserModel session) {
-        sessions.clear();
         sessions.add(session);
         sessionsForUserRecyclerAdapter.notifyItemInserted(sessions.size());
     }

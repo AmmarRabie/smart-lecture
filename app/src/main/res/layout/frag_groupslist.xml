@@ -14,6 +14,7 @@
         <include layout="@layout/inc_offlineview" />
 
         <android.support.v7.widget.RecyclerView
+            tools:listitem="@layout/item_grouplist"
             android:id="@+id/groupListFrag_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

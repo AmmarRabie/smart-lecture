@@ -21,6 +21,7 @@ import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.util.SharedPrefUtil;
 import cmp.sem.team8.smarlecture.home.groups.GroupsPresenter;
 import cmp.sem.team8.smarlecture.home.newsfeed.NewsFeedPresenter;
+import cmp.sem.team8.smarlecture.intro.IntroActivity;
 import cmp.sem.team8.smarlecture.invitations.InvitationsActivity;
 import cmp.sem.team8.smarlecture.profile.ProfileActivity;
 
@@ -43,13 +44,13 @@ public class HomeActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tablayout);
         viewPager = findViewById(R.id.viewPager);
 
-/*        if (SharedPrefUtil.isFirstTimeOpenApp(this)) {
+        if (SharedPrefUtil.isFirstTimeOpenApp(this)) {
             Intent introIntent = new Intent(this, IntroActivity.class);
             startActivityForResult(introIntent, INTENT_REQUEST_INTRO);
         } else {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, INTENT_REQUEST_LOGIN);
-        }*/
+        }
 
     }
 

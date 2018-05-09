@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -49,8 +48,6 @@ public class GroupsFragment extends Fragment implements
     private ViewGroup mGroupsEmptyView;
 
     private View mAddGroupEmptyView;
-
-    private View mJoinSessionEmptyView;
 
     private RecyclerView mGroupRecyclerView;
 
@@ -110,15 +107,13 @@ public class GroupsFragment extends Fragment implements
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.frag_grouplist, container, false);
+        View root = inflater.inflate(R.layout.frag_groupslist, container, false);
 
         setHasOptionsMenu(true);
 
         mAddGroup = root.findViewById(R.id.groupListFrag_addGroup);
 
         mAddGroupEmptyView = root.findViewById(R.id.groupListFrag_addGroupEmptyView);
-
-        mJoinSessionEmptyView = root.findViewById(R.id.groupListFrag_joinSessionEmptyView);
 
         mOfflineView = root.findViewById(R.id.offlineView);
 
@@ -131,13 +126,6 @@ public class GroupsFragment extends Fragment implements
         mAddGroup.setOnClickListener(mAddGroupClickListener);
 
         mAddGroupEmptyView.setOnClickListener(mAddGroupClickListener);
-
-        mJoinSessionEmptyView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                joinSession();
-            }
-        });
 
         mGroupList = new ArrayList<>();
 
