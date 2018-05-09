@@ -374,7 +374,7 @@ public class GroupsFragment extends Fragment implements
 
         Intent groupActivity = new Intent(getContext(), GroupActivity.class);
 
-        groupActivity.putExtra("group_id", groupId);
+        groupActivity.putExtra(getString(R.string.IKey_groupId), groupId);
 
         groupActivity.putExtra("group_name", groupName);
 

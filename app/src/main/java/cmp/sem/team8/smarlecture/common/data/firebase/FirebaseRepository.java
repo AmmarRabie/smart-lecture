@@ -1351,8 +1351,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 getGroupRef(groupIdSnapshot.getValue(String.class))
                         .child(GroupEntry.KEY_SESSIONS).child(sessoinId)
                         .removeValue();
-
-                FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessoinId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                getSessionRef(sessoinId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
@@ -1364,7 +1363,6 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
                     }
                 });
-
             }
 
             @Override

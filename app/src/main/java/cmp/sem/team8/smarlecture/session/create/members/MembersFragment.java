@@ -13,6 +13,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 import cmp.sem.team8.smarlecture.R;
 import cmp.sem.team8.smarlecture.common.data.DataService;
@@ -144,6 +147,13 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
         mPresenter = presenter;
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.options_session_owner, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -192,13 +202,13 @@ public class MembersFragment extends Fragment implements MembersContract.Views, 
     public void showSessionStatus(DataService.SessionStatus status) {
         switch (status) {
             case OPEN:
-                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_green);
+                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_open);
                 break;
             case NOT_ACTIVATED:
-                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_yellow);
+                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_notactive);
                 break;
             case CLOSED:
-                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_red);
+                ((MembersFragmentCallbacks) getActivity()).setColor(R.color.trafficLight_closed);
                 break;
         }
     }

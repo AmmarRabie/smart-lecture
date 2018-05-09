@@ -70,12 +70,6 @@ public class CreateSessionActivity extends AppCompatActivity implements MembersF
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_session_owner, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return false;
     }

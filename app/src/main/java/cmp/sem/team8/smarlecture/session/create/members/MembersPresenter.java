@@ -236,8 +236,22 @@ public class MembersPresenter implements MembersContract.Actions {
 
     @Override
     public void setSessionStatus(final DataService.SessionStatus newStatus) {
+        if (newStatus.equals(currSessionStatus))
+            return;
         if (isAttendanceWork && !newStatus.equals(DataService.SessionStatus.OPEN)) {
             mView.showErrorMessage("Wait till attendance timer end");
+            return;
+        }
+        if (currSessionStatus.equals(DataService.SessionStatus.NOT_ACTIVATED) &&  !newStatus.equals(DataService.SessionStatus.OPEN)){
+            mView.showErrorMessage("The not activated session should be opened first");
+            return;
+        }
+        if (currSessionStatus.equals(DataService.SessionStatus.OPEN) &&  !newStatus.equals(DataService.SessionStatus.CLOSED)){
+            mView.showErrorMessage("opened session can only be closed");
+            return;
+        }
+        if (currSessionStatus.equals(DataService.SessionStatus.CLOSED)){
+            mView.showErrorMessage("You can't change the closed session status");
             return;
         }
         mDataSource.setSessionStatus(SESSION_ID, newStatus, new DataService.Insert<Void>() {

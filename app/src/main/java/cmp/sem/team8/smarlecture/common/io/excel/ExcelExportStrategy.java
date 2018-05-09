@@ -159,9 +159,9 @@ public class ExcelExportStrategy implements ExportStrategy {
     private CellStyle makeAttendanceCellStyle(Workbook workbook, boolean attend) {
         CellStyle style = workbook.createCellStyle();
         if (attend)
-            style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
         else
-            style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+            style.setFillForegroundColor(IndexedColors.ROSE.getIndex());
         style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 //        style.setFillForegroundColor(IndexedColors.RED.getIndex());
         return style;
