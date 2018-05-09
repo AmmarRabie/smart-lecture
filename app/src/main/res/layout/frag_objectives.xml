@@ -27,7 +27,7 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
-        android:tint="@color/yellow"
+        android:tint="@color/white"
         app:fabSize="normal" />
 
 
