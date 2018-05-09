@@ -13,56 +13,90 @@
         android:layout_height="wrap_content"
         android:text="Start Attendance" />
 
-
     <LinearLayout
-        android:id="@+id/membersFrag_secretParent"
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/session_owner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Secret: "
-            android:textAppearance="?android:textAppearanceLarge" />
-
-        <TextView
-            android:id="@+id/membersFrag_secret"
+        <LinearLayout
+            android:id="@+id/membersFrag_secretParent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
             android:layout_weight="1"
-            android:textAppearance="?android:textAppearanceMedium"
-            tools:text="5489" />
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/membersFrag_secret"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                tools:text="3260"
+                android:textColor="@color/colorAccent"
+                android:textSize="24sp" />
 
-        <ImageView
-            android:id="@+id/membersFrag_changeSecret"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:src="@drawable/change_black" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Secret "
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/membersFrag_changeSecret"
+                android:paddingTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:src="@drawable/change_black" />
 
+        </LinearLayout>
 
-    <LinearLayout
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#A9A9A9" />
+
+        <LinearLayout
         android:id="@+id/membersFrag_attendanceTimerParent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Seconds remaining: "
-            android:textAppearance="?android:textAppearanceLarge" />
+            android:layout_marginTop="11dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/membersFrag_attendanceTimer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceMedium"
-            tools:text="20" />
+            <TextView
+                android:id="@+id/membersFrag_attendanceTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                tools:text="20M"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seconds Remaining"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
     </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="10dp"
+        android:background="#A9A9A9" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="8dp"

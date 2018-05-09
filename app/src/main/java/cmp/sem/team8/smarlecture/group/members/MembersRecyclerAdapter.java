@@ -118,7 +118,7 @@ public class MembersRecyclerAdapter extends RecyclerView.Adapter<MembersRecycler
 
             nameTextView.setText(currMember.getName());
             emailView.setText(currMember.getEmail());
-            ProfileImageUtil.setProfileImage(currMember.getProfileImage(), profileImageView, 70);
+            ProfileImageUtil.setProfileImage(mContext, currMember.getProfileImage(), profileImageView, 70);
 
             if (currMember.isAccept()) {
                 // put the view of accepted member

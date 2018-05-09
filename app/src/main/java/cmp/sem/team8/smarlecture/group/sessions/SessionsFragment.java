@@ -283,11 +283,11 @@ public class SessionsFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onItemClick(View view, int position) {
         SessionModel session = mSessionslist.get(position);
-        String groupID = session.getForGroup();
+        String groupID = session.getForGroupId();
         String sessionID = session.getId();
         Intent sessionActivity = new Intent(getContext(), CreateSessionActivity.class);
-        sessionActivity.putExtra("group_id", groupID);
-        sessionActivity.putExtra("session_id", sessionID);
+        sessionActivity.putExtra(getString(R.string.IKey_groupId), groupID);
+        sessionActivity.putExtra(getString(R.string.IKey_sessionId), sessionID);
         startActivity(sessionActivity);
 
     }

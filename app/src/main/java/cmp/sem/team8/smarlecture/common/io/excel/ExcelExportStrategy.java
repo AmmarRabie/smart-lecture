@@ -2,6 +2,7 @@ package cmp.sem.team8.smarlecture.common.io.excel;
 
 import android.os.Environment;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -55,12 +56,16 @@ public class ExcelExportStrategy implements ExportStrategy {
             fileOut.close();
             // Closing the workbook
             workbook.close();
-            return new ExportTask(true);
+            return new ExportTask(true, "success");
         } catch (IOException e) {
             e.printStackTrace();
-            return new ExportTask(false);
+            return new ExportTask(false, "can't make the file, check your permissions");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ExportTask(false, "Not supported in this device");
         } catch (Exception e) {
-            return new ExportTask(false);
+            e.printStackTrace();
+            return new ExportTask(false, null);
         }
     }
 
@@ -70,7 +75,7 @@ public class ExcelExportStrategy implements ExportStrategy {
         return null;
     }
 
-    private Sheet createSheet(Workbook workbook, FileModel sheetData) {
+    private Sheet createSheet(Workbook workbook, FileModel sheetData) throws ClassNotFoundException {
         // Create a Sheet
         Sheet sheet = workbook.createSheet(sheetData.getGroup().getName());
         ArrayList<String> columns = createSheetColumns(sheetData.getSessions());
@@ -154,9 +159,11 @@ public class ExcelExportStrategy implements ExportStrategy {
     private CellStyle makeAttendanceCellStyle(Workbook workbook, boolean attend) {
         CellStyle style = workbook.createCellStyle();
         if (attend)
-            style.setFillBackgroundColor(IndexedColors.RED.getIndex());
+            style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
         else
-            style.setFillBackgroundColor(IndexedColors.RED.getIndex());
+            style.setFillForegroundColor(IndexedColors.ROSE.getIndex());
+        style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//        style.setFillForegroundColor(IndexedColors.RED.getIndex());
         return style;
     }
 

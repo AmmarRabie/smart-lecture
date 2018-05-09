@@ -8,7 +8,7 @@ import com.google.firebase.database.DatabaseReference;
  */
 
 class ChildEventWithRef extends EventWithRefBase {
-    ChildEventListener childEventListener;
+    private ChildEventListener childEventListener;
 
     ChildEventWithRef(DatabaseReference reference) {
         super(reference);

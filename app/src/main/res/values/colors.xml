@@ -16,6 +16,14 @@
         <color name="colorPrimaryDark">#303F9F</color>
         <color name="colorAccent">#FF4081</color>-->
 
+    <!--Dark theme-->
+<!--    <color name="colorPrimary">#263238</color>
+    <color name="colorPrimaryDark">#37474f</color>
+    <color name="colorAccent">#ff5722</color>
+    <color name="color_CooperColor">#ff5722</color>
+    <color name="color_FiberColor">#34495e</color>-->
+
+
     <color name="orange">#ff5500</color>
 
     <color name="white">#ffffff</color>
@@ -55,7 +63,7 @@
     <color name="timeUp8">#ffffff</color>
     <color name="timeBelow8">#000000</color>
 
-    <color name="trafficLight_green">#00e676</color>
-    <color name="trafficLight_red">#f44336</color>
-    <color name="trafficLight_yellow">#ffa726</color>
+    <color name="trafficLight_open">#ffa726</color>
+    <color name="trafficLight_closed">#f44336</color>
+    <color name="trafficLight_notactive">#bcaaa4</color>
 </resources>

@@ -1,17 +1,20 @@
 package cmp.sem.team8.smarlecture.group.members;
 
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -74,7 +77,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void showNamesList(ArrayList<InvitedUserModel> namesList) {
+    public void showMembers(ArrayList<InvitedUserModel> namesList) {
         if (namesList.equals(mNamesList))
             return;
         mNamesList.clear();
@@ -184,7 +187,7 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public void onSaveItemClick(View v, String name, int position) {
-        mPresenter.addStudent(name);
+        mPresenter.addMember(name);
     }
 
     @Override
@@ -200,12 +203,37 @@ public class MembersFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.optionGroup_exportToExcel:
                 mPresenter.exportExcel(null);
                 return true;
+            case R.id.optionGroup_notifyMembers:
+                notifyMembers();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void notifyMembers() {
+        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_send_group_message, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Send message").setView(dialogView).setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                EditText messageView = dialogView.findViewById(R.id.sendGroupMessage_message);
+                String message = messageView.getText().toString();
+                if (message.isEmpty()) {
+                    Toasty.error(getContext(), "Message can't be empty", Toast.LENGTH_SHORT, true);
+                    return;
+                }
+                mPresenter.notifyMembers(message);
+            }
+        }).show();
     }
 }

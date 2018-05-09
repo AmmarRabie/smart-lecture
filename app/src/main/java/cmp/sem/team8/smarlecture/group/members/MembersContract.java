@@ -45,7 +45,7 @@ public interface MembersContract {
          * @param namesList an ararylist of the students at the current group
          */
 
-        void showNamesList(ArrayList<InvitedUserModel> namesList);
+        void showMembers(ArrayList<InvitedUserModel> namesList);
 
         /**
          * called when the fragment is created to set the title of the activity to group name
@@ -68,7 +68,7 @@ public interface MembersContract {
          *
          * @param email the email of the student to be added to group
          */
-        void addStudent(String email);
+        void addMember(String email);
 
         /**
          * called by fragment to delete a student from a group
@@ -85,6 +85,8 @@ public interface MembersContract {
         void end();
 
         void exportExcel(String fileName);
+
+        void notifyMembers(String message);
     }
 
 }

@@ -17,5 +17,11 @@
         android:title="@string/statistics"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/optionGroup_notifyMembers"
+        android:title="send message to all members"
+        android:icon="@drawable/ic_send_messages"
+        app:showAsAction="ifRoom" />
+
 
 </menu>

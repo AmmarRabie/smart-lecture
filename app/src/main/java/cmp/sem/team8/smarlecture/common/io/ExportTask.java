@@ -6,29 +6,30 @@ package cmp.sem.team8.smarlecture.common.io;
 
 public final class ExportTask {
     private boolean isSuccess;
+    private String message;
 
-    public ExportTask(boolean isSuccess) {
+    public ExportTask(boolean isSuccess, String message) {
         this.isSuccess = isSuccess;
+        this.message = message;
     }
 
     public ExportTask addOnSuccessListener(OnSuccessListener callback) {
         if (isSuccess)
-            callback.onSuccess();
+            callback.onSuccess(message);
         return this;
     }
 
     public ExportTask addOnFailureListener(OnFailureListener callback) {
         if (!isSuccess)
-            callback.onFailure();
+            callback.onFailure(message);
         return this;
     }
 
-
     public interface OnSuccessListener {
-        void onSuccess();
+        void onSuccess(String message);
     }
 
     public interface OnFailureListener {
-        void onFailure();
+        void onFailure(String message);
     }
 }

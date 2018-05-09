@@ -14,7 +14,6 @@ import cmp.sem.team8.smarlecture.common.data.model.ObjectiveModel;
 import cmp.sem.team8.smarlecture.common.data.model.QuestionModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionForUserModel;
 import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
-import cmp.sem.team8.smarlecture.common.data.model.UserAttendanceModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserGradeModel;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
 
@@ -129,7 +128,7 @@ public interface DataService {
 
     void insertObjective(String sessionID, String addedObjective, boolean isOffline, Insert<ObjectiveModel> callback);
 
-    void getUsersListOfGroup(String groupId, Get<ArrayList<InvitedUserModel>> callback);
+    void getGroupMembers(String groupId, Get<ArrayList<InvitedUserModel>> callback);
 
     void getSessionStatus(String sessionId, Get<SessionStatus> callback);
 
@@ -187,6 +186,7 @@ public interface DataService {
     void getObjectivesCount(String sessionId,Get<Long>callback);
 
 
+    void sendGroupNotification(String groupId, String message, Insert<Void> callback);
 
     /**
      * @param listener

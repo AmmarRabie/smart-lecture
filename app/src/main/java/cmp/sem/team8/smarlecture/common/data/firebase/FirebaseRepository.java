@@ -206,6 +206,10 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     synchronized public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getChildrenCount() == 0) {
+                            callback.onDataNotAvailable();
+                            return;
+                        }
                         ArrayList<String> groupp = new ArrayList<>();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             groupp.add(ds.getKey());
@@ -220,13 +224,18 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                 });
 
         //  getReference(GroupEntry.KEY_SESSIONS).child(groupId).child(GroupEntry.KEY_SESSIONS).addListenerForSingleValueEvent(new ValueEventListener() {
-        getReference(FirebaseContract.SessionEntry.KEY_THIS).orderByChild(FirebaseContract.SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addValueEventListener(new ValueEventListener() {
+        getReference(FirebaseContract.SessionEntry.KEY_THIS).orderByChild(FirebaseContract.SessionEntry.KEY_FOR_GROUP_ID).equalTo(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
             String SessionID;
 
             @Override
             synchronized public void onDataChange(DataSnapshot dataSnapshot) {
 
                 final ArrayList<ArrayList<String>> sessionMem = new ArrayList<>();
+
+                if (dataSnapshot.getChildrenCount() == 0) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     SessionID = ds.getKey();
@@ -289,6 +298,9 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     @Override
                     synchronized public void onDataChange(DataSnapshot dataSnapshot) {
                         final ArrayList<UserGradeModel> users = new ArrayList<>();
+
+                        if (dataSnapshot.getChildrenCount() == 0)
+                            callback.onDataNotAvailable();
 
                         for (DataSnapshot ch : dataSnapshot.getChildren()) {
                             HashMap<String, Object> ob = (HashMap<String, Object>) ch.getValue();
@@ -613,7 +625,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
 
     @Override
-    public void getUsersListOfGroup(String groupId, final Get<ArrayList<InvitedUserModel>> callback) {
+    public void getGroupMembers(String groupId, final Get<ArrayList<InvitedUserModel>> callback) {
         final ArrayList<InvitedUserModel> result = new ArrayList<>();
         getGroupRef(groupId).child(GroupEntry.KEY_NAMES_LIST).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1002,7 +1014,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                         getUserRef(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot userSnapshot) {
-                                MemberModel newAttendee = Serializer.attendee(attendeeSnapshot, userSnapshot);
+                                MemberModel newAttendee = Serializer.sessionMember(attendeeSnapshot, userSnapshot);
                                 callback.onDataReceived(newAttendee);
                             }
 
@@ -1156,9 +1168,16 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     callback.onError(task.getException().getMessage());
             }
         });
+        getGroupRef(groupId).child(GroupEntry.KEY_SESSIONS).child(sessionId).setValue(true);
     }
 
     public void getGroupInfoForExport(final String groupId, final Get<FileModel> callback) {
+        // 1- set the group
+        // 2- loop over all group sessions
+        //      - loop over all session members
+        //          - if new member (first time to appear in the list) -> put him in the groupMembers list
+        //          - if not, get him from the list add this session to his inSessions
+
         final FileModel result = new FileModel();
         final ArrayList<SessionModel> groupSessions = new ArrayList<>();
         final ArrayList<FileModel.GroupMember> groupMembers = new ArrayList<>();
@@ -1167,17 +1186,22 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             private boolean isLastSession = false;
             private int sessionHandledCount = 0;
             private int currMembersHandled = 0;
+            private DataSnapshot groupSnapshot;
 
             @Override
             public void onDataChange(DataSnapshot groupSnapshot) {
                 GroupModel group = Serializer.group(groupSnapshot);
                 result.setGroup(group);
-                withGroupSnapshot(groupSnapshot);
+                this.groupSnapshot = groupSnapshot;
+                withGroupSnapshot();
             }
 
-            private void withGroupSnapshot(DataSnapshot groupSnapshot) {
+            private void withGroupSnapshot() {
                 final DataSnapshot sessionsKeysSnapshot = groupSnapshot.child(GroupEntry.KEY_SESSIONS);
-
+                if (!sessionsKeysSnapshot.exists() || !groupSnapshot.child(GroupEntry.KEY_NAMES_LIST).exists()) {
+                    callback.onDataNotAvailable();
+                    return;
+                }
                 for (final DataSnapshot sessionKey : sessionsKeysSnapshot.getChildren()) {
                     String currSessionId = sessionKey.getKey();
                     getSessionRef(currSessionId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1203,6 +1227,11 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
 
             private void withSessionMembersList(final String sessionId, DataSnapshot sessionMembersSnapshot) {
+                if (!sessionMembersSnapshot.exists()) {
+                    // if this session doesn't have any members, then check to return data (may be the last session in the group)
+                    returnDataIfLastSession();
+                    return;
+                }
                 long membersCount = sessionMembersSnapshot.getChildrenCount();
                 for (final DataSnapshot oneSessionMemberKeySnapshot : sessionMembersSnapshot.getChildren()) {
                     String currMemberKey = oneSessionMemberKeySnapshot.getKey();
@@ -1210,7 +1239,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     if (existedGroupMember != null) {
                         // add to this group member, this contribution (member model)
                         boolean isAttend = ((boolean) oneSessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
-                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.serializeNotes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.notes(oneSessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
                         existedGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
 
                         if (++currMembersHandled == membersCount)
@@ -1231,8 +1260,13 @@ public class FirebaseRepository extends FirebaseRepoHelper {
                     public void onDataFetched(UserModel thisUser) {
                         final FileModel.GroupMember newGroupMember = new FileModel.GroupMember(thisUser);
                         boolean isAttend = ((boolean) sessionMemberKeySnapshot.child(SessionEntry.KEY_ATTEND).getValue());
-                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.serializeNotes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
+                        ArrayList<NoteModel> thisSessionMemberNotes = Serializer.notes(sessionMemberKeySnapshot.child(SessionEntry.KEY_NOTES));
                         newGroupMember.getInSessions().add(new FileModel.SessionMember(sessionId, isAttend, thisSessionMemberNotes));
+                        DataSnapshot gradeSnapshot = groupSnapshot.child(GroupEntry.KEY_NAMES_LIST)
+                                .child(thisUser.getId()).child(GroupEntry.KEY_NAMES_LIST_GRADE);
+                        if (gradeSnapshot.exists())
+                            newGroupMember.setAttendanceGrade(gradeSnapshot.getValue(float.class));
+//                        if (grade != null)
                         groupMembers.add(newGroupMember);
 
                         if (++currMembersHandled == membersCount)
@@ -1262,6 +1296,7 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             }
         });
     }
+
 
     @Override
     public void getSessionById(String sessionId, final Get<SessionModel> callback) {
@@ -1305,22 +1340,34 @@ public class FirebaseRepository extends FirebaseRepoHelper {
 
 
     @Override
-    public void deleteSession(String sessoinId, final boolean isOffline, final Delete callback) {
+    public void deleteSession(final String sessoinId, final boolean isOffline, final Delete callback) {
         if (isOffline)
             callback.onDeleted();
-        FirebaseDatabase.getInstance().getReference().child(SessionEntry.KEY_THIS).child(sessoinId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        getSessionRef(sessoinId).child(SessionEntry.KEY_FOR_GROUP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    if (!isOffline)
-                        callback.onDeleted();
+            public void onDataChange(DataSnapshot groupIdSnapshot) {
+                getGroupRef(groupIdSnapshot.getValue(String.class))
+                        .child(GroupEntry.KEY_SESSIONS).child(sessoinId)
+                        .removeValue();
+                getSessionRef(sessoinId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if (!isOffline)
+                                callback.onDeleted();
 
-                } else callback.onError(task.getException().getMessage());
+                        } else callback.onError(task.getException().getMessage());
 
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
     }
 
     @Override
@@ -1587,7 +1634,35 @@ public class FirebaseRepository extends FirebaseRepoHelper {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+  
+    @Override
+    public void sendGroupNotification(final String groupId, final String message, final Insert<Void> callback) {
+        getGroupRef(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot groupSnapshot) {
+                GroupModel group = Serializer.group(groupSnapshot);
+                if (group == null) {
+                    if (callback != null)
+                        callback.onError("Error in sending message");
+                    return;
+                }
+                DatabaseReference notificationRef = getReference(FirebaseContract.GroupMessagesEntry.KEY_THIS).child(groupId)
+                        .push();
+                notificationRef.child(FirebaseContract.GroupMessagesEntry.KEY_BODY)
+                        .setValue(message);
+                notificationRef.child(FirebaseContract.GroupMessagesEntry.KEY_TITLE)
+                        .setValue(group.getName());
+                if (callback != null)
+                    callback.onDataInserted(null);
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                if (callback != null)
+                    callback.onError(databaseError.getMessage());
             }
         });
     }

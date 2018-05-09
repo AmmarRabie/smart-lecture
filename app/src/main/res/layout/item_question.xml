@@ -17,8 +17,8 @@
         android:layout_gravity="center"
         android:layout_marginEnd="18dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_question_mark"
-        android:tint="#1565c0" />
+        android:src="@drawable/yellow_question"
+        android:tint="@color/yellow" />
 
     <LinearLayout
         android:layout_width="0dp"
