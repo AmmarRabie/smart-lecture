@@ -14,7 +14,7 @@ class ChildEventWithRef extends EventWithRefBase {
         super(reference);
     }
 
-    public ChildEventWithRef(DatabaseReference reference, ChildEventListener childEventListener) {
+    ChildEventWithRef(DatabaseReference reference, ChildEventListener childEventListener) {
         super(reference);
         this.childEventListener = childEventListener;
     }

@@ -41,6 +41,7 @@ public class MockRepo implements DataService {
         users = new ArrayList<>();
         sessions = new ArrayList<>();
         groups = new ArrayList<>();
+        // insert the main system data (users, groups, sessions)
         insertDummyUsers();
         insertDummyGroups();
         insertDummySessions();

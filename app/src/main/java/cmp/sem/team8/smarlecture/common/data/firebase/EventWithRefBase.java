@@ -7,7 +7,7 @@ import com.google.firebase.database.DatabaseReference;
  */
 
 abstract class EventWithRefBase {
-    protected DatabaseReference reference;
+    DatabaseReference reference;
 
     EventWithRefBase(DatabaseReference reference){
         this.reference = reference;

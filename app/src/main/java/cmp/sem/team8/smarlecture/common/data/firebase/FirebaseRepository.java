@@ -42,6 +42,7 @@ import cmp.sem.team8.smarlecture.common.data.model.UserModel;
  * This is the implementation of the {@link cmp.sem.team8.smarlecture.common.data.DataService}
  * using firebase database
  * <p>
+ *     this class do the logic of querying data from firebase database
  */
 public class FirebaseRepository extends FirebaseRepoHelper {
 
