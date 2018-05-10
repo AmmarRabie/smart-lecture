@@ -6,6 +6,10 @@ import cmp.sem.team8.smarlecture.common.data.DataService;
  * Created by AmmarRabie on 02/03/2018.
  */
 
+/**
+ * Data representation of a session in the system. this is the base session model
+ * meaning that this class doesn't have any additional data out of session
+ */
 public class SessionModel {
     private String id;
     private String forGroupId;

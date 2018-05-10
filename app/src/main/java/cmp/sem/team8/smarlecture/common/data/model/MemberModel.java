@@ -6,6 +6,10 @@ import java.util.ArrayList;
  * Created by AmmarRabie on 27/04/2018.
  */
 
+/**
+ * Data represents one member in one session providing who is this user ({@link UserModel})
+ * This can be called a session member
+ */
 public class MemberModel extends UserModel {
     private boolean isAttend;
     private ArrayList<NoteModel> notes;

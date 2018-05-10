@@ -19,37 +19,48 @@ interface ProfileContract {
 
         /**
          * to show error message when something went wrong
-         * @param cause
+         *
+         * @param cause readable message of the error
          */
-
         void showErrorMessage(String cause);
+
         /**
          * to show user info
-         * @param
+         * @param user the user info to be displayed
          */
         void showUserInfo(UserModel user);
+
         /**
          * to show message when change name success
+         *
          * @param
          */
         void showOnChangeNameSuccess();
+
         /**
          * to show message when change password success
+         *
          * @param
          */
         void showOnChangePassSuccess();
+
         /**
          * to show message when SignOut
+         *
          * @param
          */
         void showOnSignOutSuccess();
+
         /**
          * to show progess indicator of a specific task
+         *
          * @param
          */
         void showProgressIndicator(String progressWorkMessage);
+
         /**
          * to hide progess indicator of a specific task
+         *
          * @param
          */
         void hideProgressIndicator();
@@ -61,7 +72,8 @@ interface ProfileContract {
      */
     interface Actions extends IBasePresenter {
         /**
-         *  logic of change password functionality
+         * logic of change password functionality
+         *
          * @param oldPass
          * @param pass
          * @param confirmPass
@@ -70,13 +82,16 @@ interface ProfileContract {
 
         /**
          * logic of change name functionality
+         *
          * @param newName
          */
         void changeName(String newName);
+
         /**
          * logic of signout functionality
          */
         void signOut();
+
         /**
          * logic of changing profile image
          */

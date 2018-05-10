@@ -4,6 +4,9 @@ package cmp.sem.team8.smarlecture.common.data.model;
  * Created by AmmarRabie on 26/03/2018.
  */
 
+/**
+ * Data representation of one group in the system
+ */
 public class GroupModel {
 
     private String name;

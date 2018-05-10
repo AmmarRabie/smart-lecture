@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
 
     <include layout="@layout/inc_offlineview" />
 
     <android.support.v7.widget.RecyclerView
-        tools:listitem="@layout/item_invitation"
-        android:padding="8dp"
         android:id="@+id/invitationsFrag_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        tools:listitem="@layout/item_invitation" />
 
+    <LinearLayout
+        android:id="@+id/invitationsFrag_emptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/empty_view_invitation" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="28dp"
+            android:gravity="center"
+            android:text="You have no group invitations !!"
+            android:textAppearance="?android:textAppearanceLarge" />
+
+    </LinearLayout>
 </LinearLayout>

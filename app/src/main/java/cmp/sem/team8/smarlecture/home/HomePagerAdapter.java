@@ -59,7 +59,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         if(position==0)
             return "Your Groups";
         else {
-            return "Others Sessions";
+            return "News Feed";
         }
     }
     @Override

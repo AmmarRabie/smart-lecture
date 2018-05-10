@@ -57,6 +57,7 @@ public interface MembersContract {
         void handleOfflineStates();
 
         boolean getOfflineState();
+
         /**
          * called when export process of file has been succsedd to do
          * some view logic as print message to the user
@@ -84,7 +85,7 @@ public interface MembersContract {
         /**
          * called by fragment to delete a student from a group
          * on successfull deletion the onDelteSuccess is called
-         * on unSunccessfull deletion the onErrorMessage is valed
+         * on unSuccessful deletion the onErrorMessage is valed
          *
          * @param memberId the name of the student to be deleted
          */
@@ -94,6 +95,7 @@ public interface MembersContract {
 
         /**
          * called when we want to export group information to excel file
+         *
          * @param fileName the name of the student to be deleted
          */
         void exportExcel(String fileName);

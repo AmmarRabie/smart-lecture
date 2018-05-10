@@ -4,6 +4,10 @@ package cmp.sem.team8.smarlecture.common.data.model;
  * Created by AmmarRabie on 23/04/2018.
  */
 
+/**
+ * Data represents the session with additional info about the owner of this session (group) and
+ * the group this session is related to
+ */
 public class SessionForUserModel extends SessionModel {
     private GroupModel group;
     private UserModel owner;

@@ -4,6 +4,9 @@ package cmp.sem.team8.smarlecture.common.data.model;
  * Created by Loai Ali on 4/18/2018.
  */
 
+/**
+ * Data representation of one objective in a session
+ */
 public class ObjectiveModel {
     private String mSessionID;
     private  String mObjectiveID;

@@ -35,6 +35,7 @@ public class InvitationsFragment extends Fragment implements InvitationsContract
 
     private InvitationsContract.Actions mAction;
     private RecyclerView invitationsRecyclerView;
+    private View emptyView;
     private InvitationsRecyclerAdapter invitationsRecyclerAdapter;
     private ArrayList<GroupInvitationModel> groupInvitations;
     private Animator spruceAnimator;
@@ -55,6 +56,7 @@ public class InvitationsFragment extends Fragment implements InvitationsContract
         setHasOptionsMenu(true);
 
         invitationsRecyclerView = root.findViewById(R.id.invitationsFrag_list);
+        emptyView = root.findViewById(R.id.invitationsFrag_emptyView);
         invitationsRecyclerView.setHasFixedSize(true);
 
 
@@ -76,6 +78,7 @@ public class InvitationsFragment extends Fragment implements InvitationsContract
                             .start();
             }
         });
+        refreshEmptyView();
         return root;
     }
 
@@ -91,15 +94,16 @@ public class InvitationsFragment extends Fragment implements InvitationsContract
     public void addGroupInvitation(GroupInvitationModel group) {
         groupInvitations.add(group);
         invitationsRecyclerAdapter.notifyItemInserted(groupInvitations.size());
+        refreshEmptyView();
     }
 
     @Override
     public void removeGroup(String groupId) {
-        for (int i = 0; i < groupInvitations.size();i++)
-            if (groupInvitations.get(i).getGroupId().equals(groupId))
-            {
+        for (int i = 0; i < groupInvitations.size(); i++)
+            if (groupInvitations.get(i).getGroupId().equals(groupId)) {
                 groupInvitations.remove(i);
                 invitationsRecyclerAdapter.notifyItemRemoved(i);
+                refreshEmptyView();
                 return;
             }
     }
@@ -117,5 +121,16 @@ public class InvitationsFragment extends Fragment implements InvitationsContract
     @Override
     public void oRefuseClicked(View view, int position, String groupId) {
         mAction.refuseGroup(groupId);
+    }
+
+    private void refreshEmptyView() {
+        if (groupInvitations.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+            invitationsRecyclerView.setVisibility(View.GONE);
+            return;
+        }
+        emptyView.setVisibility(View.GONE);
+        invitationsRecyclerView.setVisibility(View.VISIBLE);
+
     }
 }

@@ -7,6 +7,9 @@ import java.util.ArrayList;
  * Created by AmmarRabie on 02/03/2018.
  */
 
+/**
+ * Data representation of a user in the system (name-email-id-profileImage)
+ */
 public class UserModel implements Serializable{
 
     private String id;

@@ -6,6 +6,7 @@ import cmp.sem.team8.smarlecture.common.auth.AuthenticatedUser;
 import cmp.sem.team8.smarlecture.common.data.DataService;
 import cmp.sem.team8.smarlecture.common.data.firebase.FirebaseRepository;
 import cmp.sem.team8.smarlecture.common.data.model.UserModel;
+import cmp.sem.team8.smarlecture.common.util.ValidationUtils;
 
 /**
  * Created by AmmarRabie on 08/03/2018.
@@ -78,7 +79,10 @@ class ProfilePresenter implements ProfileContract.Actions {
             mView.showErrorMessage("your name can't be empty");
             return;
         }
-
+        if (!ValidationUtils.userNameValidator(newName)){
+            mView.showErrorMessage("This name is invalid");
+            return;
+        }
         mDataSource.updateUserName(mCurrentUser.getUserId(), newName, new DataService.Update() {
             @Override
             public void onUpdateSuccess() {

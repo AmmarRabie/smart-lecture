@@ -121,7 +121,7 @@ public class GroupsFragment extends Fragment implements
 
         mGroupsEmptyView = root.findViewById(R.id.groupListFrag_emptyView);
 
-        mGroupRecyclerView.setHasFixedSize(true);       // optimize the performance
+//        mGroupRecyclerView.setHasFixedSize(true);       // optimize the performance
 
         mAddGroup.setOnClickListener(mAddGroupClickListener);
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import cmp.sem.team8.smarlecture.IBasePresenter;
 import cmp.sem.team8.smarlecture.IBaseView;
-import cmp.sem.team8.smarlecture.common.data.model.*;
+import cmp.sem.team8.smarlecture.common.data.model.SessionModel;
 
 /**
  * Created by Loai Ali on 4/15/2018.
@@ -20,21 +20,18 @@ public interface SessionsContract {
         /**
          * @param sessionslist arraylist containing the sessions of this group
          */
-
         void showSessionsList(ArrayList<SessionModel> sessionslist);
 
         /**
          * @param deletedSessionId the deleted
          *                         called on successful deletion of a session
          */
-
         void OnDeleteSuccess(String deletedSessionId);
 
         /**
          * @param addedSessionName Added session name
          *                         called on successful addition of a session
          */
-
         void OnAddSuccess(SessionModel addedSessionName);
 
         /**
@@ -57,7 +54,6 @@ public interface SessionsContract {
          *                    on successful addition the onAddSuccess method is called
          *                    on unSuccessful addition the onErrorMessage method is called
          */
-
         void addSession(String sessionName);
 
         /**
@@ -66,7 +62,6 @@ public interface SessionsContract {
          *                    on successful edit the onEditSuccess method is called
          *                    on unSuccessful addition the onErrorMessage method is called
          */
-
         void editSession(String sessionName, String sessionID);
 
         /**

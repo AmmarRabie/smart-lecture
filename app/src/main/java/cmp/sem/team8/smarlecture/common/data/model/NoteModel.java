@@ -4,6 +4,10 @@ package cmp.sem.team8.smarlecture.common.data.model;
  * Created by AmmarRabie on 28/04/2018.
  */
 
+/**
+ * Data representation of one note with no data about owner or who is this note about
+ * In other words, this is the base note of the system (id and its text)
+ */
 public class NoteModel {
     private String id;
     private String text;

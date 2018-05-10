@@ -4,6 +4,9 @@ package cmp.sem.team8.smarlecture.common.data.model;
  * Created by AmmarRabie on 05/05/2018.
  */
 
+/**
+ * Data represents the question model with its owner (who asks the question)
+ */
 public class QuestionModel {
     private UserModel owner;
     private String id;
