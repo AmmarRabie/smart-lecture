@@ -3,6 +3,7 @@ package cmp.sem.team8.smarlecture.invitations;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -78,7 +79,16 @@ public class InvitationsFragment extends Fragment implements InvitationsContract
                             .start();
             }
         });
-        refreshEmptyView();
+
+        // refresh empty view after one second so that get the database time to fetch the data
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshEmptyView();
+                handler.removeCallbacks(this);
+            }
+        }, 1000);
         return root;
     }
 

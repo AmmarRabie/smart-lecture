@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smart Lecture</string>
+    <string name="app_name">Smart Session</string>
 
     <!--FMT as a notation for formatted string-->
     <string name="FMT_welcomeBackMes">Hello %s, welcome back</string>
