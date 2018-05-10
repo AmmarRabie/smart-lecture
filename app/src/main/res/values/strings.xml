@@ -49,5 +49,6 @@
     <string name="attendance_grade">attendance grade</string>
     <string name="invited">Invited</string>
     <string name="member">member</string>
+    <string name="IKey_sessionName">session_name</string>
 
 </resources>

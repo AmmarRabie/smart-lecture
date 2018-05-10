@@ -47,4 +47,11 @@ public class JoinSessionActivity extends AppCompatActivity {
         startService(service);
 //        service = new Intent(this, );
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Kill the service so that when it start, start clean
+        stopService(new Intent(this, AttendanceMonitorService.class));
+    }
 }

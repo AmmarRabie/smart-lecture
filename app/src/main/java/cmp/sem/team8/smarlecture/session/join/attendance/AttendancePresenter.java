@@ -50,7 +50,6 @@ public class AttendancePresenter implements AttendanceContract.Actions {
             @Override
             public void onDataFetched(SessionModel session) {
                 mSecret = session.getSecret();
-                mView.showInfoMessage(mSecret);
             }
 
             @Override

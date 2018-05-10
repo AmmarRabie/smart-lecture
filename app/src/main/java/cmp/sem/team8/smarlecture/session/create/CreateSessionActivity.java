@@ -8,7 +8,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import cmp.sem.team8.smarlecture.R;
@@ -27,9 +26,9 @@ public class CreateSessionActivity extends AppCompatActivity implements MembersF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mGroupID = getIntent().getStringExtra(getString(R.string.IKey_groupId));
         mSessionID = getIntent().getStringExtra(getString(R.string.IKey_sessionId));
+        setTitle(getIntent().getStringExtra(getString(R.string.IKey_sessionName)));
         setContentView(R.layout.activity_session);
 
         tabLayout = findViewById(R.id.tablayout);
@@ -86,7 +85,7 @@ public class CreateSessionActivity extends AppCompatActivity implements MembersF
             viewPager.setCurrentItem(0, true);
             return;
         }
-        if (pageAdapter.membersPresenter.getAttendanceStatus().equals(DataService.AttendanceStatus.OPEN)){
+        if (pageAdapter.membersPresenter.getAttendanceStatus().equals(DataService.AttendanceStatus.OPEN)) {
             AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(this);
             mAlertBuilder.setTitle("Confirmation");
             mAlertBuilder.setIcon(android.R.drawable.ic_dialog_alert);

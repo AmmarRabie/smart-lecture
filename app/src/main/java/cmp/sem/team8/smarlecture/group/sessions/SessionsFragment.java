@@ -288,6 +288,7 @@ public class SessionsFragment extends android.support.v4.app.Fragment implements
         Intent sessionActivity = new Intent(getContext(), CreateSessionActivity.class);
         sessionActivity.putExtra(getString(R.string.IKey_groupId), groupID);
         sessionActivity.putExtra(getString(R.string.IKey_sessionId), sessionID);
+        sessionActivity.putExtra(getString(R.string.IKey_sessionName), session.getName());
         startActivity(sessionActivity);
 
     }
